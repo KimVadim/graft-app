@@ -1,4 +1,4 @@
-import { Col, Row, Select, Spin, Table } from "antd";
+import { Col, Row, Select, Table } from "antd";
 import React, { useState } from "react";
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
