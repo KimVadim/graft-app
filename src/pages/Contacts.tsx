@@ -25,15 +25,15 @@ export const Contacts: React.FC = () => {
   useEffect(() => {
     if (searchText) {
       const filtered = contactData.filter((item) =>
-      item[ContactFieldData.FirstName]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-      item[ContactFieldData.Type]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-      item[ContactFieldData.Phone]?.toString().toLowerCase().includes(searchText.toLowerCase())
+        item[ContactFieldData.FirstName]?.toLowerCase().includes(searchText.toLowerCase()) ||
+        item[ContactFieldData.Type]?.toLowerCase().includes(searchText.toLowerCase()) ||
+        item[ContactFieldData.Phone]?.toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(filtered);
     } else {
       setFilteredData(contactData);
     }
-  }, [searchText, contactAllData]);
+  }, [searchText, contactData]);
 
   const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
