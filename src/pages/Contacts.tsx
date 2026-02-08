@@ -1,5 +1,5 @@
 import { Col, Row, Spin, Table, Input } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
 import { contactMeta } from "./AllApplicationMeta.tsx";
@@ -14,8 +14,13 @@ export const Contacts: React.FC = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const contactAllData = useSelector((state: RootState) => state.contact.contact) as unknown as ContactType[];
   const [isAddContact, setIsAddContact] = useState(false);
-  const contactData = contactAllData.filter((x) => x[ContactFieldData.Type] !== 'Renter');
-  contactData.sort((a, b) => a[ContactFieldData.Type].localeCompare(b[ContactFieldData.Type]));
+  const contactData = useMemo(() => {
+    return contactAllData
+      .filter((x) => x[ContactFieldData.Type] !== "Renter")
+      .sort((a, b) =>
+        a[ContactFieldData.Type].localeCompare(b[ContactFieldData.Type])
+      );
+  }, [contactAllData]);
 
   useEffect(() => {
     if (searchText) {
