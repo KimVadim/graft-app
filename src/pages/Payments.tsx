@@ -12,7 +12,6 @@ const { Option } = Select;
 export const Payments: React.FC = () => {
   const date = new Date();
   const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  const [loading, setLoading] = useState<boolean>(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(month);
   const [isModalPayment, setIsModalPayment] = useState(false);
   const paymentsData = useSelector((state: RootState) => state.quote.quote) as unknown as PaymentsType[];
@@ -39,7 +38,6 @@ export const Payments: React.FC = () => {
 
   return (
     <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
-      <Spin spinning={loading}>
       <Row align="middle" gutter={15} >
         <Col flex="auto" style={{ maxWidth: "111px" }}>
           <MenuComp/>
@@ -86,7 +84,6 @@ export const Payments: React.FC = () => {
           pageSize: 50,
         }}
       />
-      </Spin>
     </div>
   );
 };

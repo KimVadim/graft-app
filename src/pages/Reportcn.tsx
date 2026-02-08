@@ -53,7 +53,7 @@ export const IncomeReportcn: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [current, setCurrent] = useState('line');
-  const [selectedMonth, setSelectedMonth] = useState<string | null>('last12months');
+  const selectedMonth = 'last12months';
   const [isModalPayment, setIsModalPayment] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
