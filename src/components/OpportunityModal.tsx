@@ -1,14 +1,12 @@
 import React from 'react';
 import { Button, DatePicker, Spin } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
-import { selectFilteredQuotes } from '../selector/selectors.tsx';
-import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType } from '../constants/appConstant.ts';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store';
+import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetDataParam, updateOpty } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
-import { Step } from 'antd-mobile/es/components/steps/step';
-import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
+import { Dialog, Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
+import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
 import { StopOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
@@ -30,9 +28,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
   const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
   const optyId = record?.[OpportunityFieldData.Id]
-  const filteredQuotes = useSelector((state: RootState) =>
-    selectFilteredQuotes(state, optyId)
-  ) as unknown as PaymentsType[];
   let locationPath;
 
   switch (location.pathname) {
@@ -182,28 +177,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </AutoCenter>
           </Card>
           <Divider>Платежи</Divider>
-          <Steps direction='vertical'>
-            {filteredQuotes && filteredQuotes.map(
-              (item) => {
-                const date = new Date(item[PaymentsFieldData.Created]);
-                return <Step
-                  key={item[PaymentsFieldData.Id]}
-                  title={`
-                    ${date.toLocaleDateString("ru-RU")} /
-                    ${productMap[item[PaymentsFieldData.Product] as keyof typeof productMap]} /
-                    ${item[PaymentsFieldData.PaymentType]} / ${Number(item[PaymentsFieldData.Amount])?.toLocaleString("ru-RU")}
-                  `}
-                  status={
-                    item[PaymentsFieldData.Product] === Product.Deposit
-                      ? STEP_STATUS.Process
-                      : item[PaymentsFieldData.Product] === Product.Return
-                        ? STEP_STATUS.Error
-                        : STEP_STATUS.Finish
-                  }
-                />
-              }
-            )}
-          </Steps>
         </div>
       </Spin>
       </Space>

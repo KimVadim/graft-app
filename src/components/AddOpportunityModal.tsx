@@ -12,6 +12,7 @@ import { formattedPhone } from "../service/utils.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
 import { setOpportunity } from "../slices/opportunitySlice.ts";
+import { Input as InputMob } from 'antd-mobile'
 
 interface AddOpportunityModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -72,7 +73,8 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
         };
       }
     );
-
+    const [value, setValue] = useState('')
+    const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
     return (
       <Popup
         visible={isAddOpty}
@@ -135,12 +137,6 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
                 style={FieldStyle.InputStyle}
               />
             </Form.Item>
-            {/*<Form.Item
-              label={OpportunityField.PayPhoneFlgLabel}
-              name={OpportunityField.PayPhoneFlg}
-            >
-              <Switch onChange={(value) => setHiddenItem(value)}/>
-            </Form.Item>*/}
             <Form.Item
               label={OpportunityField.PayTypeLabel}
               name={OpportunityField.PayType}
@@ -182,13 +178,20 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               name={OpportunityField.Comment}
               rules={[FieldRules.Required]}
             >
-              <CascadePickerView options={OrderTime} />
               <TextArea
                 showCount
                 maxLength={300}
                 placeholder={FieldPlaceholder.Comment}
                 autoSize={{ minRows: 2, maxRows: 4 }}
                 style={FieldStyle.AreaStyle}
+              />
+              <InputMob
+                placeholder='Время начала'
+                value={value}
+                onChange={val => {
+                  setValue(val)
+                }}
+                onClick={()=> setIsPopupStartOpen(true)}
               />
             </Form.Item>
             <Form.Item
@@ -216,6 +219,14 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
           </Form>
           </Spin>
         </div>
+        <Popup
+          visible={isPopupStartOpen}
+          showCloseButton
+          onClose={() => setIsAddOpty(false)}
+          onMaskClick={() => setIsAddOpty(false)}
+        >
+          <CascadePickerView options={OrderTime} />
+        </Popup>
       </Popup>
     )
 }
