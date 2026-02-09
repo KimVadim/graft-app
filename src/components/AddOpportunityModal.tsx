@@ -6,15 +6,12 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { Selector, Toast } from "antd-mobile";
+import { CascadePickerView, Selector, Toast } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
 import { setOpportunity } from "../slices/opportunitySlice.ts";
-import { TimePicker } from 'antd';
-
-const format = 'HH:mm';
 
 interface AddOpportunityModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -56,6 +53,37 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
         form.setFieldsValue({ payPhone: formattedPhoneStr });
       }
     }
+
+    const options = [
+      {
+        label: '10',
+        value: '10',
+        children: [
+          {
+            label: '00',
+            value: '00',
+          },
+          {
+            label: '30',
+            value: '30',
+          },
+        ],
+      },
+      {
+        label: '11',
+        value: '11',
+        children: [
+          {
+            label: '00',
+            value: '00',
+          },
+          {
+            label: '30',
+            value: '30',
+          },
+        ],
+      },
+    ]
 
     return (
       <Modal
@@ -154,7 +182,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             name={OpportunityField.Comment}
             rules={[FieldRules.Required]}
           >
-            <TimePicker defaultValue={dayjs('12:08', format)} format={format} />
+            <CascadePickerView options={options} />
             <TextArea
               showCount
               maxLength={300}
