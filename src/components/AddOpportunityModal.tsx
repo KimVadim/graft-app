@@ -1,12 +1,12 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Spin } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React, { useState } from "react"
 import dayjs from 'dayjs';
 import { addOpty, getSheetDataParam } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
-import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { CascadePickerView, Selector, Toast } from "antd-mobile";
+import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OpportunityField } from "../constants/appConstant.ts";
+import { CascadePickerView, Selector, Toast, Popup } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
@@ -54,167 +54,168 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
       }
     }
 
-    const options = [
-      {
-        label: '10',
-        value: '10',
-        children: [
-          {
-            label: '00',
-            value: '00',
-          },
-          {
-            label: '30',
-            value: '30',
-          },
-        ],
-      },
-      {
-        label: '11',
-        value: '11',
-        children: [
-          {
-            label: '00',
-            value: '00',
-          },
-          {
-            label: '30',
-            value: '30',
-          },
-        ],
-      },
-    ]
+    const START_HOUR = 10;
+    const END_HOUR = 23;
+
+    const OrderTime = Array.from(
+      { length: END_HOUR - START_HOUR + 1 },
+      (_, i) => {
+        const hour = String(START_HOUR + i);
+
+        return {
+          label: hour,
+          value: hour,
+          children: ['00', '15', '30', '45'].map((min) => ({
+            label: min,
+            value: min,
+          })),
+        };
+      }
+    );
 
     return (
-      <Modal
-        title={ModalTitle.AddOpportunity}
-        open={isAddOpty}
-        onCancel={() => {
+      <Popup
+        visible={isAddOpty}
+        showCloseButton
+        onClose={() => {
           setIsAddOpty(false);
           form.resetFields();
         }}
-        style={{ maxWidth: '80%' }}
-        footer={null}
+        onMaskClick={() => {
+          setIsAddOpty(false);
+          form.resetFields();
+        }}
       >
-        <Spin spinning={loading}>
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={{
-            phone: '+7',
-            depositAmount: 5000,
-            saunaNum: 'SaunaFour',
-            payType: Payment.GoldAN,
-            [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+        <div
+          style={{
+            height: '75vh',
+            overflowY: 'scroll',
+            padding: '20px',
+            marginBottom: '30px',
+            justifyContent: 'center',
+            maxWidth: '360px',
           }}
-          onFinish={handleSubmit}
         >
-          <Form.Item
-            label={OpportunityField.LastNameLabel}
-            name={OpportunityField.LastName}
+          <Spin spinning={loading}>
+          <Form
+            form={form}
+            layout="vertical"
+            initialValues={{
+              phone: '+7',
+              depositAmount: 5000,
+              saunaNum: 'SaunaFour',
+              payType: Payment.GoldAN,
+              [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+            }}
+            onFinish={handleSubmit}
           >
-            <Input style={FieldStyle.InputStyle}/>
-          </Form.Item>
-          <Form.Item
-            label={OpportunityField.FisrtNameLabel}
-            name={OpportunityField.FisrtName}
-            rules={[FieldRules.Required, FieldRules.ClientName]}
-          >
-            <Input style={FieldStyle.InputStyle} />
-          </Form.Item>
-          <Form.Item
-            label={OpportunityField.PhoneLabel}
-            name={OpportunityField.Phone}
-            rules={[FieldRules.Required, FieldRules.PhoneFormat]}
-          >
-            <Input
-              value={phone}
-              placeholder="+7 (777) 123-45-67"
-              onChange={actions.handlePhoneChange}
-              maxLength={18}
-              style={FieldStyle.InputStyle}
-            />
-          </Form.Item>
-          {/*<Form.Item
-            label={OpportunityField.PayPhoneFlgLabel}
-            name={OpportunityField.PayPhoneFlg}
-          >
-            <Switch onChange={(value) => setHiddenItem(value)}/>
-          </Form.Item>*/}
-          <Form.Item
-            label={OpportunityField.PayTypeLabel}
-            name={OpportunityField.PayType}
-            rules={[FieldRules.Required]}
-          >
-            <Selector
-              options={PAYMENT_TYPE}
-              onChange={(arr) =>
-                form.setFieldsValue({
-                  [OpportunityField.PayType]: arr
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item
-            label={OpportunityField.DepositAmountLabel}
-            name={OpportunityField.DepositAmount}
-            rules={[FieldRules.PaymentAmount, FieldRules.Required]}
-          >
-            <InputNumber style={FieldStyle.InputStyle} />
-          </Form.Item>
-          <Form.Item
-            label={OpportunityField.SaunaNumLabel}
-            name={OpportunityField.SaunaNum}
-            rules={[FieldRules.Required]}
-          >
-            <Selector
-              options={PRODUCT}
-              value={form.getFieldValue(OpportunityField.SaunaNum)}
-              onChange={(arr) =>
-                form.setFieldsValue({
-                  [OpportunityField.SaunaNum]: arr
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item
-            label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
-            name={OpportunityField.Comment}
-            rules={[FieldRules.Required]}
-          >
-            <CascadePickerView options={options} />
-            <TextArea
-              showCount
-              maxLength={300}
-              placeholder={FieldPlaceholder.Comment}
-              autoSize={{ minRows: 2, maxRows: 4 }}
-              style={FieldStyle.AreaStyle}
-            />
-          </Form.Item>
-          <Form.Item
-            label={OpportunityField.PaymentDateLabel}
-            name={OpportunityField.PaymentDate}
-            rules={[FieldRules.Required]}
-            hidden={view && view==='Storage' ? true : false}
-          >
-            <DatePicker
-              style={FieldStyle.InputStyle}
-              format={FieldFormat.Date}
-              inputReadOnly={true}
-              placeholder={FieldPlaceholder.Date}
-              defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
-            />
-          </Form.Item>
-          <Form.Item style={{ textAlign: "center" }}>
-            <Button type="primary" htmlType="submit">
-              {BUTTON_TEXT.Add}
-            </Button>
-            <Button onClick={() => setIsAddOpty(false)} style={{ marginLeft: 8,  marginTop: 10}}>
-              {BUTTON_TEXT.Cancel}
-            </Button>
-          </Form.Item>
-        </Form>
-        </Spin>
-      </Modal>
+            <Form.Item
+              label={OpportunityField.LastNameLabel}
+              name={OpportunityField.LastName}
+            >
+              <Input style={FieldStyle.InputStyle}/>
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.FisrtNameLabel}
+              name={OpportunityField.FisrtName}
+              rules={[FieldRules.Required, FieldRules.ClientName]}
+            >
+              <Input style={FieldStyle.InputStyle} />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.PhoneLabel}
+              name={OpportunityField.Phone}
+              rules={[FieldRules.Required, FieldRules.PhoneFormat]}
+            >
+              <Input
+                value={phone}
+                placeholder="+7 (777) 123-45-67"
+                onChange={actions.handlePhoneChange}
+                maxLength={18}
+                style={FieldStyle.InputStyle}
+              />
+            </Form.Item>
+            {/*<Form.Item
+              label={OpportunityField.PayPhoneFlgLabel}
+              name={OpportunityField.PayPhoneFlg}
+            >
+              <Switch onChange={(value) => setHiddenItem(value)}/>
+            </Form.Item>*/}
+            <Form.Item
+              label={OpportunityField.PayTypeLabel}
+              name={OpportunityField.PayType}
+              rules={[FieldRules.Required]}
+            >
+              <Selector
+                options={PAYMENT_TYPE}
+                onChange={(arr) =>
+                  form.setFieldsValue({
+                    [OpportunityField.PayType]: arr
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.DepositAmountLabel}
+              name={OpportunityField.DepositAmount}
+              rules={[FieldRules.PaymentAmount, FieldRules.Required]}
+            >
+              <InputNumber style={FieldStyle.InputStyle} />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.SaunaNumLabel}
+              name={OpportunityField.SaunaNum}
+              rules={[FieldRules.Required]}
+            >
+              <Selector
+                options={PRODUCT}
+                value={form.getFieldValue(OpportunityField.SaunaNum)}
+                onChange={(arr) =>
+                  form.setFieldsValue({
+                    [OpportunityField.SaunaNum]: arr
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
+              name={OpportunityField.Comment}
+              rules={[FieldRules.Required]}
+            >
+              <CascadePickerView options={OrderTime} />
+              <TextArea
+                showCount
+                maxLength={300}
+                placeholder={FieldPlaceholder.Comment}
+                autoSize={{ minRows: 2, maxRows: 4 }}
+                style={FieldStyle.AreaStyle}
+              />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.PaymentDateLabel}
+              name={OpportunityField.PaymentDate}
+              rules={[FieldRules.Required]}
+              hidden={view && view==='Storage' ? true : false}
+            >
+              <DatePicker
+                style={FieldStyle.InputStyle}
+                format={FieldFormat.Date}
+                inputReadOnly={true}
+                placeholder={FieldPlaceholder.Date}
+                defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
+              />
+            </Form.Item>
+            <Form.Item style={{ textAlign: "center" }}>
+              <Button type="primary" htmlType="submit">
+                {BUTTON_TEXT.Add}
+              </Button>
+              <Button onClick={() => setIsAddOpty(false)} style={{ marginLeft: 8,  marginTop: 10}}>
+                {BUTTON_TEXT.Cancel}
+              </Button>
+            </Form.Item>
+          </Form>
+          </Spin>
+        </div>
+      </Popup>
     )
 }
