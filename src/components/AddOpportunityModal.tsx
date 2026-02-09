@@ -4,50 +4,24 @@ import dayjs from 'dayjs';
 import { addOpty, getSheetDataParam } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
-import { BUTTON_TEXT, Product, PRODUCT } from "../constants/dictionaries.ts";
+import { BUTTON_TEXT, Payment, PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { Selector, Switch, Toast } from "antd-mobile";
+import { Selector, Toast } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
 import { setOpportunity } from "../slices/opportunitySlice.ts";
-//import { CloudOutlined, RocketOutlined, ThunderboltOutlined } from '@ant-design/icons';
-//import { Flex, Segmented } from 'antd';
-//import type { SegmentedProps } from 'antd';
+import { TimePicker } from 'antd';
 
-interface AddOpportunityModalProps {
-  setIsAddOpty: (isOpen: boolean) => void;
-  isAddOpty: boolean;
-  setLoading: (isOpen: boolean) => void;
-  loading: boolean;
-  view?: string;
-}
+const format = 'HH:mm';
 
-/*const options: SegmentedProps['options'] = [
-  {
-    label: '2 недели',
-    value: '2_week',
-    icon: <RocketOutlined />,
-  },
-  {
-    label: '1 месяц',
-    value: '1_month',
-    icon: <ThunderboltOutlined />,
-  },
-  {
-    label: '3 месяца',
-    value: '3_month',
-    icon: <CloudOutlined />,
-  },
-];*/
+
 
 export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [phone, setPhone] = useState("+7");
-    const [payPhone, setPayPhone] = useState("+7");
-    const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
     const handleSubmit = (values: AddOpportunity) => {
       setLoading(true);
       addOpty(values).then((optyId) => {
@@ -73,15 +47,10 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
       handlePayPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
         const formattedPhoneStr = formattedPhone(e.target.value);
 
-        setPayPhone(formattedPhoneStr);
         form.setFieldsValue({ payPhone: formattedPhoneStr });
       }
     }
 
-
-    //const segmentedSharedProps: SegmentedProps = {
-    //  options
-    //};
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -99,17 +68,16 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
           layout="vertical"
           initialValues={{
             phone: '+7',
-            payPhone: '+7',
-            product: view === 'Storage' ? Product.StorageS : Product.Rent180,
+            depositAmount: 5000,
+            saunaNum: 'SaunaFour',
+            payType: Payment.GoldAN,
             [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
-            [OpportunityField.OptyDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
           }}
           onFinish={handleSubmit}
         >
           <Form.Item
             label={OpportunityField.LastNameLabel}
             name={OpportunityField.LastName}
-            rules={[FieldRules.Required, FieldRules.ClientName]}
           >
             <Input style={FieldStyle.InputStyle}/>
           </Form.Item>
@@ -133,53 +101,49 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               style={FieldStyle.InputStyle}
             />
           </Form.Item>
-          <Form.Item
+          {/*<Form.Item
             label={OpportunityField.PayPhoneFlgLabel}
             name={OpportunityField.PayPhoneFlg}
           >
             <Switch onChange={(value) => setHiddenItem(value)}/>
-          </Form.Item>
-          <Form.Item hidden={!isHiddenItem}>
-            {isHiddenItem && (
-              <Form.Item
-                label={OpportunityField.PayPhoneLabel}
-                name={OpportunityField.PayPhone}
-                rules={[FieldRules.Required, FieldRules.PhoneFormat]}
-              >
-                <Input
-                  value={payPhone}
-                  placeholder="+7 (777) 123-45-67"
-                  onChange={actions.handlePayPhoneChange}
-                  maxLength={18}
-                  style={FieldStyle.InputStyle}
-                />
-              </Form.Item>
-            )}
+          </Form.Item>*/}
+          <Form.Item
+            label={OpportunityField.PayTypeLabel}
+            name={OpportunityField.PayType}
+            rules={[FieldRules.Required]}
+          >
+            <Selector
+              options={PAYMENT_TYPE}
+              onChange={(arr) =>
+                form.setFieldsValue({
+                  [OpportunityField.PayType]: arr
+                })
+              }
+            />
           </Form.Item>
           <Form.Item
-            label={view==='Storage' ? OpportunityField.StorageNumLabel: OpportunityField.ApartNumLabel}
-            name={OpportunityField.ApartNum}
-            rules={[FieldRules.Required, view==='Storage' ? FieldRules.StorageNum : FieldRules.ApartNum]}
+            label={OpportunityField.DepositAmountLabel}
+            name={OpportunityField.DepositAmount}
+            rules={[FieldRules.PaymentAmount, FieldRules.Required]}
           >
             <InputNumber style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
-            label={OpportunityField.ProductLabel}
-            name={OpportunityField.Product}
+            label={OpportunityField.SaunaNumLabel}
+            name={OpportunityField.SaunaNum}
             rules={[FieldRules.Required]}
           >
             <Selector
-              options={view==='Storage' ? PRODUCT.filter((x: any)=> x.storageFlg === true) : PRODUCT.filter((x: any)=> x.optyFlg === true)}
-              defaultValue={view==='Storage' ? [Product.StorageS] : [Product.Rent180]}
-              onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
+              options={PRODUCT}
+              value={form.getFieldValue(OpportunityField.SaunaNum)}
+              onChange={(arr) =>
+                form.setFieldsValue({
+                  [OpportunityField.SaunaNum]: arr
+                })
+              }
             />
+            <TimePicker defaultValue={dayjs('12:08', format)} format={format} />
           </Form.Item>
-          {//<Form.Item style={{ textAlign: "center" }} hidden={!(view==='Storage')} label={OpportunityField.PeriodLabel} rules={[FieldRules.Required]}>
-            //<Flex vertical gap="middle">
-              //<Segmented {...segmentedSharedProps} />
-            //</Flex>
-          //</Form.Item>
-          }
           <Form.Item
             label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
             name={OpportunityField.Comment}
@@ -191,20 +155,6 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               placeholder={FieldPlaceholder.Comment}
               autoSize={{ minRows: 2, maxRows: 4 }}
               style={FieldStyle.AreaStyle}
-            />
-          </Form.Item>
-          <Form.Item
-            label={OpportunityField.OptyDateLabel}
-            name={OpportunityField.OptyDate}
-            rules={[FieldRules.Required]}
-          >
-            <DatePicker
-              style={FieldStyle.InputStyle}
-              format={FieldFormat.Date}
-              inputReadOnly={true}
-              placeholder={FieldPlaceholder.Date}
-              disabledDate={(current) => current && current.isBefore(dayjs(), 'day')}
-              defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
             />
           </Form.Item>
           <Form.Item

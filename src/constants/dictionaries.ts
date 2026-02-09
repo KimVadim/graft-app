@@ -26,116 +26,65 @@ export const EXPENSE_TYPE = [
 ];
 
 export enum Product {
-  RentAmount160 = 160000,
-  RentAmount170 = 170000,
-  RentAmount180 = 180000,
-  RentAmount185 = 185000,
-  StorageSAmount = 18000,
-  StorageMAmount = 20000,
-  StorageLAmount = 29000,
+  SaunaOne = 7500,
+  SaunaTwo = 7500,
+  SaunaThree = 5000,
+  SaunaFour = 5000,
 
-  Rent185Value = 'Аренда 185',
-  Rent180Value = 'Аренда 180',
-  Rent170Value = 'Аренда 170',
-  Rent160Value = 'Аренда 160',
-  DepositValue = 'Депозит',
-  ReturnValue = 'Депозит возврат',
-  UnknownValue = 'Неизвестный продукт',
-  StorageSValue = 'Склад S',
-  StorageMValue = 'Склад M',
-  StorageLValue = 'Склад L',
-  Rent185 = 'Rent185',
-  Rent180 = 'Rent180',
-  Rent170 = 'Prod_1',
-  Rent160 = 'Prod_2',
-  Deposit = 'Prod_3',
-  Return = 'Prod_4',
-  StorageS = 'Storage_S',
-  StorageM = 'Storage_M',
-  StorageL = 'Storage_L',
+  SaunaOneValue = 'Каб. 1',
+  SaunaTwoValue = 'Каб. 2',
+  SaunaThreeValue = 'Каб. 3',
+  SaunaFourValue = 'Каб. 4',
 }
 
 export const PRODUCT = [
   {
-    value: Product.Rent170,
-    label: Product.Rent170Value,
+    value: 'SaunaOne',
+    label: Product.SaunaOneValue,
     optyFlg: false,
     payFlg: false,
     storageFlg: false,
   },
   {
-    value: Product.Rent180,
-    label: Product.Rent180Value,
+    value: 'SaunaTwo',
+    label: Product.SaunaTwoValue,
     optyFlg: true,
     payFlg: true,
     storageFlg: false,
   },
   {
-    value: Product.Rent185,
-    label: Product.Rent185Value,
+    value: 'SaunaThree',
+    label: Product.SaunaThreeValue,
     optyFlg: true,
     payFlg: true,
     storageFlg: false,
   },
   {
-    value: Product.Deposit,
-    label: Product.DepositValue,
+    value: 'SaunaFour',
+    label: Product.SaunaFourValue,
     optyFlg: false,
     payFlg: true,
     storageFlg: false,
-  },
-  {
-    value: Product.Return,
-    label: Product.ReturnValue,
-    optyFlg: false,
-    payFlg: true,
-    storageFlg: false,
-  },
-  {
-    value: Product.StorageS,
-    label: Product.StorageSValue,
-    optyFlg: false,
-    payFlg: false,
-    storageFlg: true,
-  },
-  {
-    value: Product.StorageM,
-    label: Product.StorageMValue,
-    optyFlg: false,
-    payFlg: false,
-    storageFlg: true,
-  },
-  {
-    value: Product.StorageL,
-    label: Product.StorageLValue,
-    optyFlg: false,
-    payFlg: false,
-    storageFlg: true,
   },
 ];
 
 export const productMap = {
-  [Product.Rent170]: Product.Rent170Value,
-  [Product.Rent160]: Product.Rent160Value,
-  [Product.Rent180]: Product.Rent180Value,
-  [Product.Rent185]: Product.Rent185Value,
-  [Product.Deposit]: Product.DepositValue,
-  [Product.Return]: Product.ReturnValue,
-  [Product.StorageS]: Product.StorageSValue,
-  [Product.StorageM]: Product.StorageMValue,
-  [Product.StorageL]: Product.StorageLValue,
+  [Product.SaunaFour]: Product.SaunaFourValue,
+  [Product.SaunaTwo]: Product.SaunaTwoValue,
 };
 
 export enum Payment {
-  QRAN = 'QR Аркен',
-  GoldVK = 'Gold Вадим',
+  GoldAN = 'Gold А',
+  GoldVK = 'Gold V',
   Cash = 'Налом',
+  No = ' Нет',
 }
 
 export const PAYMENT_TYPE = [
-  { value: Payment.QRAN, label: Payment.QRAN },
+  { value: Payment.GoldAN, label: Payment.GoldAN },
   { value: Payment.GoldVK, label: Payment.GoldVK },
   { value: Payment.Cash, label: Payment.Cash },
+  { value: Payment.No, label: Payment.No },
 ];
 
 export const ItemsReport: MenuProps['items'] = [
