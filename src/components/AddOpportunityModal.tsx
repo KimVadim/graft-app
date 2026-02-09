@@ -16,7 +16,13 @@ import { TimePicker } from 'antd';
 
 const format = 'HH:mm';
 
-
+interface AddOpportunityModalProps {
+  setIsAddOpty: (isOpen: boolean) => void;
+  isAddOpty: boolean;
+  setLoading: (isOpen: boolean) => void;
+  loading: boolean;
+  view?: string;
+}
 
 export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
@@ -142,13 +148,13 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
                 })
               }
             />
-            <TimePicker defaultValue={dayjs('12:08', format)} format={format} />
           </Form.Item>
           <Form.Item
             label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
             name={OpportunityField.Comment}
             rules={[FieldRules.Required]}
           >
+            <TimePicker defaultValue={dayjs('12:08', format)} format={format} />
             <TextArea
               showCount
               maxLength={300}
