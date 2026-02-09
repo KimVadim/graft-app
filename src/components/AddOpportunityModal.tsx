@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { addOpty, getSheetDataParam } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
-import { BUTTON_TEXT, Payment, PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
+import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
 import { Selector, Toast } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
