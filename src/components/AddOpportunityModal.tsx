@@ -12,7 +12,6 @@ import { formattedPhone } from "../service/utils.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
 import { setOpportunity } from "../slices/opportunitySlice.ts";
-import { Input as InputMob } from 'antd-mobile'
 
 interface AddOpportunityModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -73,8 +72,27 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
         };
       }
     );
-    const [value, setValue] = useState('')
     const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
+    const [selectedTime, setSelectedTime] = useState<string[]>([]);
+    const [timeField, setTimeField] = useState<string | null>(null);
+
+    const handleTimeChange = (val: string[]) => {
+      setSelectedTime(val);
+    };
+
+    const handleTimeConfirm = () => {
+      if (!selectedTime.length) return;
+
+      const [hour, minute] = selectedTime;
+      const formattedTime = `${hour.padStart(2, '0')}:${minute}`;
+
+      form.setFieldsValue({
+        [timeField as string]: formattedTime
+      });
+
+      setIsPopupStartOpen(false);
+    };
+
     return (
       <Popup
         visible={isAddOpty}
@@ -90,7 +108,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
       >
         <div
           style={{
-            height: '75vh',
+            height: '65vh',
             overflowY: 'scroll',
             padding: '20px',
             marginBottom: '30px',
@@ -174,9 +192,36 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               />
             </Form.Item>
             <Form.Item
-              label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
-              name={OpportunityField.Comment}
+              label={OpportunityField.StartTimeLabel}
+              name={OpportunityField.StartTime}
               rules={[FieldRules.Required]}
+            >
+              <Input
+                style={FieldStyle.InputStyle}
+                readOnly
+                onClick={() => {
+                  setTimeField(OpportunityField.StartTime);
+                  setIsPopupStartOpen(true);
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.EndTimeLabel}
+              name={OpportunityField.EndTime}
+              rules={[FieldRules.Required]}
+            >
+              <Input
+                style={FieldStyle.InputStyle}
+                readOnly
+                onClick={() => {
+                  setTimeField(OpportunityField.EndTime);
+                  setIsPopupStartOpen(true);
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.CommentLabel}
+              name={OpportunityField.Comment}
             >
               <TextArea
                 showCount
@@ -184,14 +229,6 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
                 placeholder={FieldPlaceholder.Comment}
                 autoSize={{ minRows: 2, maxRows: 4 }}
                 style={FieldStyle.AreaStyle}
-              />
-              <InputMob
-                placeholder='Время начала'
-                value={value}
-                onChange={val => {
-                  setValue(val)
-                }}
-                onClick={()=> setIsPopupStartOpen(true)}
               />
             </Form.Item>
             <Form.Item
@@ -222,10 +259,22 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
         <Popup
           visible={isPopupStartOpen}
           showCloseButton
-          onClose={() => setIsAddOpty(false)}
-          onMaskClick={() => setIsAddOpty(false)}
+          onClose={() => setIsPopupStartOpen(false)}
+          onMaskClick={() => setIsPopupStartOpen(false)}
         >
-          <CascadePickerView options={OrderTime} />
+          <CascadePickerView
+            options={OrderTime}
+            value={selectedTime}
+            onChange={handleTimeChange}
+          />
+
+          <Button
+            type="primary"
+            onClick={handleTimeConfirm}
+            style={{ width: '100%', marginTop: 10 }}
+          >
+            {BUTTON_TEXT.Ok}
+          </Button>
         </Popup>
       </Popup>
     )
