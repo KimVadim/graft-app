@@ -275,6 +275,11 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
           >
             {BUTTON_TEXT.Ok}
           </Button>
+          <div
+            style={{
+              height: '3vh',
+            }}
+          ></div>
         </Popup>
       </Popup>
     )
