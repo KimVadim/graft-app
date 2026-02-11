@@ -124,7 +124,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               saunaNum: ['SaunaFour'],
               prepaySource: [Payment.GoldAN],
               orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
-              price: 7500,
+              price: 5000,
             }}
             onFinish={handleSubmit}
           >
