@@ -2,65 +2,42 @@ import { Row, Space, Table, Tag, Typography } from "antd";
 import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OpportunityFieldData, PaymentsField, PaymentsFieldData, Stage } from "../constants/appConstant.ts"
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
-import { productMap } from "../constants/dictionaries.ts";
+import { PRODUCT_MAP, productMap } from "../constants/dictionaries.ts";
+
+export type ProductKey = keyof typeof PRODUCT_MAP;
 
 export const opportunityMeta = [{
-  title: OpportunityField.OptyNameLabel,
-  dataIndex: OpportunityFieldData.Stage,
-  key: OpportunityFieldData.Stage,
+  title: OpportunityField.OrderNameLabel,
+  dataIndex: OpportunityFieldData.Status,
+  key: OpportunityFieldData.Status,
   render: (status: String, record: any) => {
-    const date = new Date(record?.[OpportunityFieldData.PaymentDate])
-
-    return <>
-      <Tag color={"#2db7f5"}>{record?.[OpportunityFieldData.ApartNum]}</Tag>
-      <Tag color={status === Stage.Signed ? "green" : "red"}>{status}</Tag>
-      <Tag color="blue">
-        {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
+  return (
+    <>
+      <Tag color={"#2db7f5"}>
+        {PRODUCT_MAP[record?.[OpportunityFieldData.SaunaNum] as ProductKey]}
       </Tag>
-      <Tag color="red">{(Number(record?.[OpportunityFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
+
+      <Tag color={status === Stage.Signed ? "green" : "red"}>
+        {status}
+      </Tag>
+
+      <Tag color="blue">
+        {`${record?.[OpportunityFieldData.StartTime]}-${record?.[OpportunityFieldData.EndTime]}`}
+      </Tag>
     </>
-  },
+  );
+},
   width: 265,
   }, {
     title: OpportunityField.FullNameLabel,
-    dataIndex: OpportunityFieldData.FullName,
-    key: OpportunityFieldData.FullName,
+    dataIndex: OpportunityFieldData.FirstName,
+    key: OpportunityFieldData.FirstName,
     ellipsis: true,
     render: (full_name: String, record: any) => {
       return <><strong className="full-name">{full_name}</strong><br/></>
   },
 }];
 
-export const storageMeta = [{
-  title: OpportunityField.StorageNameLabel,
-  dataIndex: OpportunityFieldData.Stage,
-  key: OpportunityFieldData.Stage,
-  render: (status: String, record: any) => {
-    const date = new Date(record?.[OpportunityFieldData.PaymentDate])
-
-    return <>
-      <Tag color={"#2db7f5"}>{`П${record?.[OpportunityFieldData.ApartNum]}`}</Tag>
-      <Tag color={status === Stage.Signed ? "green" : "red"}>{status}</Tag>
-      <Tag color="blue">
-        {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
-      </Tag>
-      <Tag color="red">{(Number(record?.[OpportunityFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
-    </>
-  },
-  width: 265,
-  }, {
-    title: OpportunityField.FullNameLabel,
-    dataIndex: OpportunityFieldData.FullName,
-    key: OpportunityFieldData.FullName,
-    ellipsis: true,
-    render: (full_name: String, record: any) => {
-      return <><strong className="full-name">{full_name}</strong><br/></>
-  },
-}];
 
 export const expenseMeta = [{
   title: ExpenseField.ExpenseLabel,
@@ -134,19 +111,19 @@ export const contactMeta = [
 
 const PaymentCell = ({ status, record }: { status: string; record: any }) => {
   const date = new Date(record?.[PaymentsFieldData.Created]);
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
+  const optyData = useSelector((state: RootState) => state.order.order);
   const filteredOpty = optyData.filter((x) => x[OpportunityFieldData.Id] === record[PaymentsFieldData.OptyId]);
   const { Text } = Typography;
   return (
     <>
       <Row wrap={false}>
-        <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.ApartNum] || "N/A"}</Tag>
+        <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.SaunaNum] || "N/A"}</Tag>
         <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
         <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
         <Tag color="red">{Math.floor(Number(record?.[PaymentsFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
         <Text type="secondary">
           {(() => {
-            const fullName = filteredOpty?.[0]?.[OpportunityFieldData.FullName];
+            const fullName = filteredOpty?.[0]?.[OpportunityFieldData.FirstName];
             if (!fullName) return '';
 
             const trimmed = fullName.trim();

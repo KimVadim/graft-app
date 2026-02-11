@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Opportunity } from './Opportunity.tsx';
-import { Storage } from './Storage.tsx';
 import { AddFloatButton } from '../components/AddFloatButton.tsx';
 import { AddExpenseModal } from '../components/AddExpenseModal.tsx';
 import { AddPaymentModal } from '../components/AddPaymentModal.tsx';
-import { AddOpportunityModal } from '../components/AddOpportunityModal.tsx';
+import { AddOrderModal } from '../components/AddOpportunityModal.tsx';
 
 interface HomePageProps {
   view: string;
@@ -20,13 +19,12 @@ export const HomePage: React.FC<HomePageProps> = ({view}) => {
     <>
       <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
         {view === 'Opportunity' && <Opportunity />}
-        {view === 'Storage' && <Storage />}
         <AddFloatButton
           setIsAddOpty={setIsAddOpty}
           setIsAddPayment={setIsAddPayment}
           setIsAddExpense={['Opportunity'].includes(view) ? setIsAddExpense : undefined }
         />
-        {isAddOpty && <AddOpportunityModal
+        {isAddOpty && <AddOrderModal
           setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
           setLoading={setLoading} loading={loading} view={view}
         />}

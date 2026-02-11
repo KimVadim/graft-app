@@ -2,9 +2,9 @@ import { Col, Row, Spin, Table, Tag, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { AppDispatch, RootState } from "../store.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { getExpenseData, getSheetData } from "../service/appServiceBackend.ts";
+import { getExpenseData } from "../service/appServiceBackend.ts";
 import { expenseMeta } from "./AllApplicationMeta.tsx";
-import { ExpenseFieldData, ExpenseType, FieldPlaceholder, ModalTitle, OpportunityType } from "../constants/appConstant.ts";
+import { ExpenseFieldData, ExpenseType, FieldPlaceholder, ModalTitle, OrderType } from "../constants/appConstant.ts";
 import { AddFloatButton } from "../components/AddFloatButton.tsx";
 import { AddExpenseModal } from "../components/AddExpenseModal.tsx";
 import { MenuComp } from "../components/Menu.tsx";
@@ -15,7 +15,7 @@ export const Expenses: React.FC = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const expenseData = useSelector((state: RootState) => state.expense.expense) as unknown as ExpenseType[];
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
+  const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
   const [isAddExpense, setIsAddExpense] = useState(false);
   const isCalledRef = useRef(false);
   const dateRef = useRef(new Date());
@@ -29,7 +29,6 @@ export const Expenses: React.FC = () => {
           dateRef.current.getMonth() + 1,
           dispatch
         );
-        !optyData && getSheetData(dispatch);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       } finally {

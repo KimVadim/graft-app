@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store.ts";
 import { ProgressBar } from "antd-mobile";
-import { OpportunityFieldData, OpportunityType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
+import { OpportunityFieldData, OrderType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
 
 interface PaymentProgreesBarProps {
@@ -18,7 +18,7 @@ export const PaymentProgreesBar: React.FC<PaymentProgreesBarProps> = ({
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
+    const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
     const quotesData = useSelector((state: RootState) => state.quote.quote) as unknown as PaymentsType[];
     const currentMonthPayments = quotesData?.filter(item => {
         const payDate = new Date(item[PaymentsFieldData.Created]);

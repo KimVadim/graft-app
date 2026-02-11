@@ -2,10 +2,10 @@ import { Col, Row, Select, Table } from "antd";
 import React, { useState } from "react";
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
-import { paymentsMeta } from "./AllApplicationMeta.tsx";
 import { ModalTitle, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { PaymentProgreesBar } from "../components/PaymentProgressBar.tsx";
 import { MenuComp } from "../components/Menu.tsx";
+import { paymentsMeta } from "./AllApplicationMeta.tsx";
 
 const { Option } = Select;
 

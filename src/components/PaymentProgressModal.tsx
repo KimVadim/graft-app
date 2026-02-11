@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Card, Divider, Popup, ProgressCircle, Space } from "antd-mobile";
-import { OpportunityFieldData, OpportunityType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
+import { OpportunityFieldData, OrderType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { MODAL_TEXT } from "../constants/dictionaries.ts";
 
 interface PaymentProgreesProps {
@@ -23,7 +23,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
     optyActiveCount,
     optyAllCount,
 }) => {
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity as unknown as OpportunityType[])
+    const optyData = useSelector((state: RootState) => state.order.order as unknown as OrderType[])
         .filter((x)=> x['Stage'] === 'Заключили');
 
     const paymentsAparts = payments.map((payment: PaymentsType) => {

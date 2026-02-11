@@ -3,17 +3,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { getSheetDataParam } from "../service/appServiceBackend.ts";
-import { ModalTitle, OpportunityFieldData, OpportunityType } from "../constants/appConstant.ts";
+import { getOrder, getSheetDataParam } from "../service/appServiceBackend.ts";
+import { ModalTitle, OpportunityFieldData, OrderType } from "../constants/appConstant.ts";
 import '../App.css';
 import { Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu.tsx";
 import { PaymentProgreesBar } from "../components/PaymentProgressBar.tsx";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
-import { setOpportunity } from "../slices/opportunitySlice.ts";
-import { setQuote } from "../slices/quoteSlice.ts";
-import { setContact } from "../slices/contactSlice.ts";
-
+import { setOrder } from "../slices/orderSlice.ts";
 
 export const Opportunity: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -23,16 +20,14 @@ export const Opportunity: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
   const isCalledRef = useRef(false);
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
+  const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
 
   useEffect(() => {
     if (!isCalledRef.current) {
       setLoading(true);
-      getSheetDataParam('Renter')
+      getOrder()
       .then((response) => {
-        dispatch(setOpportunity(response?.opportunities));
-        dispatch(setQuote(response?.quote));
-        dispatch(setContact(response?.contact));
+        dispatch(setOrder(response?.order));
       })
       .finally(() => {
         setLoading(false)
@@ -44,8 +39,8 @@ export const Opportunity: React.FC = () => {
   const filteredData = useMemo(() => {
     if (!searchText) return optyData;
     return optyData.filter(item =>
-      item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-      item[OpportunityFieldData.FullName]?.toString().toLowerCase().includes(searchText.toLowerCase())
+      item[OpportunityFieldData.SaunaNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+      item[OpportunityFieldData.FirstName]?.toString().toLowerCase().includes(searchText.toLowerCase())
     );
   }, [searchText, optyData]);
 
@@ -94,9 +89,7 @@ export const Opportunity: React.FC = () => {
                     setLoading(true);
                     getSheetDataParam('Renter')
                     .then((response) => {
-                      dispatch(setOpportunity(response?.opportunities));
-                      dispatch(setQuote(response?.quote));
-                      dispatch(setContact(response?.contact));
+                      dispatch(setOrder(response?.opportunities));
                     })
                     .finally(() => {
                       setLoading(false)

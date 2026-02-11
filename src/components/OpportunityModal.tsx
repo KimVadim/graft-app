@@ -11,9 +11,7 @@ import dayjs from 'dayjs';
 import { StopOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
 import { useLocation } from "react-router-dom";
-import { setOpportunity } from '../slices/opportunitySlice.ts';
-import { setQuote } from '../slices/quoteSlice.ts';
-import { setContact } from '../slices/contactSlice.ts';
+import { setOrder } from '../slices/orderSlice.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -48,9 +46,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setLoading(true);
       closeOpty(optyId).then(() => {
         getSheetDataParam(locationPath).then((response) => {
-            dispatch(setOpportunity(response?.opportunities));
-            dispatch(setQuote(response?.quote));
-            dispatch(setContact(response?.contact));
+            dispatch(setOrder(response?.opportunities));
         })
         setLoading(false);
         setIsModalOpen(false);
@@ -60,9 +56,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setLoading(true);
       updateOpty({optyId, [fieldName]: value}).then(() => {
         getSheetDataParam(locationPath).then((response) => {
-            dispatch(setOpportunity(response?.opportunities));
-            dispatch(setQuote(response?.quote));
-            dispatch(setContact(response?.contact));
+            dispatch(setOrder(response?.opportunities));
         })
         setLoading(false);
         setIsModalOpen(false);
@@ -137,7 +131,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               </span>
             </div>
             {record?.[OpportunityFieldData.PayPhone] && record?.[OpportunityFieldData.PayPhone] !== 'Нет информации' && <p className="opty-card">
-              <strong>{`${OpportunityField.PayPhoneLabel}: `}</strong> {formatPhoneNumber(record?.[OpportunityFieldData.PayPhone])}
+              <strong>{`${OpportunityField.FisrtName}: `}</strong> {formatPhoneNumber(record?.[OpportunityFieldData.PayPhone])}
             </p>}
             <p className="opty-card">
               <strong>{`${OpportunityField.CommentLabel}: `}</strong>

@@ -1,19 +1,17 @@
 import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React, { useState } from "react"
 import dayjs from 'dayjs';
-import { addOpty, getSheetDataParam } from "../service/appServiceBackend.ts";
+import { addOrder, getOrder } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
-import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
-import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OpportunityField } from "../constants/appConstant.ts";
+import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT, PRODUCT_PRICE_MAP, RECOMMENDATION_TYPE } from "../constants/dictionaries.ts";
+import { AddOrder, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OpportunityField } from "../constants/appConstant.ts";
 import { CascadePickerView, Selector, Toast, Popup } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
-import { setQuote } from "../slices/quoteSlice.ts";
-import { setContact } from "../slices/contactSlice.ts";
-import { setOpportunity } from "../slices/opportunitySlice.ts";
+import { setOrder } from "../slices/orderSlice.ts";
 
-interface AddOpportunityModalProps {
+interface AddOrderModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
   isAddOpty: boolean;
   setLoading: (isOpen: boolean) => void;
@@ -21,22 +19,22 @@ interface AddOpportunityModalProps {
   view?: string;
 }
 
-export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
+export type ProductKey = keyof typeof PRODUCT_PRICE_MAP;
+
+export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [phone, setPhone] = useState("+7");
-    const handleSubmit = (values: AddOpportunity) => {
+    const handleSubmit = (values: AddOrder) => {
       setLoading(true);
-      addOpty(values).then((optyId) => {
-        getSheetDataParam(view === 'Storage' ? 'Storage' : 'Renter').then((response) => {
-            dispatch(setOpportunity(response?.opportunities));
-            dispatch(setQuote(response?.quote));
-            dispatch(setContact(response?.contact));
+      addOrder(values).then((orderId) => {
+        getOrder().then((response) => {
+            dispatch(setOrder(response?.order));
         })
         setLoading(false);
         setIsAddOpty(false);
-        optyId
-          ? Toast.show({content: <div><b>Готово!</b><div>Договор № {optyId}</div></div>, icon: 'success', duration: 3000 })
+        orderId
+          ? Toast.show({content: <div><b>Готово!</b><div>Договор № {orderId}</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
@@ -113,7 +111,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             padding: '20px',
             marginBottom: '30px',
             justifyContent: 'center',
-            maxWidth: '360px',
+            maxWidth: '560px',
           }}
         >
           <Spin spinning={loading}>
@@ -122,10 +120,11 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             layout="vertical"
             initialValues={{
               phone: '+7',
-              depositAmount: 5000,
+              prepayAmount: 5000,
               saunaNum: 'SaunaFour',
-              payType: Payment.GoldAN,
-              [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+              prepaySource: Payment.GoldAN,
+              orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+              price: 7500,
             }}
             onFinish={handleSubmit}
           >
@@ -156,22 +155,22 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.PayTypeLabel}
-              name={OpportunityField.PayType}
+              label={OpportunityField.PrepaySourceLabel}
+              name={OpportunityField.PrepaySource}
               rules={[FieldRules.Required]}
             >
               <Selector
                 options={PAYMENT_TYPE}
                 onChange={(arr) =>
                   form.setFieldsValue({
-                    [OpportunityField.PayType]: arr
+                    [OpportunityField.PrepaySource]: arr
                   })
                 }
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.DepositAmountLabel}
-              name={OpportunityField.DepositAmount}
+              label={OpportunityField.PrepayAmountLabel}
+              name={OpportunityField.PrepayAmount}
               rules={[FieldRules.PaymentAmount, FieldRules.Required]}
             >
               <InputNumber style={FieldStyle.InputStyle} />
@@ -184,11 +183,32 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               <Selector
                 options={PRODUCT}
                 value={form.getFieldValue(OpportunityField.SaunaNum)}
-                onChange={(arr) =>
+                onChange={(arr) => {
+                  const saunaKey = arr[0] as ProductKey;
+
                   form.setFieldsValue({
-                    [OpportunityField.SaunaNum]: arr
-                  })
-                }
+                    [OpportunityField.SaunaNum]: arr,
+                    price: PRODUCT_PRICE_MAP[saunaKey]
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Стоимость"
+              name="price"
+            >
+              <InputNumber style={FieldStyle.InputStyle}/>
+            </Form.Item>
+            <Form.Item
+              label="Количество человек"
+              name="peopleCount"
+              rules={[{ required: true, message: 'Укажите количество человек' }]}
+              initialValue={2}
+            >
+              <InputNumber
+                min={1}
+                max={20}
+                style={FieldStyle.InputStyle}
               />
             </Form.Item>
             <Form.Item
@@ -217,6 +237,20 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
                   setTimeField(OpportunityField.EndTime);
                   setIsPopupStartOpen(true);
                 }}
+              />
+            </Form.Item>
+            <Form.Item
+              label={OpportunityField.RecommendationLabel}
+              name={OpportunityField.Recommendation}
+              rules={[FieldRules.Required]}
+            >
+              <Selector
+                options={RECOMMENDATION_TYPE}
+                onChange={(arr) =>
+                  form.setFieldsValue({
+                    [OpportunityField.Recommendation]: arr
+                  })
+                }
               />
             </Form.Item>
             <Form.Item
@@ -271,15 +305,10 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
           <Button
             type="primary"
             onClick={handleTimeConfirm}
-            style={{ width: '100%', marginTop: 10 }}
+            style={{ width: '100%', marginTop: 10, marginBottom: 40 }}
           >
             {BUTTON_TEXT.Ok}
           </Button>
-          <div
-            style={{
-              height: '3vh',
-            }}
-          ></div>
         </Popup>
       </Popup>
     )

@@ -37,6 +37,20 @@ export enum Product {
   SaunaFourValue = 'Каб. 4',
 }
 
+export const PRODUCT_MAP = {
+  SaunaOne: 'Каб. 1',
+  SaunaTwo: 'Каб. 2',
+  SaunaThree: 'Каб. 3',
+  SaunaFour: 'Каб. 4',
+};
+
+export const PRODUCT_PRICE_MAP = {
+  SaunaOne: Product.SaunaOne,
+  SaunaTwo: Product.SaunaTwo,
+  SaunaThree: Product.SaunaThree,
+  SaunaFour: Product.SaunaFour,
+};
+
 export const PRODUCT = [
   {
     value: 'SaunaOne',
@@ -85,6 +99,20 @@ export const PAYMENT_TYPE = [
   { value: Payment.GoldVK, label: Payment.GoldVK },
   { value: Payment.Cash, label: Payment.Cash },
   { value: Payment.No, label: Payment.No },
+];
+
+export enum Recommendation {
+  Frieds = 'Друзья',
+  Hamzat = 'Хамзат',
+  TwoGis = '2gis',
+  Instagram = 'Inst',
+}
+
+export const RECOMMENDATION_TYPE = [
+  { value: Recommendation.Frieds, label: Recommendation.Frieds },
+  { value: Recommendation.Hamzat, label: Recommendation.Hamzat },
+  { value: Recommendation.TwoGis, label: Recommendation.TwoGis },
+  { value: Recommendation.Instagram, label: Recommendation.Instagram },
 ];
 
 export const ItemsReport: MenuProps['items'] = [

@@ -27,7 +27,7 @@ export enum FieldFormat {
 }
 
 export enum Status {
-  Enter = 'Заехал',
+  Reservation = 'Бронь',
 }
 
 export enum Stage {
@@ -85,44 +85,49 @@ export const FieldStyle = {
 };
 
 // Договора
-export interface AddOpportunity {
+export interface AddOrder {
   firstName: string;
   lastName: string;
   phone: string;
-  product: string;
-  apartNum: number;
-  optyDate: Date;
-  paymentDate: Date;
-  payPhone?: string;
+  status: string;
+  saunaNum: string;
+  prepaySource: string;
+  prepayAmount: number;
+  createBy?: string;
+  orderDate: Date;
   comment: string;
+  recommendation: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+  peopleCount: number;
 }
 
 export enum OpportunityFieldData {
-  Id = 'ID',
+  Id = 'id',
   Contact = 'Contact',
-  ApartNum = 'Description',
+  SaunaNum = 'sauna_num',
   Product = 'Product',
-  Stage = 'Stage',
+  Status = 'status',
   Amount = 'Amount',
   Created = 'Created',
   OptyDate = 'OppoDate',
   PaymentDate = 'PaymentDate',
   ContactId = 'contact_id',
-  FirstName = 'First Name',
+  FirstName = 'first_name',
   LastName = 'Last Name',
-  PhoneOld = 'Phone',
-  FullName = 'full_name',
+  StartTime = 'start_time',
+  EndTime = 'end_time',
   Phone = 'phone',
-  PayPhone = 'PayPhone',
-  Comment = 'Comment',
+  Comment = 'comment',
 }
 
-export type OpportunityType = {
+export type OrderType = {
   [OpportunityFieldData.Id]: string;
   [OpportunityFieldData.Contact]: string;
-  [OpportunityFieldData.ApartNum]: string;
+  [OpportunityFieldData.SaunaNum]: string;
   [OpportunityFieldData.Product]: string;
-  [OpportunityFieldData.Stage]: string;
+  [OpportunityFieldData.Status]: string;
   [OpportunityFieldData.Amount]: string;
   [OpportunityFieldData.Created]: string;
   [OpportunityFieldData.OptyDate]: string;
@@ -130,8 +135,8 @@ export type OpportunityType = {
   [OpportunityFieldData.ContactId]: string;
   [OpportunityFieldData.FirstName]: string;
   [OpportunityFieldData.LastName]: string;
-  [OpportunityFieldData.PhoneOld]: string;
-  [OpportunityFieldData.FullName]: string;
+  [OpportunityFieldData.StartTime]: string;
+  [OpportunityFieldData.EndTime]: string;
   [OpportunityFieldData.Phone]: string;
 };
 
@@ -139,8 +144,8 @@ export enum OpportunityField {
   LastNameLabel = 'Фамилия',
   FisrtNameLabel = 'Имя',
   PhoneLabel = 'Контактный телефон',
-  DepositAmountLabel = 'Сумма предоплаты',
-  PayTypeLabel = 'Предоплата',
+  PrepayAmountLabel = 'Сумма предоплаты',
+  PrepaySourceLabel = 'Предоплата',
   OptyDateLabel = 'Дата брони',
   SaunaNumLabel = 'Номер кабинки',
   AmountLabel = 'Сумма',
@@ -148,26 +153,24 @@ export enum OpportunityField {
   CommentLabel = 'Информация о броне',
   StartTimeLabel = 'Время начала',
   EndTimeLabel = 'Время окончания',
+  RecommendationLabel = 'От кого',
 
   OptyAmountLabel = 'Сумма договора',
-  OptyNameLabel = '№ / Статус / Дата / Сумма',
+  OrderNameLabel = '№ / Статус / Время',
   StorageNameLabel = '№ / Статус / Дата',
   PaymentDateLabel = 'Дата оплаты',
   PayDateLabel = 'Дата платежа',
 
-  PayType = 'payType',
+  PrepaySource = 'prepaySource',
   LastName = 'lastName',
   FisrtName = 'firstName',
   Phone = 'phone',
-  DepositAmount = 'depositAmount',
+  PrepayAmount = 'prepayAmount',
   SaunaNum = 'saunaNum',
-  Product = 'product',
-  OptyDate = 'optyDate',
   Comment = 'comment',
   StartTime = 'startTime',
   EndTime = 'endTime',
-
-  ApartNum = 'apartNum',
+  Recommendation = 'recommendation',
   PaymentDate = 'paymentDate',
 }
 

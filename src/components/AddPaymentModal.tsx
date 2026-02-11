@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetDataParam } from "../service/appServiceBackend.ts";
-import { BUTTON_TEXT, PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
+import { BUTTON_TEXT, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
 import {
   AddPayment,
   FieldFormat,
@@ -12,15 +12,12 @@ import {
   FieldStyle,
   ModalTitle,
   OpportunityFieldData,
-  OpportunityType,
+  OrderType,
   PaymentField,
   Stage } from "../constants/appConstant.ts";
 import dayjs from "dayjs";
-import TextArea from "antd/es/input/TextArea";
 import { Selector, Toast } from "antd-mobile";
-import { setQuote } from "../slices/quoteSlice.ts";
-import { setContact } from "../slices/contactSlice.ts";
-import { setOpportunity } from "../slices/opportunitySlice.ts";
+import { setOrder } from "../slices/orderSlice.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -40,8 +37,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [options, setOptions] = useState<{ apartNum: String; optyId: string; value: string; label: string }[]>([]);
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
-    const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
+    const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
 
     const actions = {
       handleSearch: (value: string) => {
@@ -49,7 +45,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         const selectedProduct = form.getFieldValue(PaymentField.Product);
         const filteredOptions = optyData
           .filter(item => {
-            if ([Product.Return].includes(selectedProduct)) {
+            if ([Product.SaunaFour].includes(selectedProduct)) {
               return true;
             }
             // иначе — только Signed
@@ -74,9 +70,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         setLoading(true)
         addPayment(values).then((paymentId) => {
           paymentId && getSheetDataParam(view==='Storage' ? 'Storage' : 'Renter').then((response) => {
-              dispatch(setOpportunity(response?.opportunities));
-              dispatch(setQuote(response?.quote));
-              dispatch(setContact(response?.contact));
+              dispatch(setOrder(response?.opportunities));
           })
           setLoading(false);
           setIsAddPayment(false);
@@ -108,24 +102,10 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             }}
             layout="vertical"
             initialValues={{
-              [PaymentField.Product]: view === 'Storage' ? Product.StorageS : Product.Rent180,
+              //[PaymentField.Product]: view === 'Storage' ? Product.StorageS : Product.Rent180,
               [PaymentField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             }}
           >
-            <Form.Item
-              label={PaymentField.ProductLabel}
-              name={PaymentField.Product}
-              rules={[FieldRules.Required]}
-            >
-              <Selector
-                options={view === 'Storage' ? PRODUCT.filter((item) => item.storageFlg === true) : PRODUCT.filter((item) => item.payFlg === true)}
-                defaultValue={view === 'Storage' ? [Product.StorageS] : [Product.Rent180]}
-                onChange={(arr) => {
-                  arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});
-                  arr.length > 0 && [Product.Return, Product.Deposit].includes(arr[0]) ? setHiddenItem(true) : setHiddenItem(false);
-                }}
-              />
-            </Form.Item>
             <Form.Item
               label={PaymentField.AmountLabel}
               name={PaymentField.Amount}
@@ -164,19 +144,6 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 }}
               />
             </Form.Item>
-            {isHiddenItem && (<Form.Item
-                label={PaymentField.CommentLabel}
-                name={PaymentField.Comment}
-                rules={[FieldRules.Required]}
-              >
-                <TextArea
-                  showCount
-                  maxLength={300}
-                  placeholder={FieldPlaceholder.Comment}
-                  autoSize={{ minRows: 2, maxRows: 4 }}
-                  style={FieldStyle.AreaStyle}
-                />
-            </Form.Item>)}
             <Form.Item
               label={PaymentField.PaymentDateLabel}
               name={PaymentField.PaymentDate}

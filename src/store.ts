@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice.ts';
-import opportunityReducer from './slices/opportunitySlice.ts';
+import orderReducer from './slices/orderSlice.ts';
 import quoteReducer from './slices/quoteSlice.ts';
 import contactReducer from './slices/contactSlice.ts';
 import monthPaymentReducer from './slices/monthPaymentsSlice.ts';
@@ -12,7 +12,7 @@ export const store = configureStore({
   reducer: {
     user: userReducer,
     accessGroup: accessGroup,
-    opportunity: opportunityReducer,
+    order: orderReducer,
     quote: quoteReducer,
     contact: contactReducer,
     monthPayment: monthPaymentReducer,

@@ -1,20 +1,14 @@
-import { setOpportunity } from '../slices/opportunitySlice.ts';
-import { setQuote } from '../slices/quoteSlice.ts';
-import { setContact } from '../slices/contactSlice.ts';
 import { AppDispatch } from '../store.ts';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import {
-  AddContact,
   AddExpense,
-  AddOpportunity,
+  AddOrder,
   AddPayment,
   FieldFormat,
-  Stage,
   Status,
   UpdateOpty,
 } from '../constants/appConstant.ts';
-import { Product } from '../constants/dictionaries.ts';
 import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
 import { setExpense } from '../slices/expenseSlice.ts';
 import { setAccessGroup } from '../slices/accessGroupSlice.ts';
@@ -22,7 +16,7 @@ import { setAccessGroup } from '../slices/accessGroupSlice.ts';
 export const API_URL = 'https://palvenko-production.up.railway.app';
 
 export const endpoints = {
-  SHEET_DATE: `${API_URL}/endpoints/sheet-data`,
+  ORDER: `${API_URL}/endpoints/fs/order`,
   OPPORTUNITY: `${API_URL}/endpoints/opty`,
   LOGIN: `${API_URL}/endpoints/login`,
   PAYMENT: `${API_URL}/endpoints/payment`,
@@ -35,28 +29,9 @@ export const endpoints = {
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
 };
 
-export const getSheetData = async (dispatch: AppDispatch) => {
-  try {
-    const { data } = await axios.get(endpoints.SHEET_DATE);
-    const opportunities = data.message?.opportunity || [];
-    const contact = data.message?.contact || [];
-    const quote = data.message?.quotes || [];
-
-    dispatch(setOpportunity(opportunities));
-    dispatch(setQuote(quote));
-    dispatch(setContact(contact));
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Ошибка запроса:', error.response?.status);
-    } else {
-      console.error('Непредвиденная ошибка:', error);
-    }
-  }
-};
-
 export const getSheetDataParam = async (type: string) => {
   try {
-    const { data } = await axios.get(endpoints.SHEET_DATE, {
+    const { data } = await axios.get(endpoints.ACCESS_GROUP, {
       params: { type },
     });
     const opportunities = data.message?.opportunity || [];
@@ -73,42 +48,32 @@ export const getSheetDataParam = async (type: string) => {
   }
 };
 
-export const addOpty = async (values: AddOpportunity) => {
+export const addOrder = async (values: AddOrder) => {
   try {
-    let optyAmount = 0;
-    if (values.product === Product.Rent185) {
-      optyAmount = Product.RentAmount185;
-    } else if (values.product === Product.Rent180) {
-      optyAmount = Product.RentAmount180;
-    } else if (values.product === Product.StorageS) {
-      optyAmount = Product.StorageSAmount;
-    } else if (values.product === Product.StorageM) {
-      optyAmount = Product.StorageMAmount;
-    } else if (values.product === Product.StorageL) {
-      optyAmount = Product.StorageLAmount;
-    }
     const payload = {
       firstName: values.firstName,
       lastName: values.lastName,
       phone: values.phone,
-      status: Status.Enter,
-      apartNum: values.apartNum,
-      product: values.product,
-      stage: Stage.Signed,
-      amount: optyAmount,
+      status: Status.Reservation,
+      saunaNum: values.saunaNum,
+      prepaySource: values.prepaySource,
+      prepayAmount: values.prepayAmount,
       createBy: localStorage.getItem('login')
         ? localStorage.getItem('login')
         : 'newApp',
-      optyDate: dayjs(values.optyDate).format(FieldFormat.DateEN),
-      paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
-      payPhone: values.payPhone,
+      orderDate: dayjs(values.orderDate).toISOString(),
+      recommendation: values.recommendation?.[0],
+      startTime: values.startTime,
+      endTime: values.endTime,
       comment: values.comment,
+      price: values.price,
+      peopleCount: values.peopleCount,
     };
 
-    const response = await axios.post(endpoints.OPPORTUNITY, payload);
+    const response = await axios.post(endpoints.ORDER, payload);
 
     console.log('Ответ сервера:', response.data);
-    return response?.data?.message?.opty_id;
+    return response?.data?.message?.order_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -279,23 +244,15 @@ export const getAccessGroupData = async (
   }
 };
 
-export const addContact = async (values: AddContact) => {
+export const getOrder = async () => {
   try {
-    const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      phone: values.phone,
-      type: values.type,
-      description: values.description,
-    };
+    const { data } = await axios.get(endpoints.ORDER);
+    const order = data.message?.order || [];
 
-    const response = await axios.post(endpoints.CONTACT, payload);
-
-    console.log('Ответ сервера:', response.data);
-    return response?.data?.message?.con_id;
-  } catch (error: any) {
+    return { order };
+  } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Ошибка запроса:', error.response?.data);
+      console.error('Ошибка запроса:', error.response?.status);
     } else {
       console.error('Непредвиденная ошибка:', error);
     }
