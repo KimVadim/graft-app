@@ -266,8 +266,8 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.PaymentDateLabel}
-              name={OpportunityField.PaymentDate}
+              label={OpportunityField.OrderDateLabel}
+              name={OpportunityField.OrderDate}
               rules={[FieldRules.Required]}
               hidden={view && view==='Storage' ? true : false}
             >

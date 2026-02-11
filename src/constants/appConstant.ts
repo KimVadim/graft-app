@@ -158,7 +158,7 @@ export enum OpportunityField {
   OptyAmountLabel = 'Сумма договора',
   OrderNameLabel = '№ / Статус / Время',
   StorageNameLabel = '№ / Статус / Дата',
-  PaymentDateLabel = 'Дата оплаты',
+  OrderDateLabel = 'Дата брони',
   PayDateLabel = 'Дата платежа',
 
   PrepaySource = 'prepaySource',
@@ -171,7 +171,7 @@ export enum OpportunityField {
   StartTime = 'startTime',
   EndTime = 'endTime',
   Recommendation = 'recommendation',
-  PaymentDate = 'paymentDate',
+  OrderDate = 'orderDate',
 }
 
 // Платежи
