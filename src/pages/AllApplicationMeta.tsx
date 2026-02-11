@@ -3,6 +3,7 @@ import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, Opportu
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
 import { PRODUCT_MAP, productMap } from "../constants/dictionaries.ts";
+import dayjs from "dayjs";
 
 export type ProductKey = keyof typeof PRODUCT_MAP;
 
@@ -12,22 +13,24 @@ export const opportunityMeta = [{
   key: OpportunityFieldData.Status,
   render: (status: String, record: any) => {
   return (
-    <>
-      <Tag color={"#2db7f5"}>
-        {PRODUCT_MAP[record?.[OpportunityFieldData.SaunaNum] as ProductKey]}
-      </Tag>
+      <>
+        <Tag color={"#2db7f5"}>
+          {PRODUCT_MAP[record?.[OpportunityFieldData.SaunaNum] as ProductKey]}
+        </Tag>
 
-      <Tag color={status === Stage.Signed ? "green" : "red"}>
-        {status}
-      </Tag>
-
-      <Tag color="blue">
-        {`${record?.[OpportunityFieldData.StartTime]}-${record?.[OpportunityFieldData.EndTime]}`}
-      </Tag>
-    </>
-  );
-},
-  width: 265,
+        <Tag color={status === Stage.Signed ? "green" : "red"}>
+          {status}
+        </Tag>
+        <Tag color={"green"}>
+          {dayjs(record?.[OpportunityFieldData.OptyDate]).format("DD.MM.YY")}
+        </Tag>
+        <Tag color="blue">
+          {`${record?.[OpportunityFieldData.StartTime]}-${record?.[OpportunityFieldData.EndTime]}`}
+        </Tag>
+      </>
+    );
+  },
+  width: 310,
   }, {
     title: OpportunityField.FullNameLabel,
     dataIndex: OpportunityFieldData.FirstName,

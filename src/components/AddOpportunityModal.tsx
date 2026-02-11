@@ -121,8 +121,8 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             initialValues={{
               phone: '+7',
               prepayAmount: 5000,
-              saunaNum: 'SaunaFour',
-              prepaySource: Payment.GoldAN,
+              saunaNum: ['SaunaFour'],
+              prepaySource: [Payment.GoldAN],
               orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
               price: 7500,
             }}

@@ -1,17 +1,13 @@
 import React from 'react';
 import { Button, DatePicker, Spin } from 'antd';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
 import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { closeOpty, getSheetDataParam, updateOpty } from '../service/appServiceBackend.ts';
+import { closeOpty, updateOpty } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
 import { StopOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
-import { useLocation } from "react-router-dom";
-import { setOrder } from '../slices/orderSlice.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -20,52 +16,28 @@ interface OpportunityModalProps {
 }
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
-  const dispatch: AppDispatch = useDispatch();
-  const location = useLocation();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
-  const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
-  const optyId = record?.[OpportunityFieldData.Id]
-  let locationPath;
+  const optyPayDate = new Date(record?.[OpportunityField.OrderDate]);
+  const orderId = record?.[OpportunityFieldData.Id]
 
-  switch (location.pathname) {
-    case "/opportunities":
-      locationPath = "Renter";
-      break;
-
-    case "/storage":
-      locationPath = "Storage";
-      break;
-
-    default:
-      locationPath = "Renter";
-  }
 
   const actions = {
     handleSubmit: (optyId: string) => {
       setLoading(true);
       closeOpty(optyId).then(() => {
-        getSheetDataParam(locationPath).then((response) => {
-            dispatch(setOrder(response?.opportunities));
-        })
         setLoading(false);
         setIsModalOpen(false);
       });
     },
     handleUpdateOpty: (value: string, fieldName: string) => {
       setLoading(true);
-      updateOpty({optyId, [fieldName]: value}).then(() => {
-        getSheetDataParam(locationPath).then((response) => {
-            dispatch(setOrder(response?.opportunities));
-        })
+      updateOpty({orderId, [fieldName]: value}).then(() => {
         setLoading(false);
         setIsModalOpen(false);
         Toast.show({content: <div><b>Готово!</b><div>Договор обновлен</div></div>, icon: 'success', duration: 3000 })
       });
     },
   };
-
-  console.log(locationPath);
 
   let parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
@@ -87,14 +59,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             maxWidth: '360px',
           }}
         >
-          <Card title={ModalTitle.OpportunityDetail}>
+          <Card title={ModalTitle.OrderDetail}>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
-                <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
+                <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FirstName]}
               </span>
             </div>
             <p className="opty-card">
-              <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {Number(record?.[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
+              <strong>{`${OpportunityField.SaunaPriceLabel}: `}</strong>
+              {record?.[OpportunityFieldData.SaunaNum]}/
+              {Number(record?.[OpportunityFieldData.Price])?.toLocaleString("ru-RU")}
             </p>
             <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>
               <a
@@ -106,7 +80,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               </a>
             </p>
             <p className="opty-card">
-              <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
+              <strong>{`${OpportunityField.TimePeopleCountLabel}: `}</strong>
+              {record?.[OpportunityFieldData.StartTime]}-{record?.[OpportunityFieldData.EndTime]}/
+              {record?.[OpportunityFieldData.PeopleCount]}
             </p>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
@@ -130,9 +106,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 />
               </span>
             </div>
-            {record?.[OpportunityFieldData.PayPhone] && record?.[OpportunityFieldData.PayPhone] !== 'Нет информации' && <p className="opty-card">
-              <strong>{`${OpportunityField.FisrtName}: `}</strong> {formatPhoneNumber(record?.[OpportunityFieldData.PayPhone])}
-            </p>}
             <p className="opty-card">
               <strong>{`${OpportunityField.CommentLabel}: `}</strong>
               {record?.[OpportunityFieldData.Comment]}
@@ -149,7 +122,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   });
 
                   if (confirmed) {
-                    actions.handleSubmit(optyId);
+                    actions.handleSubmit(orderId);
                   }
                 }}
                 size='large'
@@ -165,7 +138,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <ButtonChangeModal
                 record={record}
                 type='PhoneInput'
-                fieldName={OpportunityFieldData.PayPhone}
+                fieldName={OpportunityFieldData.EndTime}
                 updateData={actions.handleUpdateOpty}
               />
             </AutoCenter>

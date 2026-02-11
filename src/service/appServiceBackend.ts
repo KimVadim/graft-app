@@ -55,8 +55,8 @@ export const addOrder = async (values: AddOrder) => {
       lastName: values.lastName,
       phone: values.phone,
       status: Status.Reservation,
-      saunaNum: values.saunaNum,
-      prepaySource: values.prepaySource,
+      saunaNum: values.saunaNum?.[0],
+      prepaySource: values.prepaySource?.[0],
       prepayAmount: values.prepayAmount,
       createBy: localStorage.getItem('login')
         ? localStorage.getItem('login')
@@ -262,7 +262,7 @@ export const getOrder = async () => {
 export const updateOpty = async (values: UpdateOpty) => {
   try {
     const payload = {
-      optyId: values.optyId,
+      orderId: values.orderId,
       PaymentDate: values?.PaymentDate,
       Comment: values?.Comment,
       PayPhone: values?.PayPhone,

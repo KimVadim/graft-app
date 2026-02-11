@@ -4,7 +4,7 @@ export enum ModalTitle {
   AddOpportunity = 'Добавить договор',
   AddPayment = 'Добавить платеж',
   Expenses = 'Расходы',
-  OpportunityDetail = 'Детали договора',
+  OrderDetail = 'Детали брони',
   PaymentsMonthProgress = 'Платежи за текущий месяц',
   Contacts = 'Контакты',
   Payments = 'Платежи',
@@ -120,6 +120,8 @@ export enum OpportunityFieldData {
   EndTime = 'end_time',
   Phone = 'phone',
   Comment = 'comment',
+  Price = 'price',
+  PeopleCount = 'people_count',
 }
 
 export type OrderType = {
@@ -138,6 +140,8 @@ export type OrderType = {
   [OpportunityFieldData.StartTime]: string;
   [OpportunityFieldData.EndTime]: string;
   [OpportunityFieldData.Phone]: string;
+  [OpportunityFieldData.Price]: string;
+  [OpportunityFieldData.PeopleCount]: string;
 };
 
 export enum OpportunityField {
@@ -150,12 +154,13 @@ export enum OpportunityField {
   SaunaNumLabel = 'Номер кабинки',
   AmountLabel = 'Сумма',
   FullNameLabel = 'ФИО',
-  CommentLabel = 'Информация о броне',
+  CommentLabel = 'Комментарий',
   StartTimeLabel = 'Время начала',
   EndTimeLabel = 'Время окончания',
   RecommendationLabel = 'От кого',
+  TimePeopleCountLabel = 'Время/Количество гостей',
 
-  OptyAmountLabel = 'Сумма договора',
+  SaunaPriceLabel = 'Баня/Цена',
   OrderNameLabel = '№ / Статус / Время',
   StorageNameLabel = '№ / Статус / Дата',
   OrderDateLabel = 'Дата брони',
@@ -359,7 +364,7 @@ export enum PaymentsField {
 }
 
 export interface UpdateOpty {
-  optyId: string;
+  orderId: string;
   PaymentDate?: string;
   Comment?: string;
   PayPhone?: string;
