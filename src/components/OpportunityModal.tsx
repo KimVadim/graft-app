@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin } from 'antd';
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { addOrderItem, closeOpty, getOrder, updateOpty } from '../service/appServiceBackend.ts';
+import { addOrderItem, closeOpty, getOrderItem, updateOpty } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -46,14 +46,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     },
     handleAddItem: (values: AddOrderItem) => {
       setLoading(true);
-      addOrderItem(values).then((orderId) => {
-        getOrder().then((response) => {
+      console.log(formItem)
+      addOrderItem(values).then((orderItemId) => {
+        getOrderItem().then((response) => {
           dispatch(setOrderItem(response?.orderItem));
         })
         setLoading(false);
         setIsPopupItemOpen(false)
+        formItem.resetFields();
         orderId
-          ? Toast.show({content: <div><b>Готово!</b><div>Договор № {orderId}</div></div>, icon: 'success', duration: 3000 })
+          ? Toast.show({content: <div><b>Готово!</b><div>Позиция заказа № {orderItemId}</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     },
@@ -196,18 +198,21 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       <Popup
         visible={isPopupItemOpen}
         showCloseButton
-        onClose={() => setIsPopupItemOpen(false)}
-        onMaskClick={() => setIsPopupItemOpen(false)}
+        onClose={() => {
+          setIsPopupItemOpen(false);
+          formItem.resetFields();
+        }}
+        onMaskClick={() => {
+          setIsPopupItemOpen(false);
+          formItem.resetFields();
+        }}
       >
         <Form
           form={formItem}
           layout="vertical"
           initialValues={{
-            phone: '+7',
-            prepayAmount: 5000,
-            saunaNum: ['SaunaFour'],
-            orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
-            price: 5000,
+            itemDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+            itemCount: 1,
           }}
           onFinish={actions.handleAddItem}
         >
@@ -222,8 +227,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               options={options}
               onSelect={(value: string, option: any) => {
                 formItem.setFieldsValue({
-                  sales: option.sales,
-                  price: option.price,
+                  sales: Number(option.sales),
+                  price: Number(option.price),
                   menuId: option.menuId,
                 });
               }}
@@ -235,7 +240,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             name={OrderItemField.Count}
             rules={[FieldRules.PaymentAmount, FieldRules.Required]}
           >
-            <InputNumber style={FieldStyle.InputStyle} />
+            <InputNumber style={FieldStyle.InputStyle} defaultValue={1} />
           </Form.Item>
           <Form.Item
             label={OrderItemField.SalesLabel}
@@ -269,7 +274,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             <Button type="primary" htmlType="submit">
               {BUTTON_TEXT.Add}
             </Button>
-            <Button onClick={() => setIsPopupItemOpen(false)} style={{ marginLeft: 8,  marginTop: 10}}>
+            <Button onClick={() => {
+              setIsPopupItemOpen(false);
+              formItem.resetFields();
+            }} style={{ marginLeft: 8,  marginTop: 10}}>
               {BUTTON_TEXT.Cancel}
             </Button>
           </Form.Item>

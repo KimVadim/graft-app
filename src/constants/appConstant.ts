@@ -260,7 +260,7 @@ export enum OrderItemField {
   ItemName = 'itemName',
   Sales = 'sales',
   Price = 'price',
-  Count = 'count',
+  Count = 'itemCount',
   Sum = 'sum',
   ItemDate = 'itemDate',
 }

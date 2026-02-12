@@ -16,9 +16,9 @@ export const API_URL = 'https://palvenko-production.up.railway.app';
 
 export const endpoints = {
   ORDER: `${API_URL}/endpoints/fs/order`,
-  OPPORTUNITY: `${API_URL}/endpoints/opty`,
+  ORDER_ITEM: `${API_URL}/endpoints/fs/orderitem`,
+  ORDER_ALL_DATA: `${API_URL}/endpoints/fs/orderalldata`,
   LOGIN: `${API_URL}/endpoints/login`,
-  PAYMENT: `${API_URL}/endpoints/payment`,
   EXPENSE: `${API_URL}/endpoints/expense`,
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   MONTH_PAYMENT: `${API_URL}/endpoints/month-payments`,
@@ -26,25 +26,6 @@ export const endpoints = {
   CONTACT: `${API_URL}/endpoints/contact`,
   UPDATE_OPTY: `${API_URL}/endpoints/update-opty`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
-};
-
-export const getSheetDataParam = async (type: string) => {
-  try {
-    const { data } = await axios.get(endpoints.ACCESS_GROUP, {
-      params: { type },
-    });
-    const opportunities = data.message?.opportunity || [];
-    const contact = data.message?.contact || [];
-    const quote = data.message?.quotes || [];
-
-    return { opportunities, quote, contact };
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Ошибка запроса:', error.response?.status);
-    } else {
-      console.error('Непредвиденная ошибка:', error);
-    }
-  }
 };
 
 export const addOrder = async (values: AddOrder) => {
@@ -60,7 +41,12 @@ export const addOrder = async (values: AddOrder) => {
       createBy: localStorage.getItem('login')
         ? localStorage.getItem('login')
         : 'newApp',
-      orderDate: dayjs(values.orderDate).toISOString(),
+      orderDate: dayjs(values.orderDate)
+        .hour(12)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
       recommendation: values.recommendation?.[0],
       startTime: values.startTime,
       endTime: values.endTime,
@@ -84,6 +70,7 @@ export const addOrder = async (values: AddOrder) => {
 
 export const addOrderItem = async (values: AddOrderItem) => {
   try {
+    //const amount = values.price * values.itemCount;
     const payload = {
       itemName: values.itemName,
       menuId: values.menuId,
@@ -91,17 +78,21 @@ export const addOrderItem = async (values: AddOrderItem) => {
       createBy: localStorage.getItem('login')
         ? localStorage.getItem('login')
         : 'newApp',
-      itemDt: dayjs(values.itemDt).toISOString(),
-      amount: values.amount,
+      itemDt: dayjs(values.itemDt)
+        .hour(12)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
+      amount: values.sales * values.itemCount,
       price: values.price,
       itemCount: values.itemCount,
-      sum: values.sum,
     };
 
-    const response = await axios.post(endpoints.ORDER, payload);
+    const response = await axios.post(endpoints.ORDER_ITEM, payload);
 
     console.log('Ответ сервера:', response.data);
-    return response?.data?.message?.order_id;
+    return response?.data?.message?.order_item_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -223,14 +214,44 @@ export const getExpenseData = async (
   }
 };
 
-export const getOrder = async () => {
+export const getOrderAllData = async () => {
   try {
-    const { data } = await axios.get(endpoints.ORDER);
+    const { data } = await axios.get(endpoints.ORDER_ALL_DATA);
     const order = data.message?.order || [];
     const orderItem = data.message?.['order_item_df'] || [];
     const menu = data.message?.['menu_df'] || [];
 
     return { order, orderItem, menu };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getOrder = async () => {
+  try {
+    const { data } = await axios.get(endpoints.ORDER);
+    const order = data.message?.order || [];
+
+    return { order };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getOrderItem = async () => {
+  try {
+    const { data } = await axios.get(endpoints.ORDER_ITEM);
+    const orderItem = data.message?.['order_item_df'] || [];
+
+    return { orderItem };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);

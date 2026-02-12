@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { getOrder } from "../service/appServiceBackend.ts";
+import { getOrderAllData } from "../service/appServiceBackend.ts";
 import { ModalTitle, OrderFieldData, OrderType } from "../constants/appConstant.ts";
 import '../App.css';
 import { Toast } from "antd-mobile";
@@ -27,7 +27,7 @@ export const Opportunity: React.FC = () => {
   useEffect(() => {
     if (!isCalledRef.current) {
       setLoading(true);
-      getOrder()
+      getOrderAllData()
       .then((response) => {
         dispatch(setOrder(response?.order));
         dispatch(setOrderItem(response?.orderItem));
@@ -91,9 +91,11 @@ export const Opportunity: React.FC = () => {
                   type="primary"
                   onClick={() => {
                     setLoading(true);
-                    getOrder()
+                    getOrderAllData()
                     .then((response) => {
                       dispatch(setOrder(response?.order));
+                      dispatch(setOrderItem(response?.orderItem));
+                      dispatch(setMenu(response?.menu));
                     })
                     .finally(() => {
                       setLoading(false)
