@@ -47,7 +47,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ record, ty
         variant="filled"
         onClick={() => setIsUserInfo(true)}
         size='large'
-        style={{ height: 55, width: 55, marginLeft: '5px' }}
+        style={{ height: 55, width: 55, marginLeft: '30px' }}
         color="primary"
       />
       <Popup

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin } from 'antd';
-import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem } from '../constants/appConstant.ts';
+import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { addOrderItem, closeOpty, getOrderItem, updateOpty } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
-import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
+import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
+import { BUTTON_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
-import { StopOutline } from 'antd-mobile-icons';
+import { AddCircleOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { setOrderItem } from '../slices/orderitemSlice.ts';
+import { orderItemMeta } from '../pages/AllApplicationMeta.tsx';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -22,12 +23,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const [loading, setLoading] = React.useState<boolean>(false);
   const optyPayDate = new Date(record?.[OpportunityField.OrderDate]);
   const orderId = record?.[OrderFieldData.Id]
+  const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
   const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
   const [formItem] = Form.useForm();
   const [options, setOptions] = useState<{ menuId: String; sales: number; price: number; value: string; label: string }[]>([]);
   const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
   const dispatch: AppDispatch = useDispatch();
-
+  const filteredData = optyItemData.filter((x)=> x[OrderItemFieldData.OrderId] === orderId);
+  console.log("optyItemData",optyItemData)
+  console.log(orderId)
+  console.log(filteredData)
   const actions = {
     handleSubmit: (optyId: string) => {
       setLoading(true);
@@ -51,9 +56,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         getOrderItem().then((response) => {
           dispatch(setOrderItem(response?.orderItem));
         })
-        setLoading(false);
         setIsPopupItemOpen(false)
         formItem.resetFields();
+        setLoading(false);
         orderId
           ? Toast.show({content: <div><b>Готово!</b><div>Позиция заказа № {orderItemId}</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
@@ -81,6 +86,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
 
   let parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
+
     <Popup
       visible={isModalOpen}
       showCloseButton
@@ -88,7 +94,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       onMaskClick={() => {setIsModalOpen(false);}}
     >
       <Space justify='center' block>
-      <Spin spinning={loading}>
         <div
           style={{
             height: '55vh',
@@ -152,25 +157,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </p>
             <AutoCenter style={{ marginTop: '20px' }}>
               <Button
-                icon={<StopOutline fontSize={40} />}
-                variant="filled"
-                onClick={async () => {
-                  const confirmed = await Dialog.confirm({
-                    content: MODAL_TEXT.OptyCloseText,
-                    confirmText: BUTTON_TEXT.Ok,
-                    cancelText: BUTTON_TEXT.Cancel,
-                  });
-
-                  if (confirmed) {
-                    actions.handleSubmit(orderId);
-                  }
-                }}
-                size='large'
-                style={{ height: 55, width: 55 }}
-                color="primary"
-              />
-              <Button
-                icon={<StopOutline fontSize={40} />}
+                icon={<AddCircleOutline fontSize={40} />}
                 variant="filled"
                 onClick={() => setIsPopupItemOpen(true) }
                 size='large'
@@ -190,11 +177,21 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 updateData={actions.handleUpdateOpty}
               />
             </AutoCenter>
+            <Divider>Заказ</Divider>
+            <Table
+              rowKey="uid"
+              scroll={{ x: 395 }}
+              columns={orderItemMeta}
+              dataSource={filteredData}
+              size='middle'
+              pagination={{
+                position: ['bottomCenter'],
+                pageSize: 20
+              }}
+            />
           </Card>
-          <Divider>Платежи</Divider>
         </div>
-      </Spin>
-      </Space>
+
       <Popup
         visible={isPopupItemOpen}
         showCloseButton
@@ -207,12 +204,14 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           formItem.resetFields();
         }}
       >
+        <Spin spinning={loading} >
         <Form
           form={formItem}
           layout="vertical"
           initialValues={{
             itemDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             itemCount: 1,
+            orderId: orderId,
           }}
           onFinish={actions.handleAddItem}
         >
@@ -270,6 +269,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             />
           </Form.Item>
           <Form.Item name={OrderItemField.MenuId} hidden={true}></Form.Item>
+          <Form.Item name={OrderItemField.OrderId} hidden={true}></Form.Item>
           <Form.Item style={{ textAlign: "center", marginBottom: 50 }}>
             <Button type="primary" htmlType="submit">
               {BUTTON_TEXT.Add}
@@ -282,7 +282,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </Button>
           </Form.Item>
         </Form>
+        </Spin>
       </Popup>
+      </Space>
     </Popup>
   );
 };

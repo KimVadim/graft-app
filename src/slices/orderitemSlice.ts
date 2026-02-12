@@ -6,7 +6,11 @@ interface OrderItem {
   menu_id: string;
   amount: number;
   item_count: number;
-  sum: number;
+  price: number;
+  sales: number;
+  created_by: string;
+  item_dt: string;
+  order_id: string;
 }
 
 interface orderItemState {

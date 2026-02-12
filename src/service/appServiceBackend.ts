@@ -87,6 +87,7 @@ export const addOrderItem = async (values: AddOrderItem) => {
       amount: values.sales * values.itemCount,
       price: values.price,
       itemCount: values.itemCount,
+      orderId: values.orderId,
     };
 
     const response = await axios.post(endpoints.ORDER_ITEM, payload);
@@ -249,7 +250,7 @@ export const getOrder = async () => {
 export const getOrderItem = async () => {
   try {
     const { data } = await axios.get(endpoints.ORDER_ITEM);
-    const orderItem = data.message?.['order_item_df'] || [];
+    const orderItem = data.message?.['orderitem'] || [];
 
     return { orderItem };
   } catch (error) {

@@ -4,7 +4,6 @@ import PrivateRoute from './components/PrivateRoute.tsx';
 import HomePage from './pages/HomePage.tsx';
 import { IncomeReport } from './pages/Report.tsx';
 import { IncomeReportcn } from './pages/Reportcn.tsx';
-import { Payments } from './pages/Payments.tsx';
 import { Expenses } from './pages/Expenses.tsx';
 import Login from './pages/Login.tsx';
 
@@ -18,7 +17,6 @@ function App() {
           <Route path="/incomereport" element={<IncomeReport/>} />
           <Route path="/incomereportcn" element={<IncomeReportcn/>} />
           <Route path='/expenses' element={<Expenses/>} />
-          <Route path='/payments' element={<Payments/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>

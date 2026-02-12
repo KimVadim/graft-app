@@ -112,6 +112,7 @@ export interface AddOrderItem {
   price: number;
   itemCount: number;
   createdBy: string;
+  orderId: string;
 }
 
 export enum OrderFieldData {
@@ -159,7 +160,7 @@ export enum OrderItemFieldData {
   MenuId = 'menu_id',
   Amount = 'amount',
   ItemCount = 'item_count',
-  Sum = 'sum',
+  OrderId = 'order_id',
 }
 
 export type OrderItemType = {
@@ -169,7 +170,7 @@ export type OrderItemType = {
   [OrderItemFieldData.MenuId]: string;
   [OrderItemFieldData.Amount]: string;
   [OrderItemFieldData.ItemCount]: string;
-  [OrderItemFieldData.Sum]: string;
+  [OrderItemFieldData.OrderId]: string;
 };
 
 export enum MenuFieldData {
@@ -263,6 +264,7 @@ export enum OrderItemField {
   Count = 'itemCount',
   Sum = 'sum',
   ItemDate = 'itemDate',
+  OrderId = 'orderId',
 }
 
 // Расходы

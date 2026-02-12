@@ -1,8 +1,6 @@
-import { Row, Space, Table, Tag, Typography } from "antd";
-import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OrderFieldData, OrderType, PaymentsField, PaymentsFieldData, Stage } from "../constants/appConstant.ts"
-import { RootState } from "../store.ts";
-import { useSelector } from "react-redux";
-import { PRODUCT_MAP, productMap } from "../constants/dictionaries.ts";
+import { Space, Table, Tag } from "antd";
+import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OrderFieldData, OrderItemField, OrderItemFieldData, Stage } from "../constants/appConstant.ts"
+import { PRODUCT_MAP } from "../constants/dictionaries.ts";
 import dayjs from "dayjs";
 
 export type ProductKey = keyof typeof PRODUCT_MAP;
@@ -111,44 +109,26 @@ export const contactMeta = [
   Table.EXPAND_COLUMN,
 ];
 
-
-const PaymentCell = ({ status, record }: { status: string; record: any }) => {
-  const date = new Date(record?.[PaymentsFieldData.Created]);
-  const optyData = useSelector((state: RootState) => state.order.order as unknown as OrderType[]);
-  const filteredOpty = optyData.filter((x) => x[OrderFieldData.Id] === record[PaymentsFieldData.OptyId]);
-  const { Text } = Typography;
-  return (
-    <>
-      <Row wrap={false}>
-        <Tag color="#2db7f5">{filteredOpty?.[0]?.[OrderFieldData.SaunaNum] || "N/A"}</Tag>
-        <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
-        <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
-        <Tag color="red">{Math.floor(Number(record?.[PaymentsFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
-        <Text type="secondary">
-          {(() => {
-            const fullName = filteredOpty?.[0]?.[OrderFieldData.FirstName];
-            if (!fullName) return '';
-
-            const trimmed = fullName.trim();
-            const spaceIndex = trimmed.indexOf(' ');
-
-            if (spaceIndex === -1) return trimmed;
-
-            const firstName = trimmed.substring(0, spaceIndex);
-            const lastNameFirstChar = trimmed.substring(spaceIndex + 1, spaceIndex + 2);
-
-            return `${firstName} ${lastNameFirstChar}`;
-          })()}
-        </Text>
-      </Row>
-    </>
-  );
-};
-
-export const paymentsMeta = [{
-  title: PaymentsField.PaymentsLabel,
-  dataIndex: PaymentsField.Payment,
-  key: PaymentsField.Payment,
-  render: (status: string, record: any) => <PaymentCell status={status} record={record} />,
-  width: 235,
-}];
+export const orderItemMeta = [
+  {
+    title: OrderItemField.ItemNameLabel,
+    dataIndex: OrderItemFieldData.ItemName,
+    key: OrderItemFieldData.ItemName,
+    width: 40,
+  }, {
+    title: 'Кол.',
+    dataIndex: 'item_count',
+    key: 'item_count',
+    width: 30,
+  }, {
+    title: 'Цена',
+    dataIndex: 'sales',
+    key: 'sales',
+    width: 30,
+  }, {
+    title: 'Сумма',
+    dataIndex: 'amount',
+    key: 'amount',
+    width: 30,
+  }
+];
