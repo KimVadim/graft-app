@@ -4,13 +4,15 @@ import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getOrder } from "../service/appServiceBackend.ts";
-import { ModalTitle, OpportunityFieldData, OrderType } from "../constants/appConstant.ts";
+import { ModalTitle, OrderFieldData, OrderType } from "../constants/appConstant.ts";
 import '../App.css';
 import { Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu.tsx";
 import { PaymentProgreesBar } from "../components/PaymentProgressBar.tsx";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import { setOrder } from "../slices/orderSlice.ts";
+import { setOrderItem } from "../slices/orderitemSlice.ts";
+import { setMenu } from "../slices/menuSlice.ts";
 
 export const Opportunity: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -28,6 +30,8 @@ export const Opportunity: React.FC = () => {
       getOrder()
       .then((response) => {
         dispatch(setOrder(response?.order));
+        dispatch(setOrderItem(response?.orderItem));
+        dispatch(setMenu(response?.menu));
       })
       .finally(() => {
         setLoading(false)
@@ -39,8 +43,8 @@ export const Opportunity: React.FC = () => {
   const filteredData = useMemo(() => {
     if (!searchText) return optyData;
     return optyData.filter(item =>
-      item[OpportunityFieldData.SaunaNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-      item[OpportunityFieldData.FirstName]?.toString().toLowerCase().includes(searchText.toLowerCase())
+      item[OrderFieldData.SaunaNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+      item[OrderFieldData.FirstName]?.toString().toLowerCase().includes(searchText.toLowerCase())
     );
   }, [searchText, optyData]);
 

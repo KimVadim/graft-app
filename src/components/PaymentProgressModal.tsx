@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Card, Divider, Popup, ProgressCircle, Space } from "antd-mobile";
-import { OpportunityFieldData, OrderType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
+import { OrderFieldData, OrderType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { MODAL_TEXT } from "../constants/dictionaries.ts";
 
 interface PaymentProgreesProps {
@@ -24,15 +24,15 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
     optyAllCount,
 }) => {
     const optyData = useSelector((state: RootState) => state.order.order as unknown as OrderType[])
-        .filter((x)=> x['Stage'] === 'Заключили');
+        .filter((x)=> x['status'] === 'Заключили');
 
     const paymentsAparts = payments.map((payment: PaymentsType) => {
-        const opportunity = optyData.find(item => item[OpportunityFieldData.Id] === payment[PaymentsFieldData.OptyId]);
-        const apartNum = opportunity?.[OpportunityFieldData.ApartNum] || MODAL_TEXT.NotFound;
+        const opportunity = optyData.find(item => item[OrderFieldData.Id] === payment[PaymentsFieldData.OptyId]);
+        const apartNum = opportunity?.[OrderFieldData.SaunaNum] || MODAL_TEXT.NotFound;
         return apartNum;
     });
     const allAparts = optyData
-        .map(item => item[OpportunityFieldData.ApartNum])
+        .map(item => item[OrderFieldData.SaunaNum])
         .filter(apartNum => apartNum && apartNum !== MODAL_TEXT.NotFound)
         .sort((a, b) => Number(a) - Number(b));
 

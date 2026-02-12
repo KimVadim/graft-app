@@ -6,7 +6,7 @@ import { addExpense, getExpenseData } from "../service/appServiceBackend.ts";
 import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
 import { BUTTON_TEXT, EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
-import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityFieldData, OpportunityType, OptionType } from "../constants/appConstant.ts";
+import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OptionType, OrderFieldData, OrderType } from "../constants/appConstant.ts";
 import { Selector, Toast } from "antd-mobile";
 
 interface AddExpenseModalProps {
@@ -18,7 +18,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const dispatch: AppDispatch = useDispatch();
     const [form] = Form.useForm();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string; apartNum: string }[]>([]);
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[]
+    const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[]
     const [loading, setLoading] = React.useState<boolean>(false);
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(true);
 
@@ -51,15 +51,15 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
 
       const filteredOptions: OptionType[] = optyData
         .filter(item =>
-          item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) ||
-          item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
+          item[OrderFieldData.FirstName].toLowerCase().includes(value.toLowerCase()) ||
+          item[OrderFieldData.SaunaNum].toLowerCase().includes(value.toLowerCase())
         )
         .slice(0, 7)
         .map(item => ({
-          optyId: item[OpportunityFieldData.Id],
-          apartNum: item[OpportunityFieldData.ApartNum],
-          value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]} - ${item[OpportunityFieldData.Stage]}`,
-          label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]} - ${item[OpportunityFieldData.Stage]}`
+          optyId: item[OrderFieldData.Id],
+          apartNum: item[OrderFieldData.SaunaNum],
+          value: `${item[OrderFieldData.SaunaNum]}`,
+          label: `${item[OrderFieldData.SaunaNum]}`
         }));
 
       setOptions(filteredOptions);
@@ -82,7 +82,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               form={form}
               initialValues={{
                 phone: '+7',
-                product: Product.Rent170
+                product: Product.SaunaOne
               }}
               layout="vertical"
               onFinish={handleSubmit}

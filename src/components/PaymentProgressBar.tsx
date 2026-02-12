@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store.ts";
 import { ProgressBar } from "antd-mobile";
-import { OpportunityFieldData, OrderType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
+import { OrderFieldData, OrderItemFieldData, OrderItemType, OrderType } from "../constants/appConstant.ts";
 import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
 
 interface PaymentProgreesBarProps {
@@ -19,13 +19,13 @@ export const PaymentProgreesBar: React.FC<PaymentProgreesBarProps> = ({
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
     const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
-    const quotesData = useSelector((state: RootState) => state.quote.quote) as unknown as PaymentsType[];
+    const quotesData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
     const currentMonthPayments = quotesData?.filter(item => {
-        const payDate = new Date(item[PaymentsFieldData.Created]);
-        return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180', 'Rent185'].includes(item['Product']);
+        const payDate = new Date(item[OrderItemFieldData.ItemDt]);
+        return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180', 'Rent185'].includes(item['menu_id']);
     }) || [];
     const currentMonthPaymentsCount = currentMonthPayments.length;
-    const optyActiveCount = optyData.filter(x => x[OpportunityFieldData.Stage] === 'Заключили').length;
+    const optyActiveCount = optyData.filter(x => x[OrderFieldData.Status] === 'Заключили').length;
     const optyAllCount = optyData.length;
 
     return (

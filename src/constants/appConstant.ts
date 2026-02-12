@@ -11,7 +11,7 @@ export enum ModalTitle {
 }
 
 export enum FieldPlaceholder {
-  OptyName = 'Введите номер квартиры или ФИО',
+  MenuName = 'Введите код товара или название товара',
   Date = 'Введите дату',
   Comment = 'Введите комментарий',
   ApartNum = 'Введите номер квартиры',
@@ -103,45 +103,103 @@ export interface AddOrder {
   peopleCount: number;
 }
 
-export enum OpportunityFieldData {
+export interface AddOrderItem {
+  itemName: string;
+  itemDt: Date;
+  menuId: string;
+  sales: number;
+  amount: number;
+  price: number;
+  itemCount: number;
+  createdBy: string;
+}
+
+export enum OrderFieldData {
   Id = 'id',
-  Contact = 'Contact',
-  SaunaNum = 'sauna_num',
-  Product = 'Product',
-  Status = 'status',
-  Amount = 'Amount',
-  Created = 'Created',
-  OptyDate = 'OppoDate',
-  PaymentDate = 'PaymentDate',
-  ContactId = 'contact_id',
+  ContactId = 'con_id',
+  LastName = 'last_name',
   FirstName = 'first_name',
-  LastName = 'Last Name',
+  Phone = 'phone',
+  Status = 'status',
+  PrepaySource = 'prepay_source',
+  PrepayAmount = 'prepay_amount',
+  SaunaNum = 'sauna_num',
   StartTime = 'start_time',
   EndTime = 'end_time',
-  Phone = 'phone',
   Comment = 'comment',
+  OrderDt = 'order_dt',
+  CreatedBy = 'create_by',
   Price = 'price',
   PeopleCount = 'people_count',
 }
 
 export type OrderType = {
-  [OpportunityFieldData.Id]: string;
-  [OpportunityFieldData.Contact]: string;
-  [OpportunityFieldData.SaunaNum]: string;
-  [OpportunityFieldData.Product]: string;
-  [OpportunityFieldData.Status]: string;
-  [OpportunityFieldData.Amount]: string;
-  [OpportunityFieldData.Created]: string;
-  [OpportunityFieldData.OptyDate]: string;
-  [OpportunityFieldData.PaymentDate]: string;
-  [OpportunityFieldData.ContactId]: string;
-  [OpportunityFieldData.FirstName]: string;
-  [OpportunityFieldData.LastName]: string;
-  [OpportunityFieldData.StartTime]: string;
-  [OpportunityFieldData.EndTime]: string;
-  [OpportunityFieldData.Phone]: string;
-  [OpportunityFieldData.Price]: string;
-  [OpportunityFieldData.PeopleCount]: string;
+  [OrderFieldData.Id]: string;
+  [OrderFieldData.ContactId]: string;
+  [OrderFieldData.LastName]: string;
+  [OrderFieldData.FirstName]: string;
+  [OrderFieldData.Phone]: string;
+  [OrderFieldData.Status]: string;
+  [OrderFieldData.PrepaySource]: string;
+  [OrderFieldData.PrepayAmount]: string;
+  [OrderFieldData.SaunaNum]: string;
+  [OrderFieldData.StartTime]: string;
+  [OrderFieldData.EndTime]: string;
+  [OrderFieldData.Comment]: string;
+  [OrderFieldData.OrderDt]: string;
+  [OrderFieldData.CreatedBy]: string;
+  [OrderFieldData.Price]: string;
+  [OrderFieldData.PeopleCount]: string;
+};
+
+export enum OrderItemFieldData {
+  Id = 'id',
+  ItemName = 'item_name',
+  ItemDt = 'item_dt',
+  MenuId = 'menu_id',
+  Amount = 'amount',
+  ItemCount = 'item_count',
+  Sum = 'sum',
+}
+
+export type OrderItemType = {
+  [OrderItemFieldData.Id]: string;
+  [OrderItemFieldData.ItemName]: string;
+  [OrderItemFieldData.ItemDt]: string;
+  [OrderItemFieldData.MenuId]: string;
+  [OrderItemFieldData.Amount]: string;
+  [OrderItemFieldData.ItemCount]: string;
+  [OrderItemFieldData.Sum]: string;
+};
+
+export enum MenuFieldData {
+  Id = 'id',
+  MenuName = 'menu_name',
+  MenuType = 'menu_type',
+  Sales = 'sales',
+  Percent = 'pecent',
+  MenuDt = 'menu_dt',
+  Count = 'count',
+  Price = 'price',
+  Amount = 'amount',
+  SalesAmount = 'sales_amount',
+  MenuStatus = 'menu_status',
+  Comment = 'comment',
+}
+
+export type MenuType = {
+  [MenuFieldData.Id]: string;
+  [MenuFieldData.MenuName]: string;
+  [MenuFieldData.MenuType]: string;
+  [MenuFieldData.Sales]: number;
+  [MenuFieldData.Percent]: number;
+  [MenuFieldData.MenuDt]: string;
+  [MenuFieldData.Count]: number;
+  [MenuFieldData.Price]: number;
+  [MenuFieldData.Amount]: number;
+  [MenuFieldData.SalesAmount]: number;
+  [MenuFieldData.MenuStatus]: string;
+  [MenuFieldData.Comment]: string;
 };
 
 export enum OpportunityField {
@@ -158,13 +216,11 @@ export enum OpportunityField {
   StartTimeLabel = 'Время начала',
   EndTimeLabel = 'Время окончания',
   RecommendationLabel = 'От кого',
-  TimePeopleCountLabel = 'Время/Количество гостей',
+  TimePeopleCountLabel = 'Время/Гости',
 
   SaunaPriceLabel = 'Баня/Цена',
   OrderNameLabel = '№ / Статус / Время',
-  StorageNameLabel = '№ / Статус / Дата',
   OrderDateLabel = 'Дата брони',
-  PayDateLabel = 'Дата платежа',
 
   PrepaySource = 'prepaySource',
   LastName = 'lastName',
@@ -191,23 +247,22 @@ export interface AddPayment {
   apartNum?: string;
 }
 
-export enum PaymentField {
-  ProductLabel = 'Продукт',
-  AmountLabel = 'Сумма',
-  OptyNameLabel = 'Договор',
-  PaymnetTypeLabel = 'Получатель',
-  PaymentDateLabel = 'Дата платежа',
-  CommentLabel = 'Комментарий',
+export enum OrderItemField {
+  ItemNameLabel = 'Товар',
+  SalesLabel = 'Цена',
+  SumtLabel = 'Сумма',
+  CountLabel = 'Количество',
+  ItemDateLabel = 'Дата заказа',
+  PriceLabel = 'Цена закупа',
 
-  Product = 'product',
-  Amount = 'amount',
-  OptyName = 'optyName',
-  PaymentType = 'paymentType',
-  OptyId = 'optyId',
-  ContactId = 'conId',
-  PaymentDate = 'paymentDate',
-  Comment = 'comment',
-  ApartNum = 'apartNum',
+  ItemId = 'id',
+  MenuId = 'menuId',
+  ItemName = 'itemName',
+  Sales = 'sales',
+  Price = 'price',
+  Count = 'count',
+  Sum = 'sum',
+  ItemDate = 'itemDate',
 }
 
 // Расходы

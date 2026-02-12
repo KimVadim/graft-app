@@ -4,14 +4,13 @@ import axios from 'axios';
 import {
   AddExpense,
   AddOrder,
-  AddPayment,
+  AddOrderItem,
   FieldFormat,
   Status,
   UpdateOpty,
 } from '../constants/appConstant.ts';
 import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
 import { setExpense } from '../slices/expenseSlice.ts';
-import { setAccessGroup } from '../slices/accessGroupSlice.ts';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
 
@@ -83,26 +82,26 @@ export const addOrder = async (values: AddOrder) => {
   }
 };
 
-export const addPayment = async (values: AddPayment) => {
+export const addOrderItem = async (values: AddOrderItem) => {
   try {
     const payload = {
-      optyId: values.optyId,
-      conId: values.conId,
-      product: values.product,
-      paymentType: values.paymentType,
-      amount: values.amount,
+      itemName: values.itemName,
+      menuId: values.menuId,
+      sales: values.sales,
       createBy: localStorage.getItem('login')
         ? localStorage.getItem('login')
         : 'newApp',
-      paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
-      comment: values?.comment,
-      apartNum: values?.apartNum,
+      itemDt: dayjs(values.itemDt).toISOString(),
+      amount: values.amount,
+      price: values.price,
+      itemCount: values.itemCount,
+      sum: values.sum,
     };
 
-    const response = await axios.post(endpoints.PAYMENT, payload);
+    const response = await axios.post(endpoints.ORDER, payload);
 
     console.log('Ответ сервера:', response.data);
-    return response?.data?.message?.payment_id;
+    return response?.data?.message?.order_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -224,32 +223,14 @@ export const getExpenseData = async (
   }
 };
 
-export const getAccessGroupData = async (
-  dispatch: AppDispatch,
-  login: string
-) => {
-  try {
-    const { data } = await axios.get(endpoints.ACCESS_GROUP, {
-      params: { login },
-    });
-    const accessGroup = data.message?.access_group || [];
-
-    dispatch(setAccessGroup(accessGroup));
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Ошибка запроса:', error.response?.status);
-    } else {
-      console.error('Непредвиденная ошибка:', error);
-    }
-  }
-};
-
 export const getOrder = async () => {
   try {
     const { data } = await axios.get(endpoints.ORDER);
     const order = data.message?.order || [];
+    const orderItem = data.message?.['order_item_df'] || [];
+    const menu = data.message?.['menu_df'] || [];
 
-    return { order };
+    return { order, orderItem, menu };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);

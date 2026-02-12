@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
-import { getAccessGroupData, loginUser } from '../service/appServiceBackend.ts';
+import { loginUser } from '../service/appServiceBackend.ts';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../slices/userSlice.ts';
 import { AppDispatch } from '../store.ts';
@@ -27,8 +27,7 @@ const Login: React.FC = () => {
         .then(() => {
           dispatch(setUser(login));
         })
-        .then(() => navigate('/opportunities'))
-        .then(() => getAccessGroupData(dispatch, login));
+        .then(() => navigate('/opportunities'));
     } catch (err) {
       setError('Неверный email или пароль');
     }
