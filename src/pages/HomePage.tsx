@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Opportunity } from './Opportunity.tsx';
 import { AddFloatButton } from '../components/AddFloatButton.tsx';
 import { AddExpenseModal } from '../components/AddExpenseModal.tsx';
-import { AddOrderModal } from '../components/AddOpportunityModal.tsx';
+import { AddOrderModal } from '../components/AddOrderModal.tsx';
 
 interface HomePageProps {
   view: string;

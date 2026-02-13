@@ -1,12 +1,12 @@
 import { Space, Table, Tag } from "antd";
-import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OrderFieldData, OrderItemField, OrderItemFieldData, Stage } from "../constants/appConstant.ts"
+import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OrderField, OrderFieldData, OrderItemField, OrderItemFieldData, Stage } from "../constants/appConstant.ts"
 import { PRODUCT_MAP } from "../constants/dictionaries.ts";
 import dayjs from "dayjs";
 
 export type ProductKey = keyof typeof PRODUCT_MAP;
 
 export const opportunityMeta = [{
-  title: OpportunityField.OrderNameLabel,
+  title: OrderField.OrderNameLabel,
   dataIndex: OrderFieldData.Status,
   key: OrderFieldData.Status,
   render: (status: String, record: any) => {
@@ -30,7 +30,7 @@ export const opportunityMeta = [{
   },
   width: 310,
   }, {
-    title: OpportunityField.FullNameLabel,
+    title: OrderField.FullNameLabel,
     dataIndex: OrderFieldData.FirstName,
     key: OrderFieldData.FirstName,
     ellipsis: true,

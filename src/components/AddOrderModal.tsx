@@ -5,7 +5,7 @@ import { addOrder, getOrder } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT, PRODUCT_PRICE_MAP, RECOMMENDATION_TYPE } from "../constants/dictionaries.ts";
-import { AddOrder, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OpportunityField } from "../constants/appConstant.ts";
+import { AddOrder, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OrderField } from "../constants/appConstant.ts";
 import { CascadePickerView, Selector, Toast, Popup } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
@@ -52,24 +52,26 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
       }
     }
 
-    const START_HOUR = 10;
-    const END_HOUR = 23;
+    const HOURS = [
+      ...Array.from({ length: 14 }, (_, i) => 10 + i), // 10–23
+      0,
+      1,
+      2,
+    ];
 
-    const OrderTime = Array.from(
-      { length: END_HOUR - START_HOUR + 1 },
-      (_, i) => {
-        const hour = String(START_HOUR + i);
+    const OrderTime = HOURS.map((h) => {
+      const hour = String(h).padStart(2, "0");
 
-        return {
-          label: hour,
-          value: hour,
-          children: ['00', '15', '30', '45'].map((min) => ({
-            label: min,
-            value: min,
-          })),
-        };
-      }
-    );
+      return {
+        label: hour,
+        value: hour,
+        children: ["00", "15", "30", "45"].map((min) => ({
+          label: min,
+          value: min,
+        })),
+      };
+    });
+
     const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
     const [selectedTime, setSelectedTime] = useState<string[]>([]);
     const [timeField, setTimeField] = useState<string | null>(null);
@@ -129,21 +131,21 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             onFinish={handleSubmit}
           >
             <Form.Item
-              label={OpportunityField.LastNameLabel}
-              name={OpportunityField.LastName}
+              label={OrderField.LastNameLabel}
+              name={OrderField.LastName}
             >
               <Input style={FieldStyle.InputStyle}/>
             </Form.Item>
             <Form.Item
-              label={OpportunityField.FisrtNameLabel}
-              name={OpportunityField.FisrtName}
+              label={OrderField.FisrtNameLabel}
+              name={OrderField.FisrtName}
               rules={[FieldRules.Required, FieldRules.ClientName]}
             >
               <Input style={FieldStyle.InputStyle} />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.PhoneLabel}
-              name={OpportunityField.Phone}
+              label={OrderField.PhoneLabel}
+              name={OrderField.Phone}
               rules={[FieldRules.Required, FieldRules.PhoneFormat]}
             >
               <Input
@@ -155,39 +157,39 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.PrepaySourceLabel}
-              name={OpportunityField.PrepaySource}
+              label={OrderField.PrepaySourceLabel}
+              name={OrderField.PrepaySource}
               rules={[FieldRules.Required]}
             >
               <Selector
                 options={PAYMENT_TYPE}
                 onChange={(arr) =>
                   form.setFieldsValue({
-                    [OpportunityField.PrepaySource]: arr
+                    [OrderField.PrepaySource]: arr
                   })
                 }
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.PrepayAmountLabel}
-              name={OpportunityField.PrepayAmount}
+              label={OrderField.PrepayAmountLabel}
+              name={OrderField.PrepayAmount}
               rules={[FieldRules.PaymentAmount, FieldRules.Required]}
             >
               <InputNumber style={FieldStyle.InputStyle} />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.SaunaNumLabel}
-              name={OpportunityField.SaunaNum}
+              label={OrderField.SaunaNumLabel}
+              name={OrderField.SaunaNum}
               rules={[FieldRules.Required]}
             >
               <Selector
                 options={PRODUCT}
-                value={form.getFieldValue(OpportunityField.SaunaNum)}
+                value={form.getFieldValue(OrderField.SaunaNum)}
                 onChange={(arr) => {
                   const saunaKey = arr[0] as ProductKey;
 
                   form.setFieldsValue({
-                    [OpportunityField.SaunaNum]: arr,
+                    [OrderField.SaunaNum]: arr,
                     price: PRODUCT_PRICE_MAP[saunaKey]
                   });
                 }}
@@ -212,50 +214,50 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.StartTimeLabel}
-              name={OpportunityField.StartTime}
+              label={OrderField.StartTimeLabel}
+              name={OrderField.StartTime}
               rules={[FieldRules.Required]}
             >
               <Input
                 style={FieldStyle.InputStyle}
                 readOnly
                 onClick={() => {
-                  setTimeField(OpportunityField.StartTime);
+                  setTimeField(OrderField.StartTime);
                   setIsPopupStartOpen(true);
                 }}
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.EndTimeLabel}
-              name={OpportunityField.EndTime}
+              label={OrderField.EndTimeLabel}
+              name={OrderField.EndTime}
               rules={[FieldRules.Required]}
             >
               <Input
                 style={FieldStyle.InputStyle}
                 readOnly
                 onClick={() => {
-                  setTimeField(OpportunityField.EndTime);
+                  setTimeField(OrderField.EndTime);
                   setIsPopupStartOpen(true);
                 }}
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.RecommendationLabel}
-              name={OpportunityField.Recommendation}
+              label={OrderField.RecommendationLabel}
+              name={OrderField.Recommendation}
               rules={[FieldRules.Required]}
             >
               <Selector
                 options={RECOMMENDATION_TYPE}
                 onChange={(arr) =>
                   form.setFieldsValue({
-                    [OpportunityField.Recommendation]: arr
+                    [OrderField.Recommendation]: arr
                   })
                 }
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.CommentLabel}
-              name={OpportunityField.Comment}
+              label={OrderField.CommentLabel}
+              name={OrderField.Comment}
             >
               <TextArea
                 showCount
@@ -266,8 +268,8 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               />
             </Form.Item>
             <Form.Item
-              label={OpportunityField.OrderDateLabel}
-              name={OpportunityField.OrderDate}
+              label={OrderField.OrderDateLabel}
+              name={OrderField.OrderDate}
               rules={[FieldRules.Required]}
               hidden={view && view==='Storage' ? true : false}
             >

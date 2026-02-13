@@ -101,6 +101,7 @@ export interface AddOrder {
   endTime: string;
   price: number;
   peopleCount: number;
+  totalAmount: number;
 }
 
 export interface AddOrderItem {
@@ -132,6 +133,7 @@ export enum OrderFieldData {
   CreatedBy = 'create_by',
   Price = 'price',
   PeopleCount = 'people_count',
+  Recommendation = 'recommendation',
 }
 
 export type OrderType = {
@@ -203,13 +205,12 @@ export type MenuType = {
   [MenuFieldData.Comment]: string;
 };
 
-export enum OpportunityField {
+export enum OrderField {
   LastNameLabel = 'Фамилия',
   FisrtNameLabel = 'Имя',
   PhoneLabel = 'Контактный телефон',
   PrepayAmountLabel = 'Сумма предоплаты',
   PrepaySourceLabel = 'Предоплата',
-  OptyDateLabel = 'Дата брони',
   SaunaNumLabel = 'Номер кабинки',
   AmountLabel = 'Сумма',
   FullNameLabel = 'ФИО',
@@ -218,10 +219,11 @@ export enum OpportunityField {
   EndTimeLabel = 'Время окончания',
   RecommendationLabel = 'От кого',
   TimePeopleCountLabel = 'Время/Гости',
-
   SaunaPriceLabel = 'Баня/Цена',
   OrderNameLabel = '№ / Статус / Время',
   OrderDateLabel = 'Дата брони',
+  TotalAmountLabel = 'Сумма заказа',
+  TotalLabel = 'Итого - Предоплата',
 
   PrepaySource = 'prepaySource',
   LastName = 'lastName',

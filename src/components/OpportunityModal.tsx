@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
-import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData } from '../constants/appConstant.ts';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { addOrderItem, closeOpty, getOrderItem, updateOpty } from '../service/appServiceBackend.ts';
 import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
@@ -21,7 +21,6 @@ interface OpportunityModalProps {
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const optyPayDate = new Date(record?.[OpportunityField.OrderDate]);
   const orderId = record?.[OrderFieldData.Id]
   const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
   const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
@@ -30,9 +29,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
   const dispatch: AppDispatch = useDispatch();
   const filteredData = optyItemData.filter((x)=> x[OrderItemFieldData.OrderId] === orderId);
-  console.log("optyItemData",optyItemData)
-  console.log(orderId)
-  console.log(filteredData)
+  const optyPayDate = new Date(record?.[OrderField.OrderDate]);
+  const prepayAmount = Number(record?.[OrderFieldData.PrepayAmount]);
+  const totalAmount = filteredData.reduce((sum, item) => {
+    return sum + (Number(item?.['amount']) || 0);
+  }, 0);
+
   const actions = {
     handleSubmit: (optyId: string) => {
       setLoading(true);
@@ -84,7 +86,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       },
   };
 
-  let parsedDate = optyPayDate && dayjs(optyPayDate);
+  const parsedDate = record?.[OrderFieldData.OrderDt]
+    ? dayjs(record[OrderFieldData.OrderDt])
+    : null;
   return (
 
     <Popup
@@ -107,15 +111,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           <Card title={ModalTitle.OrderDetail}>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
-                <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OrderFieldData.FirstName]}
+                <strong>{`${OrderField.FullNameLabel}: `}</strong> {record?.[OrderFieldData.FirstName]}
               </span>
             </div>
-            <p className="opty-card">
-              <strong>{`${OpportunityField.SaunaPriceLabel}: `}</strong>
-              {record?.[OrderFieldData.SaunaNum]}/
-              {Number(record?.[OrderFieldData.Price])?.toLocaleString("ru-RU")}
-            </p>
-            <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>
+            <p className="opty-card"><strong>{`${OrderField.PhoneLabel}: `}</strong>
               <a
                 className="phone-link"
                 href={`tel:${record?.[OrderFieldData.Phone]}`}
@@ -124,14 +123,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 {formatPhoneNumber(record?.[OrderFieldData.Phone])}
               </a>
             </p>
-            <p className="opty-card">
-              <strong>{`${OpportunityField.TimePeopleCountLabel}: `}</strong>
-              {record?.[OrderFieldData.StartTime]}-{record?.[OrderFieldData.EndTime]}/
-              {record?.[OrderFieldData.PeopleCount]}
-            </p>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
-                <strong>{`${OpportunityField.OrderDate}: `}</strong>
+                <strong>{`${OrderField.OrderDateLabel}: `}</strong>
                 <DatePicker
                   format={FieldFormat.Date}
                   inputReadOnly={true}
@@ -140,6 +134,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   value={optyPayDate ? parsedDate : undefined}
                   allowClear={false}
                   needConfirm={true}
+                  disabled={true}
                   onChange={(value) => {
                     if (value) {
                       const day = value.date();
@@ -152,8 +147,24 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               </span>
             </div>
             <p className="opty-card">
-              <strong>{`${OpportunityField.CommentLabel}: `}</strong>
+              <strong>{`${OrderField.SaunaPriceLabel}: `}</strong>
+              {`${record?.[OrderFieldData.SaunaNum]} · ${Number(record?.[OrderFieldData.Price])?.toLocaleString("ru-RU")} · (${Number(record?.[OrderFieldData.PrepayAmount])?.toLocaleString("ru-RU")} предоп.)`}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.TimePeopleCountLabel}: `}</strong>
+              {`${record?.[OrderFieldData.StartTime]} - ${record?.[OrderFieldData.EndTime]} · ${record?.[OrderFieldData.PeopleCount]} чел · ${record?.[OrderFieldData.Recommendation]}`}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.CommentLabel}: `}</strong>
               {record?.[OrderFieldData.Comment]}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.TotalAmountLabel}: `}</strong>
+              {Number(totalAmount)?.toLocaleString("ru-RU")}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.TotalLabel}: `}</strong>
+              {Number(totalAmount - prepayAmount)?.toLocaleString("ru-RU")}
             </p>
             <AutoCenter style={{ marginTop: '20px' }}>
               <Button
@@ -246,13 +257,13 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             name={OrderItemField.Sales}
             rules={[FieldRules.PaymentAmount, FieldRules.Required]}
           >
-            <InputNumber style={FieldStyle.InputStyle} readOnly/>
+            <InputNumber style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
             label={OrderItemField.PriceLabel}
             name={OrderItemField.Price}
           >
-            <InputNumber style={FieldStyle.InputStyle} readOnly/>
+            <InputNumber style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
             label={OrderItemField.ItemDateLabel}

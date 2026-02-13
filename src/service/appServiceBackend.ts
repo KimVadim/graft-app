@@ -53,6 +53,7 @@ export const addOrder = async (values: AddOrder) => {
       comment: values.comment,
       price: values.price,
       peopleCount: values.peopleCount,
+      totalAmount: 0,
     };
 
     const response = await axios.post(endpoints.ORDER, payload);
