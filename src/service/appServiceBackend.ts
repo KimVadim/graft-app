@@ -87,6 +87,7 @@ export const addOrderItem = async (values: AddOrderItem) => {
         .toISOString(),
       amount: values.sales * values.itemCount,
       price: values.price,
+      priceAmount: values.price * values.itemCount,
       itemCount: values.itemCount,
       orderId: values.orderId,
     };

@@ -112,6 +112,7 @@ export interface AddOrderItem {
   amount: number;
   price: number;
   itemCount: number;
+  priceAmount: number;
   createdBy: string;
   orderId: string;
 }

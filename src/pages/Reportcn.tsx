@@ -1,14 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Col, Menu, Row, Typography } from 'antd';
-import type { MenuProps } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Col, Row, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { PaymentProgreesBar } from '../components/PaymentProgressBar.tsx';
 import { CapsuleTabs, Divider } from 'antd-mobile'
-import { SettingOutlined } from '@ant-design/icons';
-
 import {
   BarChart,
   Bar,
@@ -17,42 +13,12 @@ import {
   LabelList,
   Legend,
 } from 'recharts'
-
-type MenuItem = Required<MenuProps>['items'][number];
-const menuItems: MenuItem[] = [
-  {
-    label: 'Меню',
-    key: 'SubMenu',
-    icon: <SettingOutlined />,
-    children: [
-      {
-        type: 'group',
-        label: 'Основные',
-        children: [
-          { label: 'Договора', key: '/opportunities' },
-          { label: 'Платежи', key: '/payments' },
-          { label: 'Контакты', key: '/contacts' },
-          { label: 'Расходы', key: '/expenses' },
-          { label: 'Склады', key: '/storage' },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Отчеты',
-        children: [
-          { label: 'Отчеты', key: '/incomereport', disabled: true },
-        ],
-      },
-    ],
-  },
-];
+import { MenuComp } from '../components/Menu.tsx';
 
 const { Text } = Typography;
 
 export const IncomeReportcn: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [current, setCurrent] = useState('line');
   const selectedMonth = 'last12months';
   const [isModalPayment, setIsModalPayment] = useState(false);
   useEffect(() => {
@@ -92,12 +58,6 @@ export const IncomeReportcn: React.FC = () => {
     return memoizedMonthPaymentData;
   }, [memoizedMonthPaymentData, selectedMonth]);
 
-
-  const onClick: MenuProps['onClick'] = (e) => {
-    setCurrent(e.key);
-    if (e.key) navigate(e.key);
-  };
-
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -122,30 +82,16 @@ export const IncomeReportcn: React.FC = () => {
   );
 
   const chartData = [
-    { month: "Jan", desktop: 1806, mobile: 800 },
-    { month: "Feb", desktop: 3050, mobile: 200 },
-    { month: "Mar", desktop: 2370, mobile: 120 },
-    { month: "Apr", desktop: 7304, mobile: 190 },
-    { month: "May", desktop: 2009, mobile: 130 },
-    { month: "Jun", desktop: 2144, mobile: 140 },
-    { month: "Jul", desktop: 1865, mobile: 80 },
-    { month: "Aug", desktop: 3054, mobile: 200 },
-    { month: "Sen", desktop: 2375, mobile: 120 },
-    { month: "Oct", desktop: 7354, mobile: 190 },
-    { month: "Nov", desktop: 130, mobile: 130 },
-    { month: "Dec", desktop: 2146, mobile: 0 },
+    { month: "02 fev", total: 100000, sauna: 80000,  kitchen: 20000},
+    { month: "03 fev", total: 90000, sauna: 70000,  kitchen: 20000},
+    { month: "04 fev", total: 80000, sauna: 60000,  kitchen: 20000},
   ]
 
   return (
     <div style={{ padding: '24px' }}>
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '111px' }}>
-          <Menu
-            onClick={onClick}
-            selectedKeys={[current]}
-            mode="horizontal"
-            items={menuItems}
-          />
+          <MenuComp/>
         </Col>
         <Col>
           <strong>Отчёт по доходам</strong>
@@ -202,8 +148,8 @@ export const IncomeReportcn: React.FC = () => {
 
         </CapsuleTabs.Tab>
       </CapsuleTabs>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
+      <ResponsiveContainer width="100%" height={400}> {/* Увеличьте высоту */}
+        <BarChart data={chartData} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
           <XAxis
             dataKey="month"
             tickLine={false}
@@ -218,12 +164,29 @@ export const IncomeReportcn: React.FC = () => {
               </span>
             )}
           />
-          <Bar dataKey="desktop" name="Комп" fill="#98bff6">
-            <LabelList position="top" fill="#1f2937" fontSize={9} />
+          <Bar dataKey="total" name="Комп" fill="#98bff6">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={12}
+              offset={5}
+            />
           </Bar>
-
-          <Bar dataKey="mobile" name="Тел" fill="#4f46e5">
-            <LabelList position="top" fill="#1f2937" fontSize={9} />
+          <Bar dataKey="sauna" name="Тел" fill="#4f46e5">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={12}
+              offset={5}
+            />
+          </Bar>
+          <Bar dataKey="kitchen" name="Тел" fill="#516b56">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={12}
+              offset={5}
+            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
