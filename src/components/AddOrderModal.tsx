@@ -1,7 +1,7 @@
 import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React, { useState } from "react"
 import dayjs from 'dayjs';
-import { addOrder, getOrder } from "../service/appServiceBackend.ts";
+import { addOrder, getOrder, getOrderItem } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT, PRODUCT_PRICE_MAP, RECOMMENDATION_TYPE } from "../constants/dictionaries.ts";
@@ -10,6 +10,7 @@ import { CascadePickerView, Selector, Toast, Popup } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
 import { setOrder } from "../slices/orderSlice.ts";
+import { setOrderItem } from "../slices/orderitemSlice.ts";
 
 interface AddOrderModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -30,7 +31,11 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
       addOrder(values).then((orderId) => {
         getOrder().then((response) => {
             dispatch(setOrder(response?.order));
-        })
+        }).then(()=> {
+          getOrderItem().then((response)=> {
+            dispatch(setOrderItem(response?.orderItem));
+          })
+        });
         setLoading(false);
         setIsAddOpty(false);
         orderId

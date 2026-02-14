@@ -21,7 +21,7 @@ interface OpportunityModalProps {
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const orderId = record?.[OrderFieldData.Id]
+  let orderId = record?.[OrderFieldData.Id]
   const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
   const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
   const [formItem] = Form.useForm();
@@ -34,7 +34,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const totalAmount = filteredData.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
-
+  console.log('record',record)
+  console.log('orderId',orderId)
   const actions = {
     handleSubmit: (optyId: string) => {
       setLoading(true);
@@ -54,7 +55,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     handleAddItem: (values: AddOrderItem) => {
       setLoading(true);
       console.log(formItem)
-      addOrderItem(values).then((orderItemId) => {
+      addOrderItem(values, orderId).then((orderItemId) => {
         getOrderItem().then((response) => {
           dispatch(setOrderItem(response?.orderItem));
         })
@@ -222,7 +223,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           initialValues={{
             itemDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             itemCount: 1,
-            orderId: orderId,
           }}
           onFinish={actions.handleAddItem}
         >
@@ -280,7 +280,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             />
           </Form.Item>
           <Form.Item name={OrderItemField.MenuId} hidden={true}></Form.Item>
-          <Form.Item name={OrderItemField.OrderId} hidden={true}></Form.Item>
           <Form.Item style={{ textAlign: "center", marginBottom: 50 }}>
             <Button type="primary" htmlType="submit">
               {BUTTON_TEXT.Add}

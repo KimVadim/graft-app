@@ -69,7 +69,7 @@ export const addOrder = async (values: AddOrder) => {
   }
 };
 
-export const addOrderItem = async (values: AddOrderItem) => {
+export const addOrderItem = async (values: AddOrderItem, orderId: string) => {
   try {
     //const amount = values.price * values.itemCount;
     const payload = {
@@ -89,7 +89,7 @@ export const addOrderItem = async (values: AddOrderItem) => {
       price: values.price,
       priceAmount: values.price * values.itemCount,
       itemCount: values.itemCount,
-      orderId: values.orderId,
+      orderId: orderId,
     };
 
     const response = await axios.post(endpoints.ORDER_ITEM, payload);

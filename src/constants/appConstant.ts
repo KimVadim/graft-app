@@ -114,7 +114,7 @@ export interface AddOrderItem {
   itemCount: number;
   priceAmount: number;
   createdBy: string;
-  orderId: string;
+  //orderId: string;
 }
 
 export enum OrderFieldData {
