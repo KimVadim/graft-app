@@ -112,9 +112,18 @@ export const contactMeta = [
 export const orderItemMeta = [
   {
     title: OrderItemField.ItemNameLabel,
-    dataIndex: OrderItemFieldData.ItemName,
+    dataIndex: OrderItemFieldData.ItemName, // или ваше поле
     key: OrderItemFieldData.ItemName,
-    width: 40,
+    width: 30, // фиксированная ширина
+    render: (text: string) => (
+      <div style={{
+        whiteSpace: 'normal',
+        wordWrap: 'break-word',
+        lineHeight: '1.4'
+      }}>
+        {text}
+      </div>
+    ),
   }, {
     title: 'Кол.',
     dataIndex: 'item_count',

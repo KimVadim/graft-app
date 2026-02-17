@@ -113,12 +113,15 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
       >
         <div
           style={{
-            height: '65vh',
-            overflowY: 'scroll',
-            padding: '20px',
-            marginBottom: '30px',
-            justifyContent: 'center',
-            maxWidth: '560px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            padding: '0 16px',
+            boxSizing: 'border-box',
+            overflowY: 'auto',
+            maxHeight: '80vh',
+            marginTop: '20px',
+            marginBottom: '20px'
           }}
         >
           <Spin spinning={loading}>
@@ -127,7 +130,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             layout="vertical"
             initialValues={{
               phone: '+7',
-              prepayAmount: 5000,
+              //prepayAmount: 0,
               saunaNum: ['SaunaFour'],
               prepaySource: [Payment.GoldAN],
               orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
@@ -135,12 +138,12 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             }}
             onFinish={handleSubmit}
           >
-            <Form.Item
+            {/*<Form.Item
               label={OrderField.LastNameLabel}
               name={OrderField.LastName}
             >
               <Input style={FieldStyle.InputStyle}/>
-            </Form.Item>
+            </Form.Item>*/}
             <Form.Item
               label={OrderField.FisrtNameLabel}
               name={OrderField.FisrtName}
@@ -296,7 +299,6 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             </Form.Item>
           </Form>
           </Spin>
-        </div>
         <Popup
           visible={isPopupStartOpen}
           showCloseButton
@@ -317,6 +319,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             {BUTTON_TEXT.Ok}
           </Button>
         </Popup>
+      </div>
       </Popup>
     )
 }

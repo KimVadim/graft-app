@@ -77,8 +77,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           .slice(0, 7)
           .map(item => ({
             menuId: item[MenuFieldData.Id],
-            sales: item[MenuFieldData.Sales],
-            price: item[MenuFieldData.Price],
+            sales: Number(item[MenuFieldData.Sales]),
+            price: Number(item[MenuFieldData.Price]),
             value: `${item[MenuFieldData.Id]} - ${item[MenuFieldData.MenuName]}`,
             label: `${item[MenuFieldData.Id]} - ${item[MenuFieldData.MenuName]}`,
           }));
@@ -101,7 +101,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       <Space justify='center' block>
         <div
           style={{
-            height: '55vh',
+            height: '65vh',
             overflowY: 'scroll',
             padding: '20px',
             marginBottom: '30px',
@@ -225,6 +225,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             itemCount: 1,
           }}
           onFinish={actions.handleAddItem}
+          style={{ margin: '30px' }}
         >
           <Form.Item
             label={OrderItemField.ItemNameLabel}
@@ -237,12 +238,11 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               options={options}
               onSelect={(value: string, option: any) => {
                 formItem.setFieldsValue({
-                  sales: Number(option.sales),
-                  price: Number(option.price),
+                  sales: option.sales,
+                  price: option.price,
                   menuId: option.menuId,
                 });
               }}
-              style={FieldStyle.InputStyle}
             />
           </Form.Item>
           <Form.Item
@@ -292,6 +292,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </Button>
           </Form.Item>
         </Form>
+
         </Spin>
       </Popup>
       </Space>
