@@ -236,12 +236,15 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               onSearch={actions.handleSearch}
               placeholder={FieldPlaceholder.MenuName}
               options={options}
-              onSelect={(value: string, option: any) => {
-                formItem.setFieldsValue({
-                  sales: option.sales,
-                  price: option.price,
-                  menuId: option.menuId,
-                });
+              onSelect={(value, option) => {
+                const selectedOption = options.find(opt => opt.value === value);
+                if (selectedOption) {
+                  formItem.setFieldsValue({
+                    sales: selectedOption.sales,
+                    price: selectedOption.price,
+                    menuId: selectedOption.menuId,
+                  });
+                }
               }}
             />
           </Form.Item>
