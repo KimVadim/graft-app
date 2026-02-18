@@ -67,7 +67,7 @@ export const FieldRules = {
   },
   PaymentAmount: {
     type: 'number',
-    min: 0,
+    min: -50000,
     max: 500000,
     message: 'Введите сумму от 0 до 500 000',
   },
@@ -225,6 +225,7 @@ export enum OrderField {
   OrderDateLabel = 'Дата брони',
   TotalAmountLabel = 'Сумма заказа',
   TotalLabel = 'Итого - Предоплата',
+  TotalOrderItemLabel = 'Итого',
 
   PrepaySource = 'prepaySource',
   LastName = 'lastName',
@@ -423,9 +424,9 @@ export enum PaymentsField {
   Payment = 'payment',
 }
 
-export interface UpdateOpty {
+export interface UpdateOrder {
   orderId: string;
-  PaymentDate?: string;
-  Comment?: string;
-  PayPhone?: string;
+  status?: string;
+  comment?: number;
+  totalAmount?: string;
 }

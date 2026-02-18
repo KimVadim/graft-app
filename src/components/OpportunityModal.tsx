@@ -34,8 +34,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const totalAmount = filteredData.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
-  console.log('record',record)
-  console.log('orderId',orderId)
   const actions = {
     handleSubmit: (optyId: string) => {
       setLoading(true);
@@ -49,7 +47,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       updateOpty({orderId, [fieldName]: value}).then(() => {
         setLoading(false);
         setIsModalOpen(false);
-        Toast.show({content: <div><b>Готово!</b><div>Договор обновлен</div></div>, icon: 'success', duration: 3000 })
+        Toast.show({content: <div><b>Готово!</b><div>Заказ обновлен</div></div>, icon: 'success', duration: 3000 })
       });
     },
     handleAddItem: (values: AddOrderItem) => {
@@ -79,8 +77,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             menuId: item[MenuFieldData.Id],
             sales: Number(item[MenuFieldData.Sales]),
             price: Number(item[MenuFieldData.Price]),
-            value: `${item[MenuFieldData.Id]} - ${item[MenuFieldData.MenuName]}`,
-            label: `${item[MenuFieldData.Id]} - ${item[MenuFieldData.MenuName]}`,
+            value: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
+            label: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
           }));
 
         setOptions(filteredOptions);
@@ -189,7 +187,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 updateData={actions.handleUpdateOpty}
               />
             </AutoCenter>
-            <Divider>Заказ</Divider>
+            <Divider>Заказ итого - {Number(totalAmount)?.toLocaleString("ru-RU")}</Divider>
             <Table
               rowKey="uid"
               scroll={{ x: 395 }}
@@ -198,7 +196,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               size='middle'
               pagination={{
                 position: ['bottomCenter'],
-                pageSize: 20
+                pageSize: 40
               }}
             />
           </Card>
