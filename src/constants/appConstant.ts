@@ -26,10 +26,6 @@ export enum FieldFormat {
   DateEN = 'MM/DD/YYYY',
 }
 
-export enum Status {
-  Reservation = 'Бронь',
-}
-
 export enum Stage {
   Signed = 'Заключили',
 }
@@ -427,6 +423,12 @@ export enum PaymentsField {
 export interface UpdateOrder {
   orderId: string;
   status?: string;
-  comment?: number;
-  totalAmount?: string;
+  comment?: string;
+  totalAmount?: number;
+}
+
+export enum OrderStatus {
+  Pay = 'Опл',
+  Reservation = 'Брн',
+  Cancel = 'Отм',
 }

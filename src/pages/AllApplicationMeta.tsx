@@ -1,7 +1,9 @@
 import { Space, Table, Tag } from "antd";
-import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OrderField, OrderFieldData, OrderItemField, OrderItemFieldData, Stage } from "../constants/appConstant.ts"
+import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OrderField, OrderFieldData, OrderItemField, OrderItemFieldData, OrderStatus } from "../constants/appConstant.ts"
 import { PRODUCT_MAP } from "../constants/dictionaries.ts";
 import dayjs from "dayjs";
+import 'dayjs/locale/ru';
+dayjs.locale('ru');
 
 export type ProductKey = keyof typeof PRODUCT_MAP;
 
@@ -16,11 +18,11 @@ export const opportunityMeta = [{
           {PRODUCT_MAP[record?.[OrderFieldData.SaunaNum] as ProductKey]}
         </Tag>
 
-        <Tag color={status === Stage.Signed ? "green" : "red"}>
+        <Tag color={status === OrderStatus.Pay ? "#1eb42a" : "#eadc11"}>
           {status}
         </Tag>
         <Tag color={"green"}>
-          {dayjs(record?.[OrderFieldData.OrderDt]).format("DD.MM.YY")}
+          {dayjs(record?.[OrderFieldData.OrderDt]).format("dd DD.MM.YY")}
         </Tag>
         <Tag color="blue">
           {`${record?.[OrderFieldData.StartTime]}-${record?.[OrderFieldData.EndTime]}`}
@@ -28,7 +30,7 @@ export const opportunityMeta = [{
       </>
     );
   },
-  width: 310,
+  width: 315,
   }, {
     title: OrderField.FullNameLabel,
     dataIndex: OrderFieldData.FirstName,

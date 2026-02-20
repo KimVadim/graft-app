@@ -6,8 +6,8 @@ import {
   AddOrder,
   AddOrderItem,
   FieldFormat,
-  Status,
-  UpdateOpty,
+  OrderStatus,
+  UpdateOrder,
 } from '../constants/appConstant.ts';
 import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
 import { setExpense } from '../slices/expenseSlice.ts';
@@ -23,8 +23,7 @@ export const endpoints = {
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   MONTH_PAYMENT: `${API_URL}/endpoints/month-payments`,
   EXPENSES: `${API_URL}/endpoints/expenses`,
-  CONTACT: `${API_URL}/endpoints/contact`,
-  UPDATE_OPTY: `${API_URL}/endpoints/update-opty`,
+  UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
 };
 
@@ -34,7 +33,7 @@ export const addOrder = async (values: AddOrder) => {
       firstName: values.firstName,
       lastName: values.lastName,
       phone: values.phone,
-      status: Status.Reservation,
+      status: OrderStatus.Reservation,
       saunaNum: values.saunaNum?.[0],
       prepaySource: values.prepaySource?.[0],
       prepayAmount: values.prepayAmount,
@@ -264,16 +263,16 @@ export const getOrderItem = async () => {
   }
 };
 
-export const updateOpty = async (values: UpdateOpty) => {
+export const updateOpty = async (values: UpdateOrder) => {
   try {
     const payload = {
       orderId: values.orderId,
-      PaymentDate: values?.PaymentDate,
-      Comment: values?.Comment,
-      PayPhone: values?.PayPhone,
+      status: values?.status,
+      comment: values?.comment,
+      totalAmount: values?.totalAmount,
     };
 
-    const response = await axios.post(endpoints.UPDATE_OPTY, payload);
+    const response = await axios.post(endpoints.UPDATE_ORDER, payload);
 
     console.log('Ответ сервера:', response.data);
     return response?.data?.message?.con_id;

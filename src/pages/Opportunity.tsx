@@ -4,9 +4,9 @@ import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getOrderAllData } from "../service/appServiceBackend.ts";
-import { ModalTitle, OrderFieldData, OrderType } from "../constants/appConstant.ts";
+import { ModalTitle, OrderFieldData, OrderStatus, OrderType } from "../constants/appConstant.ts";
 import '../App.css';
-import { Toast } from "antd-mobile";
+import { CapsuleTabs, Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu.tsx";
 import { PaymentProgreesBar } from "../components/PaymentProgressBar.tsx";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
@@ -61,65 +61,116 @@ export const Opportunity: React.FC = () => {
   return (
     <>
       <Spin spinning={loading}>
-        <Table
-          rowKey="uid"
-          scroll={{ x: 395 }}
-          title={() => <>
-            <Row align="middle" gutter={15}>
-              <Col flex="auto" style={{ maxWidth: '111px' }}>
-                <MenuComp/>
-              </Col>
-              <Col>
-                <strong>{ModalTitle.AllOpportunity}</strong>
-              </Col>
-              <Col>
-                <Input
-                  placeholder="Поиск по номеру квартиры..."
-                  value={searchText}
-                  onChange={actions.handleSearch}
-                  style={{ width: 150 }}
-                />
-              </Col>
-            </Row>
-            <Row align="middle" gutter={15}>
-              <PaymentProgreesBar
-                setIsPaymentModal={setIsModalPayment}
-                isPaymentModal={isModalPayment}
-              />
-              <Col>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setLoading(true);
-                    getOrderAllData()
-                    .then((response) => {
-                      dispatch(setOrder(response?.order));
-                      dispatch(setOrderItem(response?.orderItem));
-                      dispatch(setMenu(response?.menu));
-                    })
-                    .finally(() => {
-                      setLoading(false)
-                      Toast.show({content: 'Договора обновлены!', duration: 3000 });
-                    });
-                  }}
-                >
-                  Обновить
-                </Button>
-              </Col>
-            </Row>
-          </>
-          }
-          columns={opportunityMeta}
-          dataSource={filteredData}
-          size='middle'
-          pagination={{
-            position: ['bottomCenter'],
-            pageSize: 20
-          }}
-          onRow={(record) => ({
-            onClick: () => actions.handleRowClick(record),
-          })}
-        />
+      <CapsuleTabs>
+        <CapsuleTabs.Tab title='Бронь' key='fruits'>
+          <Table
+            rowKey="uid"
+            scroll={{ x: 395 }}
+            title={() => <>
+              <Row align="middle" gutter={15}>
+                <Col flex="auto" style={{ maxWidth: '111px' }}>
+                  <MenuComp/>
+                </Col>
+                <Col>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setLoading(true);
+                      getOrderAllData()
+                      .then((response) => {
+                        dispatch(setOrder(response?.order));
+                        dispatch(setOrderItem(response?.orderItem));
+                        dispatch(setMenu(response?.menu));
+                      })
+                      .finally(() => {
+                        setLoading(false)
+                        Toast.show({content: 'Договора обновлены!', duration: 3000 });
+                      });
+                    }}
+                  >
+                    Обновить
+                  </Button>
+                </Col>
+                <Col>
+                  <Input
+                    placeholder="Поиск по номеру квартиры..."
+                    value={searchText}
+                    onChange={actions.handleSearch}
+                    style={{ width: 150 }}
+                  />
+                </Col>
+              </Row>
+            </>
+            }
+            columns={opportunityMeta}
+            dataSource={filteredData
+            .filter(x => x[OrderFieldData.Status] === OrderStatus.Reservation)
+            .sort((a, b) =>
+              new Date(a[OrderFieldData.OrderDt]).getTime() - new Date(b[OrderFieldData.OrderDt]).getTime()
+            )}
+            size='middle'
+            pagination={{
+              position: ['bottomCenter'],
+              pageSize: 20
+            }}
+            onRow={(record) => ({
+              onClick: () => actions.handleRowClick(record),
+            })}
+          />
+        </CapsuleTabs.Tab>
+        <CapsuleTabs.Tab title='Оплаченые' key='vegetables' >
+          <Table
+            rowKey="uid"
+            scroll={{ x: 395 }}
+            title={() => <>
+              <Row align="middle" gutter={15}>
+                <Col flex="auto" style={{ maxWidth: '111px' }}>
+                  <MenuComp/>
+                </Col>
+                <Col>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setLoading(true);
+                      getOrderAllData()
+                      .then((response) => {
+                        dispatch(setOrder(response?.order));
+                        dispatch(setOrderItem(response?.orderItem));
+                        dispatch(setMenu(response?.menu));
+                      })
+                      .finally(() => {
+                        setLoading(false)
+                        Toast.show({content: 'Договора обновлены!', duration: 3000 });
+                      });
+                    }}
+                  >
+                    Обновить
+                  </Button>
+                </Col>
+                <Col>
+                  <Input
+                    placeholder="Поиск по номеру квартиры..."
+                    value={searchText}
+                    onChange={actions.handleSearch}
+                    style={{ width: 150 }}
+                  />
+                </Col>
+              </Row>
+            </>
+            }
+            columns={opportunityMeta}
+            dataSource={filteredData.filter((x)=> x[OrderFieldData.Status]===OrderStatus.Pay)}
+            size='middle'
+            pagination={{
+              position: ['bottomCenter'],
+              pageSize: 20
+            }}
+            onRow={(record) => ({
+              onClick: () => actions.handleRowClick(record),
+            })}
+          />
+        </CapsuleTabs.Tab>
+      </CapsuleTabs>
       </Spin>
       <OpportunityModal
         isModalOpen={isModalOpen}

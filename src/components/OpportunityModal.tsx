@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
-import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField } from '../constants/appConstant.ts';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { addOrderItem, closeOpty, getOrderItem, updateOpty } from '../service/appServiceBackend.ts';
-import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
-import { BUTTON_TEXT } from '../constants/dictionaries.ts';
+import { addOrderItem, getOrder, getOrderItem, updateOpty } from '../service/appServiceBackend.ts';
+import { Popup, Divider, Space, Card, Toast, AutoCenter, Dialog } from 'antd-mobile'
+import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
-import { AddCircleOutline } from 'antd-mobile-icons';
+import { AddCircleOutline, CheckCircleOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { setOrderItem } from '../slices/orderitemSlice.ts';
 import { orderItemMeta } from '../pages/AllApplicationMeta.tsx';
+import { setOrder } from '../slices/orderSlice.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -35,9 +36,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
   const actions = {
-    handleSubmit: (optyId: string) => {
+    handleUpdateOrder: (orderId: string, totalAmount: number) => {
       setLoading(true);
-      closeOpty(optyId).then(() => {
+      updateOpty({orderId, totalAmount, status: OrderStatus.Pay}).then(() => {
+        getOrder().then((response) => {
+            dispatch(setOrder(response?.order));
+        })
         setLoading(false);
         setIsModalOpen(false);
       });
@@ -89,13 +93,13 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     ? dayjs(record[OrderFieldData.OrderDt])
     : null;
   return (
-
     <Popup
       visible={isModalOpen}
       showCloseButton
       onClose={() => {setIsModalOpen(false);}}
       onMaskClick={() => {setIsModalOpen(false);}}
     >
+      <Spin spinning={loading} >
       <Space justify='center' block>
         <div
           style={{
@@ -180,11 +184,23 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 fieldName={OrderFieldData.Comment}
                 updateData={actions.handleUpdateOpty}
               />
-              <ButtonChangeModal
-                record={record}
-                type='PhoneInput'
-                fieldName={OrderFieldData.EndTime}
-                updateData={actions.handleUpdateOpty}
+              <Button
+                icon={<CheckCircleOutline fontSize={40} />}
+                variant="filled"
+                onClick={async () => {
+                  const confirmed = await Dialog.confirm({
+                    content: MODAL_TEXT.OptyCloseText,
+                    confirmText: BUTTON_TEXT.Ok,
+                    cancelText: BUTTON_TEXT.Cancel,
+                  });
+
+                  if (confirmed) {
+                    actions.handleUpdateOrder(orderId, totalAmount);
+                  }
+                }}
+                size='large'
+                style={{ height: 55, width: 55, marginLeft: '30px' }}
+                color="primary"
               />
             </AutoCenter>
             <Divider>Заказ итого - {Number(totalAmount)?.toLocaleString("ru-RU")}</Divider>
@@ -214,7 +230,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           formItem.resetFields();
         }}
       >
-        <Spin spinning={loading} >
         <Form
           form={formItem}
           layout="vertical"
@@ -293,10 +308,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </Button>
           </Form.Item>
         </Form>
-
-        </Spin>
       </Popup>
       </Space>
+      </Spin>
     </Popup>
   );
 };
