@@ -38,12 +38,26 @@ export const Opportunity: React.FC = () => {
     }
   }, [dispatch]);
 
+  const normalizePhone = (value?: string) =>
+  value?.replace(/\D/g, '') ?? '';
   const filteredData = useMemo(() => {
     if (!searchText) return optyData;
-    return optyData.filter(item =>
-      item[OrderFieldData.SaunaNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-      item[OrderFieldData.FirstName]?.toString().toLowerCase().includes(searchText.toLowerCase())
-    );
+
+    const normalizedSearch = normalizePhone(searchText);
+
+    return optyData.filter(item => {
+      const sauna = item[OrderFieldData.SaunaNum]?.toString().toLowerCase() ?? '';
+      const firstName = item[OrderFieldData.FirstName]?.toString().toLowerCase() ?? '';
+      const phoneRaw = item[OrderFieldData.Phone]?.toString() ?? '';
+
+      const normalizedPhone = normalizePhone(phoneRaw);
+
+      return (
+        sauna.includes(searchText.toLowerCase()) ||
+        firstName.includes(searchText.toLowerCase()) ||
+        normalizedPhone.includes(normalizedSearch)
+      );
+    });
   }, [searchText, optyData]);
 
   const actions = {
@@ -59,47 +73,44 @@ export const Opportunity: React.FC = () => {
   return (
     <>
       <Spin spinning={loading}>
+        <Row align="middle" gutter={15}>
+          <Col flex="auto" style={{ maxWidth: '111px' }}>
+            <MenuComp/>
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              onClick={() => {
+                setLoading(true);
+                getOrderAllData()
+                .then((response) => {
+                  dispatch(setOrder(response?.order));
+                  dispatch(setOrderItem(response?.orderItem));
+                  dispatch(setMenu(response?.menu));
+                })
+                .finally(() => {
+                  setLoading(false)
+                  Toast.show({content: 'Договора обновлены!', duration: 3000 });
+                });
+              }}
+            >
+              Обновить
+            </Button>
+          </Col>
+          <Col>
+            <Input
+              placeholder="Поиск по номеру квартиры..."
+              value={searchText}
+              onChange={actions.handleSearch}
+              style={{ width: 150 }}
+            />
+          </Col>
+        </Row>
       <CapsuleTabs>
         <CapsuleTabs.Tab title='Бронь' key='fruits'>
           <Table
             rowKey="uid"
             scroll={{ x: 395 }}
-            title={() => <>
-              <Row align="middle" gutter={15}>
-                <Col flex="auto" style={{ maxWidth: '111px' }}>
-                  <MenuComp/>
-                </Col>
-                <Col>
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setLoading(true);
-                      getOrderAllData()
-                      .then((response) => {
-                        dispatch(setOrder(response?.order));
-                        dispatch(setOrderItem(response?.orderItem));
-                        dispatch(setMenu(response?.menu));
-                      })
-                      .finally(() => {
-                        setLoading(false)
-                        Toast.show({content: 'Договора обновлены!', duration: 3000 });
-                      });
-                    }}
-                  >
-                    Обновить
-                  </Button>
-                </Col>
-                <Col>
-                  <Input
-                    placeholder="Поиск по номеру квартиры..."
-                    value={searchText}
-                    onChange={actions.handleSearch}
-                    style={{ width: 150 }}
-                  />
-                </Col>
-              </Row>
-            </>
-            }
             columns={opportunityMeta}
             dataSource={filteredData
             .filter(x => x[OrderFieldData.Status] === OrderStatus.Reservation)
@@ -120,42 +131,6 @@ export const Opportunity: React.FC = () => {
           <Table
             rowKey="uid"
             scroll={{ x: 395 }}
-            title={() => <>
-              <Row align="middle" gutter={15}>
-                <Col flex="auto" style={{ maxWidth: '111px' }}>
-                  <MenuComp/>
-                </Col>
-                <Col>
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setLoading(true);
-                      getOrderAllData()
-                      .then((response) => {
-                        dispatch(setOrder(response?.order));
-                        dispatch(setOrderItem(response?.orderItem));
-                        dispatch(setMenu(response?.menu));
-                      })
-                      .finally(() => {
-                        setLoading(false)
-                        Toast.show({content: 'Договора обновлены!', duration: 3000 });
-                      });
-                    }}
-                  >
-                    Обновить
-                  </Button>
-                </Col>
-                <Col>
-                  <Input
-                    placeholder="Поиск по номеру квартиры..."
-                    value={searchText}
-                    onChange={actions.handleSearch}
-                    style={{ width: 150 }}
-                  />
-                </Col>
-              </Row>
-            </>
-            }
             columns={opportunityMeta}
             dataSource={filteredData.filter((x)=> x[OrderFieldData.Status]===OrderStatus.Pay)}
             size='middle'

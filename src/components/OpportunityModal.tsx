@@ -92,6 +92,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const parsedDate = record?.[OrderFieldData.OrderDt]
     ? dayjs(record[OrderFieldData.OrderDt])
     : null;
+
+  const isActiveOrder = record?.[OrderFieldData.Status] === 'Опл'
   return (
     <Popup
       visible={isModalOpen}
@@ -177,12 +179,14 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 size='large'
                 style={{ height: 55, width: 55 }}
                 color="primary"
+                disabled={isActiveOrder}
               />
               <ButtonChangeModal
                 record={record}
                 type='TextArea'
                 fieldName={OrderFieldData.Comment}
                 updateData={actions.handleUpdateOpty}
+                disabled={isActiveOrder}
               />
               <Button
                 icon={<CheckCircleOutline fontSize={40} />}
@@ -201,6 +205,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 size='large'
                 style={{ height: 55, width: 55, marginLeft: '30px' }}
                 color="primary"
+                disabled={isActiveOrder}
               />
             </AutoCenter>
             <Divider>Заказ итого - {Number(totalAmount)?.toLocaleString("ru-RU")}</Divider>

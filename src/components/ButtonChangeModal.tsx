@@ -11,12 +11,13 @@ interface ButtonChangeModalProps {
   record: any;
   type: string;
   fieldName: string;
+  disabled?: boolean;
   updateData: (fieldValue: string, fieldName: string) => void;
 }
 
 const { TextArea } = Input;
 
-export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ record, type, fieldName, updateData }) => {
+export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ record, type, fieldName, updateData, disabled }) => {
   let value = record?.[fieldName]
   const [isUserInfo, setIsUserInfo] = React.useState<boolean>(false)
   const [newValue, setNewValue] = React.useState(value || '')
@@ -49,6 +50,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ record, ty
         size='large'
         style={{ height: 55, width: 55, marginLeft: '30px' }}
         color="primary"
+        disabled={disabled}
       />
       <Popup
         visible={isUserInfo}
