@@ -1,5 +1,5 @@
 import { Button, Spin, Table, Row, Col, Input } from "antd";
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
@@ -16,49 +16,69 @@ import { setMenu } from "../slices/menuSlice.ts";
 export const Opportunity: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [selectedRecord, setSelectedRecord] = useState<OrderType | null>(null);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
-  const isCalledRef = useRef(false);
   const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
+  const loadOrders = useCallback(async (showToast = false) => {
+  try {
+    setLoading(true);
+    const response = await getOrderAllData();
+
+    dispatch(setOrder(response?.order));
+    dispatch(setOrderItem(response?.orderItem));
+    dispatch(setMenu(response?.menu));
+
+    if (showToast) {
+      Toast.show({ content: 'Договора обновлены!', duration: 3000 });
+    }
+  } finally {
+    setLoading(false);
+  }
+}, [dispatch]);
 
   useEffect(() => {
-    if (!isCalledRef.current) {
-      setLoading(true);
-      getOrderAllData()
-      .then((response) => {
-        dispatch(setOrder(response?.order));
-        dispatch(setOrderItem(response?.orderItem));
-        dispatch(setMenu(response?.menu));
-      })
-      .finally(() => {
-        setLoading(false)
-      });
-      isCalledRef.current = true;
-    }
-  }, [dispatch]);
+    loadOrders();
+  }, [loadOrders]);
 
   const normalizePhone = (value?: string) =>
   value?.replace(/\D/g, '') ?? '';
   const filteredData = useMemo(() => {
-    if (!searchText) return optyData;
+    const text = searchText.toLowerCase().trim();
+    const phoneSearch = normalizePhone(searchText);
 
-    const normalizedSearch = normalizePhone(searchText);
+    if (!text && !phoneSearch) return optyData;
 
     return optyData.filter(item => {
-      const sauna = item[OrderFieldData.SaunaNum]?.toString().toLowerCase() ?? '';
-      const firstName = item[OrderFieldData.FirstName]?.toString().toLowerCase() ?? '';
-      const phoneRaw = item[OrderFieldData.Phone]?.toString() ?? '';
+      const firstName =
+        String(item[OrderFieldData.FirstName] ?? '')
+          .toLowerCase()
+          .trim();
 
-      const normalizedPhone = normalizePhone(phoneRaw);
+      const phone =
+        normalizePhone(String(item[OrderFieldData.Phone] ?? ''));
 
       return (
-        sauna.includes(searchText.toLowerCase()) ||
-        firstName.includes(searchText.toLowerCase()) ||
-        normalizedPhone.includes(normalizedSearch)
+        firstName.includes(text) ||
+        phone.includes(phoneSearch)
       );
     });
   }, [searchText, optyData]);
+
+  const reservationData = useMemo(() => {
+    return filteredData
+      .filter(x => [OrderStatus.Reservation].includes(x[OrderFieldData.Status] as OrderStatus))
+      .sort((a, b) =>
+        new Date(a[OrderFieldData.OrderDt]).getTime() -
+        new Date(b[OrderFieldData.OrderDt]).getTime()
+      );
+  }, [filteredData]);
+
+  const paidData = useMemo(() => {
+    return filteredData.filter(
+      x => [OrderStatus.Cancel, OrderStatus.Pay].includes(x[OrderFieldData.Status] as OrderStatus)
+    );
+  }, [filteredData]);
 
   const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,19 +100,7 @@ export const Opportunity: React.FC = () => {
           <Col>
             <Button
               type="primary"
-              onClick={() => {
-                setLoading(true);
-                getOrderAllData()
-                .then((response) => {
-                  dispatch(setOrder(response?.order));
-                  dispatch(setOrderItem(response?.orderItem));
-                  dispatch(setMenu(response?.menu));
-                })
-                .finally(() => {
-                  setLoading(false)
-                  Toast.show({content: 'Договора обновлены!', duration: 3000 });
-                });
-              }}
+              onClick={() => loadOrders(true)}
             >
               Обновить
             </Button>
@@ -112,11 +120,7 @@ export const Opportunity: React.FC = () => {
             rowKey="uid"
             scroll={{ x: 395 }}
             columns={opportunityMeta}
-            dataSource={filteredData
-            .filter(x => x[OrderFieldData.Status] === OrderStatus.Reservation)
-            .sort((a, b) =>
-              new Date(a[OrderFieldData.OrderDt]).getTime() - new Date(b[OrderFieldData.OrderDt]).getTime()
-            )}
+            dataSource={reservationData}
             size='middle'
             pagination={{
               position: ['bottomCenter'],
@@ -132,7 +136,7 @@ export const Opportunity: React.FC = () => {
             rowKey="uid"
             scroll={{ x: 395 }}
             columns={opportunityMeta}
-            dataSource={filteredData.filter((x)=> x[OrderFieldData.Status]===OrderStatus.Pay)}
+            dataSource={paidData}
             size='middle'
             pagination={{
               position: ['bottomCenter'],

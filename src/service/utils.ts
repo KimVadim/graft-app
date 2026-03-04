@@ -20,31 +20,29 @@ export const openNotification = (
 };
 
 export const formattedPhone = (phone: string) => {
-  let value = phone.replace(/\D/g, '');
+  if (!phone) return '+7';
 
-  if (value.startsWith('7') || value.startsWith('8')) {
-    if (value.length > 1) {
-      value = '7' + value.substring(1);
-    } else {
-      value = '7';
-    }
-  } else if (value.length > 0) {
-    value = '7' + value;
-  }
+  // Убираем всё кроме цифр
+  let digits = phone.replace(/\D/g, '');
 
-  let formattedPhone = '+7';
-  if (value.length > 1) {
-    formattedPhone += ' (' + value.substring(1, 4);
-  }
-  if (value.length >= 5) {
-    formattedPhone += ') ' + value.substring(4, 7);
-  }
-  if (value.length >= 8) {
-    formattedPhone += '-' + value.substring(7, 9);
-  }
-  if (value.length >= 10) {
-    formattedPhone += '-' + value.substring(9, 11);
+  // Если уже 11 цифр и начинается с 7 — оставляем как есть
+  if (digits.length === 11 && digits.startsWith('7')) {
+    // ок
+  } else if (digits.startsWith('8') && digits.length === 11) {
+    digits = '7' + digits.slice(1);
+  } else if (!digits.startsWith('7')) {
+    digits = '7' + digits.slice(0, 10); // если меньше цифр — добавляем 7 в начало
   }
 
-  return formattedPhone.substring(0, 18);
+  // Обрезаем до 11 цифр
+  digits = digits.slice(0, 11);
+
+  // Форматируем красиво
+  let formatted = '+7';
+  if (digits.length > 1) formatted += ' (' + digits.slice(1, 4);
+  if (digits.length >= 5) formatted += ') ' + digits.slice(4, 7);
+  if (digits.length >= 8) formatted += '-' + digits.slice(7, 9);
+  if (digits.length >= 10) formatted += '-' + digits.slice(9, 11);
+
+  return formatted;
 };

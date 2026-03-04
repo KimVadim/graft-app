@@ -25,7 +25,7 @@ export type ProductKey = keyof typeof PRODUCT_PRICE_MAP;
 export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
-    const [phone, setPhone] = useState("+7");
+    const [phone, setPhone] = useState("");
     const handleSubmit = (values: AddOrder) => {
       setLoading(true);
       addOrder(values).then((orderId) => {
@@ -45,16 +45,25 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
     };
     const actions = {
       handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formattedPhoneStr = formattedPhone(e.target.value);
+        const input = e.target.value;
+        const cursorPos = e.target.selectionStart || 0;
 
-        setPhone(formattedPhoneStr);
-        form.setFieldsValue({ phone: formattedPhoneStr });
+        // Форматируем номер
+        const formatted = formattedPhone(input);
+
+        // Обновляем поле формы
+        form.setFieldValue('phone', formatted);
+
+        // Чтобы курсор не прыгал
+        setTimeout(() => {
+          const inputElement = e.target as HTMLInputElement;
+          if (inputElement.setSelectionRange) {
+            const newPos = Math.min(cursorPos + (formatted.length - input.length), formatted.length);
+            inputElement.setSelectionRange(newPos, newPos);
+          }
+        }, 0);
+        setPhone(formatted);
       },
-      handlePayPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formattedPhoneStr = formattedPhone(e.target.value);
-
-        form.setFieldsValue({ payPhone: formattedPhoneStr });
-      }
     }
 
     const HOURS = [
@@ -129,7 +138,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             form={form}
             layout="vertical"
             initialValues={{
-              phone: '+7',
+              //phone: '+7',
               //prepayAmount: 0,
               saunaNum: ['SaunaFour'],
               prepaySource: [Payment.GoldAN],
@@ -154,7 +163,9 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             <Form.Item
               label={OrderField.PhoneLabel}
               name={OrderField.Phone}
-              rules={[FieldRules.Required, FieldRules.PhoneFormat]}
+              rules={[
+                FieldRules.Required//, FieldRules.PhoneFormat
+              ]}
             >
               <Input
                 value={phone}
