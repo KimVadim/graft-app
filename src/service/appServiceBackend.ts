@@ -263,13 +263,16 @@ export const getOrderItem = async () => {
   }
 };
 
-export const updateOpty = async (values: UpdateOrder) => {
+export const updateOrder = async (values: UpdateOrder) => {
   try {
     const payload = {
       orderId: values.orderId,
       status: values?.status,
       comment: values?.comment,
       totalAmount: values?.totalAmount,
+      startTime: values?.startTime,
+      endTime: values?.endTime,
+      sauna: values?.sauna,
     };
 
     const response = await axios.post(endpoints.UPDATE_ORDER, payload);

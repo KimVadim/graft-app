@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
-import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus } from '../constants/appConstant.ts';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { addOrderItem, getOrder, getOrderItem, updateOpty } from '../service/appServiceBackend.ts';
+import { addOrderItem, getOrder, getOrderItem, updateOrder } from '../service/appServiceBackend.ts';
 import { Popup, Divider, Space, Card, Toast, AutoCenter, Dialog } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -36,9 +36,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
   const actions = {
-    handleUpdateOrder: (orderId: string, totalAmount: number) => {
+    handleCloseOrder: (orderId: string, totalAmount: number) => {
       setLoading(true);
-      updateOpty({orderId, totalAmount, status: OrderStatus.Pay}).then(() => {
+      updateOrder({orderId, totalAmount, status: OrderStatus.Pay}).then(() => {
         getOrder().then((response) => {
             dispatch(setOrder(response?.order));
         })
@@ -46,9 +46,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         setIsModalOpen(false);
       });
     },
-    handleUpdateOpty: (value: string, fieldName: string) => {
+    handleUpdateOrder: (values: UpdateOrder) => {
       setLoading(true);
-      updateOpty({orderId, [fieldName]: value}).then(() => {
+      updateOrder(values).then(() => {
         setLoading(false);
         setIsModalOpen(false);
         Toast.show({content: <div><b>Готово!</b><div>Заказ обновлен</div></div>, icon: 'success', duration: 3000 })
@@ -56,7 +56,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     },
     handleAddItem: (values: AddOrderItem) => {
       setLoading(true);
-      console.log(formItem)
       addOrderItem(values, orderId).then((orderItemId) => {
         getOrderItem().then((response) => {
           dispatch(setOrderItem(response?.orderItem));
@@ -140,14 +139,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   allowClear={false}
                   needConfirm={true}
                   disabled={true}
-                  onChange={(value) => {
-                    if (value) {
-                      const day = value.date();
-                      const month = value.month() + 1; // месяцы начинаются с 0
-                      const year = value.year();
-                      actions.handleUpdateOpty(`${month}/${day}/${year}`, OrderFieldData.OrderDt);
-                    }
-                  }}
                 />
               </span>
             </div>
@@ -185,7 +176,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 record={record}
                 type='TextArea'
                 fieldName={OrderFieldData.Comment}
-                updateData={actions.handleUpdateOpty}
+                updateData={actions.handleUpdateOrder}
                 disabled={isActiveOrder}
               />
               <Button
@@ -199,7 +190,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   });
 
                   if (confirmed) {
-                    actions.handleUpdateOrder(orderId, totalAmount);
+                    actions.handleCloseOrder(orderId, totalAmount);
                   }
                 }}
                 size='large'
@@ -235,6 +226,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           formItem.resetFields();
         }}
       >
+        <Spin spinning={loading} >
         <Form
           form={formItem}
           layout="vertical"
@@ -313,6 +305,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </Button>
           </Form.Item>
         </Form>
+        </Spin>
       </Popup>
       </Space>
       </Spin>

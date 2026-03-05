@@ -18,7 +18,7 @@ export const opportunityMeta = [{
           {PRODUCT_MAP[record?.[OrderFieldData.SaunaNum] as ProductKey]}
         </Tag>
 
-        <Tag color={status === OrderStatus.Pay ? "#1eb42a" : status === OrderStatus.Pay ? "#eadc11" : "#c1b6b7" }>
+        <Tag color={status === OrderStatus.Pay ? "#1eb42a" : status === OrderStatus.Reservation ? "#eadc11" : "#c1b6b7" }>
           {status}
         </Tag>
         <Tag color={"green"}>

@@ -425,6 +425,9 @@ export interface UpdateOrder {
   status?: string;
   comment?: string;
   totalAmount?: number;
+  startTime?: string;
+  endTime?: string;
+  sauna?: string;
 }
 
 export enum OrderStatus {

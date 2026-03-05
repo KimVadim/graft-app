@@ -22,6 +22,26 @@ interface AddOrderModalProps {
 
 export type ProductKey = keyof typeof PRODUCT_PRICE_MAP;
 
+const HOURS = [
+  ...Array.from({ length: 14 }, (_, i) => 10 + i), // 10–23
+  0,
+  1,
+  2,
+];
+
+export const OrderTime = HOURS.map((h) => {
+  const hour = String(h).padStart(2, "0");
+
+  return {
+    label: hour,
+    value: hour,
+    children: ["00", "15", "30", "45"].map((min) => ({
+      label: min,
+      value: min,
+    })),
+  };
+});
+
 export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
@@ -65,26 +85,6 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
         setPhone(formatted);
       },
     }
-
-    const HOURS = [
-      ...Array.from({ length: 14 }, (_, i) => 10 + i), // 10–23
-      0,
-      1,
-      2,
-    ];
-
-    const OrderTime = HOURS.map((h) => {
-      const hour = String(h).padStart(2, "0");
-
-      return {
-        label: hour,
-        value: hour,
-        children: ["00", "15", "30", "45"].map((min) => ({
-          label: min,
-          value: min,
-        })),
-      };
-    });
 
     const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
     const [selectedTime, setSelectedTime] = useState<string[]>([]);
