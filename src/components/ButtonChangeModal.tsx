@@ -1,7 +1,7 @@
 import { AutoCenter, CascadePickerView, Popup, Selector, Toast } from 'antd-mobile';
 import React, { useState } from 'react';
 import { Button, Form, Spin }  from 'antd';
-import { UserContactOutline } from 'antd-mobile-icons';
+import { EditSOutline } from 'antd-mobile-icons';
 import { Input } from 'antd';
 import { FieldPlaceholder, FieldRules, FieldStyle, OrderField, UpdateOrder } from '../constants/appConstant.ts';
 import { BUTTON_TEXT, PRODUCT, PRODUCT_PRICE_MAP } from '../constants/dictionaries.ts';
@@ -117,7 +117,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
   return (
     <>
       <Button
-        icon={<UserContactOutline fontSize={40} />}
+        icon={<EditSOutline fontSize={40} />}
         variant="filled"
         onClick={() => setIsUserInfo(true)}
         size='large'

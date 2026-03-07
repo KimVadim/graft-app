@@ -19,9 +19,7 @@ export const MenuComp: React.FC = () => {
           type: 'group',
           label: 'Основные',
           children: [
-            { label: 'Бронь бани', key: '/opportunities' },
-            { label: 'Платежи', key: '/payments' },
-            { label: 'Контакты', key: '/contacts' },
+            { label: 'Бронь бани', key: '/order' },
             { label: 'Расходы', key: '/expenses' },
           ],
         },
@@ -29,7 +27,7 @@ export const MenuComp: React.FC = () => {
           type: 'group',
           label: 'Отчеты',
           children: [
-            { label: 'Отчеты CN', key: '/incomereportcn' },
+            { label: 'Отчеты', key: '/incomereportcn' },
           ],
         },
       ],

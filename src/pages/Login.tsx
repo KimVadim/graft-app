@@ -27,7 +27,7 @@ const Login: React.FC = () => {
         .then(() => {
           dispatch(setUser(login));
         })
-        .then(() => navigate('/opportunities'));
+        .then(() => navigate('/order'));
     } catch (err) {
       setError('Неверный email или пароль');
     }
