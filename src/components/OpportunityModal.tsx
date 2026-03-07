@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { addOrderItem, getOrder, getOrderItem, updateOrder } from '../service/appServiceBackend.ts';
+import { addOrderItem, getOrderItem, updateOrder } from '../service/appServiceBackend.ts';
 import { Popup, Divider, Space, Card, Toast, AutoCenter, Dialog } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { setOrderItem } from '../slices/orderitemSlice.ts';
 import { orderItemMeta } from '../pages/AllApplicationMeta.tsx';
-import { setOrder } from '../slices/orderSlice.ts';
+import { updateOrderAction } from '../slices/orderSlice.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -21,27 +21,30 @@ interface OpportunityModalProps {
 }
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  let orderId = record?.[OrderFieldData.Id]
-  const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
-  const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
-  const [formItem] = Form.useForm();
-  const [options, setOptions] = useState<{ menuId: String; sales: number; price: number; value: string; label: string }[]>([]);
-  const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
   const dispatch: AppDispatch = useDispatch();
+  const [formItem] = Form.useForm();
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [options, setOptions] = useState<{ menuId: String; sales: number; price: number; value: string; label: string }[]>([]);
+  const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
+  const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
+  const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
+  let orderId = record?.[OrderFieldData.Id]
   const filteredData = optyItemData.filter((x)=> x[OrderItemFieldData.OrderId] === orderId);
   const optyPayDate = new Date(record?.[OrderField.OrderDate]);
   const prepayAmount = Number(record?.[OrderFieldData.PrepayAmount]);
   const totalAmount = filteredData.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
+  const parsedDate = record?.[OrderFieldData.OrderDt]
+    ? dayjs(record[OrderFieldData.OrderDt])
+    : null;
+  const isActiveOrder = record?.[OrderFieldData.Status] === 'Опл'
+
   const actions = {
     handleCloseOrder: (orderId: string, totalAmount: number) => {
       setLoading(true);
-      updateOrder({orderId, totalAmount, status: OrderStatus.Pay}).then(() => {
-        getOrder().then((response) => {
-            dispatch(setOrder(response?.order));
-        })
+      updateOrder({orderId, totalAmount, status: OrderStatus.Pay}).then((result) => {
+        dispatch(updateOrderAction(result?.['data']));
         setLoading(false);
         setIsModalOpen(false);
       });
@@ -88,11 +91,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       },
   };
 
-  const parsedDate = record?.[OrderFieldData.OrderDt]
-    ? dayjs(record[OrderFieldData.OrderDt])
-    : null;
-
-  const isActiveOrder = record?.[OrderFieldData.Status] === 'Опл'
   return (
     <Popup
       visible={isModalOpen}
@@ -173,10 +171,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 disabled={isActiveOrder}
               />
               <ButtonChangeModal
-                record={record}
-                type='TextArea'
-                fieldName={OrderFieldData.Comment}
-                updateData={actions.handleUpdateOrder}
+                orderId={record?.id}
+                setIsOrderPopup={setIsModalOpen}
                 disabled={isActiveOrder}
               />
               <Button

@@ -57,7 +57,6 @@ export const addOrder = async (values: AddOrder) => {
 
     const response = await axios.post(endpoints.ORDER, payload);
 
-    console.log('Ответ сервера:', response.data);
     return response?.data?.message?.order_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
@@ -93,7 +92,6 @@ export const addOrderItem = async (values: AddOrderItem, orderId: string) => {
 
     const response = await axios.post(endpoints.ORDER_ITEM, payload);
 
-    console.log('Ответ сервера:', response.data);
     return response?.data?.message?.order_item_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
@@ -126,7 +124,6 @@ export const addExpense = async (values: AddExpense) => {
 
     const response = await axios.post(endpoints.EXPENSE, payload);
 
-    console.log('Ответ сервера:', response.data);
     return response?.data?.message?.expense_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
@@ -166,9 +163,7 @@ export const closeOpty = async (optyId: String) => {
       optyId,
     };
 
-    const response = await axios.post(endpoints.CLOSE_OPTY, payload);
-
-    console.log('Ответ сервера:', response.data);
+    await axios.post(endpoints.CLOSE_OPTY, payload);
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -266,19 +261,18 @@ export const getOrderItem = async () => {
 export const updateOrder = async (values: UpdateOrder) => {
   try {
     const payload = {
-      orderId: values.orderId,
+      id: values.orderId,
       status: values?.status,
       comment: values?.comment,
-      totalAmount: values?.totalAmount,
-      startTime: values?.startTime,
-      endTime: values?.endTime,
-      sauna: values?.sauna,
+      total_amount: values?.totalAmount,
+      start_time: values?.startTime,
+      end_time: values?.endTime,
+      sauna_num: values?.saunaNum?.[0],
     };
 
     const response = await axios.post(endpoints.UPDATE_ORDER, payload);
 
-    console.log('Ответ сервера:', response.data);
-    return response?.data?.message?.con_id;
+    return response?.data;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);

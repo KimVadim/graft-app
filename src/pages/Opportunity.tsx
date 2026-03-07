@@ -66,7 +66,7 @@ export const Opportunity: React.FC = () => {
   }, [searchText, optyData]);
 
   const reservationData = useMemo(() => {
-    return filteredData
+    return (filteredData || [])
       .filter(x => [OrderStatus.Reservation].includes(x[OrderFieldData.Status] as OrderStatus))
       .sort((a, b) =>
         new Date(a[OrderFieldData.OrderDt]).getTime() -
@@ -75,7 +75,7 @@ export const Opportunity: React.FC = () => {
   }, [filteredData]);
 
   const paidData = useMemo(() => {
-    return filteredData.filter(
+    return (filteredData || []).filter(
       x => [OrderStatus.Cancel, OrderStatus.Pay].includes(x[OrderFieldData.Status] as OrderStatus)
     );
   }, [filteredData]);

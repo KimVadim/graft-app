@@ -1,42 +1,47 @@
 import { AutoCenter, CascadePickerView, Popup, Selector, Toast } from 'antd-mobile';
 import React, { useState } from 'react';
-import { Button, Form }  from 'antd';
-import { UserContactOutline, PhonebookOutline } from 'antd-mobile-icons';
+import { Button, Form, Spin }  from 'antd';
+import { UserContactOutline } from 'antd-mobile-icons';
 import { Input } from 'antd';
 import { FieldPlaceholder, FieldRules, FieldStyle, OrderField, UpdateOrder } from '../constants/appConstant.ts';
 import { BUTTON_TEXT, PRODUCT, PRODUCT_PRICE_MAP } from '../constants/dictionaries.ts';
 import { formattedPhone } from '../service/utils.ts';
 import { OrderTime, ProductKey } from './AddOrderModal.tsx';
 import { updateOrder } from '../service/appServiceBackend.ts';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateOrderAction } from '../slices/orderSlice.ts';
+import { RootState } from '../store.ts';
 
 interface ButtonChangeModalProps {
-  record: any;
-  type: string;
-  fieldName: string;
+  orderId: string;
   disabled?: boolean;
-  updateData: (valuse: UpdateOrder) => void;
+  setIsOrderPopup: (isOpen: boolean) => void;
 }
 
 const { TextArea } = Input;
 
-export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ record, type, fieldName, updateData, disabled }) => {
+export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, setIsOrderPopup, disabled }) => {
   const [form] = Form.useForm();
-  const [phone, setPhone] = useState("");
+  const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [isUserInfo, setIsUserInfo] = React.useState<boolean>(false)
-
+  const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<string[]>([]);
+  const [timeField, setTimeField] = useState<string | null>(null);
+  const order = useSelector((state: RootState) =>
+    state.order.order.find(o => o.id === orderId)
+  );
   React.useEffect(() => {
-    if (record) {
-      form.setFieldsValue({
-        [OrderField.Phone]: record.phone,
-        [OrderField.SaunaNum]: record.sauna_num ? [record.sauna_num] : [],
-        [OrderField.StartTime]: record.start_time,
-        [OrderField.EndTime]: record.end_time,
-        [OrderField.Comment]: record.comment,
-      });
+    if (!order) return;
 
-      setPhone(record.phone);
-    }
-  }, [record, form]);
+    form.setFieldsValue({
+      [OrderField.Phone]: order?.phone,
+      [OrderField.SaunaNum]: order?.sauna_num ? [order.sauna_num] : [],
+      [OrderField.StartTime]: order?.start_time,
+      [OrderField.EndTime]: order?.end_time,
+      [OrderField.Comment]: order?.comment,
+    });
+  }, [order, form]);
 
   const actions = {
     handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,73 +57,67 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ record, ty
           inputElement.setSelectionRange(newPos, newPos);
         }
       }, 0);
-      setPhone(formatted);
     },
-  }
-
-  const iconView = () => {
-    if (type === 'TextArea') {
-      return (<UserContactOutline fontSize={40} />)
-    } else if (type === 'PhoneInput') {
-      return (<PhonebookOutline fontSize={40} />)
-    }
-  }
-
-const handleSubmit = async (values: UpdateOrder) => {
-    const payload = {
-      ...values,
-      orderId: record.id, // 👈 добавляем id заказа
-    };
-
-    const orderId = await updateOrder(payload);
-
-    if (orderId) {
-      Toast.show({
-        content: (
-          <div>
-            <b>Готово!</b>
-            <div>Договор № {orderId}</div>
-          </div>
-        ),
-        icon: 'success',
-        duration: 3000
-      });
-
+    handleClose: () => {
       setIsUserInfo(false);
-    } else {
-      Toast.show({
-        content: `Ошибка!`,
-        icon: 'fail',
-        duration: 3000
+      form.resetFields();
+    },
+    handleSubmit: async (values: UpdateOrder) => {
+      const payload = {
+        ...values,
+        orderId,
+      };
+
+      try {
+        setLoading(true);
+
+        const orderId = await updateOrder(payload).then((result)=> {
+          dispatch(updateOrderAction(result?.['data']));
+
+          return result?.['data']?.['id']
+        });
+
+        if (!orderId) throw new Error();
+
+        Toast.show({
+          content: (<div><b>Готово!</b><div>Заказ № {orderId}</div></div>),
+          icon: 'success',
+          duration: 3000
+        });
+        form.resetFields();
+        setIsUserInfo(false);
+        setIsOrderPopup(false);
+      } catch (e) {
+        Toast.show({
+          content: `Ошибка!`,
+          icon: 'fail',
+          duration: 3000
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    handleTimeChange: (val: string[]) => {
+      setSelectedTime(val);
+    },
+    handleTimeConfirm: () => {
+      if (!selectedTime.length) return;
+
+      const [hour, minute] = selectedTime;
+      const formattedTime = `${hour.padStart(2, '0')}:${minute}`;
+
+      form.setFieldsValue({
+        [timeField as string]: formattedTime
       });
+
+      setIsPopupStartOpen(false);
     }
-  };
+  }
 
-  const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<string[]>([]);
-  const [timeField, setTimeField] = useState<string | null>(null);
-
-  const handleTimeChange = (val: string[]) => {
-    setSelectedTime(val);
-  };
-
-  const handleTimeConfirm = () => {
-    if (!selectedTime.length) return;
-
-    const [hour, minute] = selectedTime;
-    const formattedTime = `${hour.padStart(2, '0')}:${minute}`;
-
-    form.setFieldsValue({
-      [timeField as string]: formattedTime
-    });
-
-    setIsPopupStartOpen(false);
-  };
-  console.log(record)
   return (
     <>
       <Button
-        icon={iconView()}
+        icon={<UserContactOutline fontSize={40} />}
         variant="filled"
         onClick={() => setIsUserInfo(true)}
         size='large'
@@ -129,15 +128,23 @@ const handleSubmit = async (values: UpdateOrder) => {
       <Popup
         visible={isUserInfo}
         showCloseButton
-        onClose={() => {setIsUserInfo(false);}}
-        onMaskClick={() => setIsUserInfo(false)}
         bodyStyle={{ height: '50vh' }}
+        onClose={actions.handleClose}
+        onMaskClick={actions.handleClose}
       >
+        <Spin spinning={loading} >
         <AutoCenter style={{ marginTop: '20px' }}>
-        <Form
+          <Form
             form={form}
             layout="vertical"
-            onFinish={handleSubmit}
+            onFinish={actions.handleSubmit}
+            initialValues={{
+              [OrderField.Phone]: order?.phone,
+              [OrderField.SaunaNum]: order?.sauna_num ? [order.sauna_num] : [],
+              [OrderField.StartTime]: order?.start_time,
+              [OrderField.EndTime]: order?.end_time,
+              [OrderField.Comment]: order?.comment,
+            }}
           >
             <Form.Item
               label={OrderField.PhoneLabel}
@@ -147,7 +154,6 @@ const handleSubmit = async (values: UpdateOrder) => {
               ]}
             >
               <Input
-                value={phone}
                 placeholder="+7 (777) 123-45-67"
                 onChange={actions.handlePhoneChange}
                 maxLength={18}
@@ -221,6 +227,7 @@ const handleSubmit = async (values: UpdateOrder) => {
             </Form.Item>
           </Form>
         </AutoCenter>
+        </Spin>
       </Popup>
       <Popup
         visible={isPopupStartOpen}
@@ -231,12 +238,12 @@ const handleSubmit = async (values: UpdateOrder) => {
         <CascadePickerView
           options={OrderTime}
           value={selectedTime}
-          onChange={handleTimeChange}
+          onChange={actions.handleTimeChange}
         />
 
         <Button
           type="primary"
-          onClick={handleTimeConfirm}
+          onClick={actions.handleTimeConfirm}
           style={{ width: '100%', marginTop: 10, marginBottom: 40 }}
         >
           {BUTTON_TEXT.Ok}

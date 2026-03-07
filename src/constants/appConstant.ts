@@ -427,7 +427,7 @@ export interface UpdateOrder {
   totalAmount?: number;
   startTime?: string;
   endTime?: string;
-  sauna?: string;
+  saunaNum?: string;
 }
 
 export enum OrderStatus {
