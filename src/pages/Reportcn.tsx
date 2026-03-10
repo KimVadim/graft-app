@@ -41,7 +41,7 @@ export const IncomeReportcn: React.FC = () => {
     total_profit: Number(String(item.total_profit).replace(/\s/g, "")),
   })).slice(0, 30);
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ paddingTop: '10px', paddingLeft: '15px' }}>
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '111px' }}>
           <MenuComp/>
@@ -59,37 +59,37 @@ export const IncomeReportcn: React.FC = () => {
         </Col>
       </Row>
      <ResponsiveContainer width="100%" height={800}>
-      <BarChart data={chartData} margin={{ top: 3, right: 50, left: 20, bottom: 5 }} layout="vertical">
+      <BarChart data={chartData} margin={{ top: 0, right: 50, left: 20, bottom: 5 }} layout="vertical">
         <XAxis type="number" hide />
         <YAxis
           type="category"
           dataKey="order_dt"
           tickLine={false}
           axisLine={false}
-          width={45}
+          width={50}
           tick={({ x, y, payload }) => {
             const date = new Date(payload.value);
             const day = date.getDate();
             const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3);
             const weekday = date.toLocaleString("ru-RU", { weekday: "short" }).slice(0, 2);
             return (
-              <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={12} fill="#1f2937">
+              <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={13} fill="#1f2937">
                 {`${weekday} ${day} ${month}`}
               </text>
             );
           }}
         />
         <Legend
-          wrapperStyle={{ paddingTop: "15px" }}
+          wrapperStyle={{ paddingTop: "5px" }}
           formatter={(value) => (
-            <span style={{ color: "#1f2937", fontSize: 14 }}>{value}</span>
+            <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
           )}
         />
         <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6">
           <LabelList
             position="right"
             fill="#1f2937"
-            fontSize={10}
+            fontSize={11}
             formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
           />
         </Bar>
@@ -97,7 +97,7 @@ export const IncomeReportcn: React.FC = () => {
           <LabelList
             position="right"
             fill="#1f2937"
-            fontSize={10}
+            fontSize={11}
             formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
           />
         </Bar>
