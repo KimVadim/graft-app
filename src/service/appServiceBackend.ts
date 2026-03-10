@@ -9,7 +9,6 @@ import {
   OrderStatus,
   UpdateOrder,
 } from '../constants/appConstant.ts';
-import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
 import { setExpense } from '../slices/expenseSlice.ts';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
@@ -21,7 +20,7 @@ export const endpoints = {
   LOGIN: `${API_URL}/endpoints/login`,
   EXPENSE: `${API_URL}/endpoints/expense`,
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
-  MONTH_PAYMENT: `${API_URL}/endpoints/month-payments`,
+  DAILY_REPORT: `${API_URL}/endpoints/fs/v2/dailyreport`,
   EXPENSES: `${API_URL}/endpoints/expenses`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
@@ -173,13 +172,13 @@ export const closeOpty = async (optyId: String) => {
   }
 };
 
-export const getMonthPaymentData = async (dispatch: AppDispatch) => {
+export const getDailyReportData = async () => {
   try {
-    const { data } = await axios.get(endpoints.MONTH_PAYMENT);
+    const { data } = await axios.get(endpoints.DAILY_REPORT);
 
-    const monthPayments = data.message?.monthpayments || [];
+    const dailyReport = data.message?.daily_report || [];
 
-    dispatch(setMonthPayments(monthPayments));
+    return { dailyReport };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
