@@ -59,7 +59,7 @@ export const IncomeReportcn: React.FC = () => {
         </Col>
       </Row>
      <ResponsiveContainer width="100%" height={800}>
-      <BarChart data={chartData} margin={{ top: 10, right: 50, left: 20, bottom: 5 }} layout="vertical">
+      <BarChart data={chartData} margin={{ top: 3, right: 50, left: 20, bottom: 5 }} layout="vertical">
         <XAxis type="number" hide />
         <YAxis
           type="category"
@@ -80,7 +80,7 @@ export const IncomeReportcn: React.FC = () => {
           }}
         />
         <Legend
-          wrapperStyle={{ paddingTop: "25px" }}
+          wrapperStyle={{ paddingTop: "15px" }}
           formatter={(value) => (
             <span style={{ color: "#1f2937", fontSize: 14 }}>{value}</span>
           )}
