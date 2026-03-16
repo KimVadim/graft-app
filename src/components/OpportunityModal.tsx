@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { addOrderItem, getOrderItem, getOrderItemData, updateOrder } from '../service/appServiceBackend.ts';
+import { addOrderItem, getOrderItemData, updateOrder } from '../service/appServiceBackend.ts';
 import { Popup, Divider, Space, Card, Toast, AutoCenter, Dialog } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -35,7 +35,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setLoading(true);
       const response = await getOrderItemData(orderId);
 
-      dispatch(setOrderItem(response));
+      response && dispatch(setOrderItem(response));
 
       if (showToast) {
         Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
@@ -80,8 +80,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     handleAddItem: (values: AddOrderItem) => {
       setLoading(true);
       addOrderItem(values, orderId).then((orderItemId) => {
-        getOrderItem().then((response) => {
-          dispatch(setOrderItem(response?.orderItem));
+        getOrderItemData(orderId).then((response) => {
+          response && dispatch(setOrderItem(response));
         })
         setIsPopupItemOpen(false)
         formItem.resetFields();
