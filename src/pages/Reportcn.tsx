@@ -15,6 +15,7 @@ import {
 } from 'recharts'
 import { MenuComp } from '../components/Menu.tsx';
 import { setDeilyReport } from '../slices/dailyReportSlice.ts';
+import { ChartAreaInteractive } from '../components/SectionCards.tsx';
 
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -33,15 +34,9 @@ export const IncomeReportcn: React.FC = () => {
     loadOrders();
   }, [loadOrders]);
   const dailyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
-  const chartData = (dailyReportData || [])
-  .map((item: any) => ({
-    ...item,
-    total_revenue: Number(String(item.total_revenue).replace(/\s/g, "")),
-    total_price: Number(String(item.total_price).replace(/\s/g, "")),
-    total_profit: Number(String(item.total_profit).replace(/\s/g, "")),
-  })).slice(0, 30);
+  const chartData = (dailyReportData || []).slice(0, 30);
   return (
-    <div style={{ paddingTop: '10px', paddingLeft: '15px' }}>
+    <div style={{ paddingTop: '10px', paddingLeft: '15px', maxWidth: '400px' }}>
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '111px' }}>
           <MenuComp/>
@@ -102,6 +97,9 @@ export const IncomeReportcn: React.FC = () => {
           />
         </Bar>
       </BarChart>
+    </ResponsiveContainer>
+    <ResponsiveContainer width="100%" height={300}>
+      <ChartAreaInteractive/>
     </ResponsiveContainer>
     </div>
   );

@@ -106,20 +106,20 @@ export const Opportunity: React.FC = () => {
             <MenuComp/>
           </Col>
           <Col>
-            <Button
-              type="primary"
-              onClick={() => loadOrders(true)}
-            >
-              Обновить
-            </Button>
-          </Col>
-          <Col>
             <Input
               placeholder="Поиск по номеру квартиры..."
               value={searchText}
               onChange={actions.handleSearch}
               style={{ width: 150 }}
             />
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              onClick={() => loadOrders(true)}
+            >
+              Обновить
+            </Button>
           </Col>
         </Row>
       <CapsuleTabs>

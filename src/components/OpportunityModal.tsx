@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { addOrderItem, getOrderItem, updateOrder } from '../service/appServiceBackend.ts';
+import { addOrderItem, getOrderItem, getOrderItemData, updateOrder } from '../service/appServiceBackend.ts';
 import { Popup, Divider, Space, Card, Toast, AutoCenter, Dialog } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -29,10 +29,30 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
   const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
   let orderId = record?.[OrderFieldData.Id]
-  const filteredData = optyItemData.filter((x)=> x[OrderItemFieldData.OrderId] === orderId);
+
+  const loadOrders = useCallback(async (showToast = false) => {
+    try {
+      setLoading(true);
+      const response = await getOrderItemData(orderId);
+
+      dispatch(setOrderItem(response));
+
+      if (showToast) {
+        Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, orderId]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
+
+  const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId) || [];
   const optyPayDate = new Date(record?.[OrderField.OrderDate]);
   const prepayAmount = Number(record?.[OrderFieldData.PrepayAmount]);
-  const totalAmount = filteredData.reduce((sum, item) => {
+  const totalAmount = filteredData?.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
   const parsedDate = record?.[OrderFieldData.OrderDt]

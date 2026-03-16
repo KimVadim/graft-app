@@ -280,3 +280,19 @@ export const updateOrder = async (values: UpdateOrder) => {
     }
   }
 };
+
+export const getOrderItemData = async (orderId: string) => {
+  try {
+    const { data } = await axios.get(endpoints.ORDER_ITEM, {
+      params: { orderId },
+    });
+
+    return data.message?.orderitem || [];
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
