@@ -1,0 +1,340 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder } from '../constants/appConstant';
+import { formatPhoneNumber } from '../service/utils';
+import { addOrderItem, getOrderItemData, updateOrder } from '../service/appServiceBackend';
+import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
+import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries';
+import dayjs from 'dayjs';
+import { AddCircleOutline, CheckCircleOutline } from 'antd-mobile-icons';
+import { ButtonChangeModal } from './ButtonChangeModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
+import { setOrderItem } from '../slices/orderitemSlice';
+import { orderItemMeta } from '../pages/AllApplicationMeta';
+import { updateOrderAction } from '../slices/orderSlice';
+import { App } from 'antd';
+
+interface OpportunityModalProps {
+  isModalOpen: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
+  record: any;
+}
+
+export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
+  const { modal, message } = App.useApp();
+  const dispatch: AppDispatch = useDispatch();
+  const [formItem] = Form.useForm();
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [options, setOptions] = useState<{ menuId: String; sales: number; price: number; value: string; label: string }[]>([]);
+  const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
+  const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
+  const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
+  let orderId = record?.[OrderFieldData.Id]
+
+  const loadOrders = useCallback(async (showToast = false) => {
+    try {
+      setLoading(true);
+      const response = await getOrderItemData(orderId);
+
+      response && dispatch(setOrderItem(response));
+
+      if (showToast) {
+        Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, orderId]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
+
+  const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId) || [];
+  const optyPayDate = new Date(record?.[OrderField.OrderDate]);
+  const prepayAmount = Number(record?.[OrderFieldData.PrepayAmount]);
+  const totalAmount = filteredData?.reduce((sum, item) => {
+    return sum + (Number(item?.['amount']) || 0);
+  }, 0);
+  const parsedDate = record?.[OrderFieldData.OrderDt]
+    ? dayjs(record[OrderFieldData.OrderDt])
+    : null;
+  const isActiveOrder = record?.[OrderFieldData.Status] === 'Опл'
+
+  const actions = {
+    handleCloseOrder: (orderId: string, totalAmount: number) => {
+      setLoading(true);
+      updateOrder({orderId, totalAmount, status: OrderStatus.Pay}).then((result) => {
+        dispatch(updateOrderAction(result?.['data']));
+        setLoading(false);
+        setIsModalOpen(false);
+      });
+    },
+    handleUpdateOrder: (values: UpdateOrder) => {
+      setLoading(true);
+      updateOrder(values).then(() => {
+        setLoading(false);
+        setIsModalOpen(false);
+        Toast.show({content: <div><b>Готово!</b><div>Заказ обновлен</div></div>, icon: 'success', duration: 3000 })
+      });
+    },
+    handleAddItem: (values: AddOrderItem) => {
+      setLoading(true);
+      addOrderItem(values, orderId).then((orderItemId) => {
+        getOrderItemData(orderId).then((response) => {
+          response && dispatch(setOrderItem(response));
+        })
+        setIsPopupItemOpen(false)
+        formItem.resetFields();
+        setLoading(false);
+        orderId
+          ? Toast.show({content: <div><b>Готово!</b><div>Позиция заказа № {orderItemId}</div></div>, icon: 'success', duration: 3000 })
+          : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
+      });
+    },
+    handleSearch: (value: string) => {
+        if (!menuData) return;
+        const filteredOptions = menuData
+          .filter(item => item[MenuFieldData.MenuStatus] === 'Active')
+          .filter(item =>
+            item[MenuFieldData.MenuName].toLowerCase().includes(value.toLowerCase())
+          )
+          .slice(0, 7)
+          .map(item => ({
+            menuId: item[MenuFieldData.Id],
+            sales: Number(item[MenuFieldData.Sales]),
+            price: Number(item[MenuFieldData.Price]),
+            value: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
+            label: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
+          }));
+
+        setOptions(filteredOptions);
+      },
+  };
+
+  const handleCloseClick = () => {
+    modal.confirm({
+      title: 'Подтверждение',
+      content: MODAL_TEXT.OptyCloseText,
+      okText: BUTTON_TEXT.Ok,
+      width: 300,
+      centered: true,
+      cancelText: BUTTON_TEXT.Cancel,
+      onOk: async () => {
+        await actions.handleCloseOrder(orderId, totalAmount);
+        message.success('Заказ закрыт');
+      },
+    });
+  };
+
+  return (
+    <Popup
+      visible={isModalOpen}
+      showCloseButton
+      onClose={() => {setIsModalOpen(false);}}
+      onMaskClick={() => {setIsModalOpen(false);}}
+    >
+      <Spin spinning={loading} >
+      <Space justify='center' block>
+        <div
+          style={{
+            height: '65vh',
+            overflowY: 'scroll',
+            paddingTop: '20px',
+            marginBottom: '30px',
+            justifyContent: 'center',
+            maxWidth: '400px',
+          }}
+        >
+          <Card title={ModalTitle.OrderDetail}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+              <span>
+                <strong>{`${OrderField.FullNameLabel}: `}</strong> {record?.[OrderFieldData.FirstName]}
+              </span>
+            </div>
+            <p className="opty-card"><strong>{`${OrderField.PhoneLabel}: `}</strong>
+              <a
+                className="phone-link"
+                href={`tel:${record?.[OrderFieldData.Phone]}`}
+                style={{ textDecoration: "none", color: "blue" }}
+              >
+                {formatPhoneNumber(record?.[OrderFieldData.Phone])}
+              </a>
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+              <span>
+                <strong>{`${OrderField.OrderDateLabel}: `}</strong>
+                <DatePicker
+                  format={FieldFormat.Date}
+                  inputReadOnly={true}
+                  placeholder={FieldPlaceholder.Date}
+                  disabledDate={(current) => current && current.isBefore(parsedDate, 'day')}
+                  value={optyPayDate ? parsedDate : undefined}
+                  allowClear={false}
+                  needConfirm={true}
+                  disabled={true}
+                />
+              </span>
+            </div>
+            <p className="opty-card">
+              <strong>{`${OrderField.SaunaPriceLabel}: `}</strong>
+              {`${record?.[OrderFieldData.SaunaNum]} · ${Number(record?.[OrderFieldData.Price])?.toLocaleString("ru-RU")} · (${Number(record?.[OrderFieldData.PrepayAmount])?.toLocaleString("ru-RU")} предоп.)`}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.TimePeopleCountLabel}: `}</strong>
+              {`${record?.[OrderFieldData.StartTime]} - ${record?.[OrderFieldData.EndTime]} · ${record?.[OrderFieldData.PeopleCount]} чел · ${record?.[OrderFieldData.Recommendation]}`}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.CommentLabel}: `}</strong>
+              {record?.[OrderFieldData.Comment]}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.TotalAmountLabel}: `}</strong>
+              {Number(totalAmount)?.toLocaleString("ru-RU")}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OrderField.TotalLabel}: `}</strong>
+              {Number(totalAmount - prepayAmount)?.toLocaleString("ru-RU")}
+            </p>
+            <AutoCenter style={{ marginTop: '20px' }}>
+              <Button
+                icon={<AddCircleOutline fontSize={40} />}
+                variant="filled"
+                onClick={() => setIsPopupItemOpen(true) }
+                size='large'
+                style={{ height: 55, width: 55 }}
+                color="primary"
+                disabled={isActiveOrder}
+              />
+              <ButtonChangeModal
+                orderId={record?.id}
+                setIsOrderPopup={setIsModalOpen}
+                disabled={isActiveOrder}
+              />
+              <Button
+                icon={<CheckCircleOutline style={{ fontSize: 36 }} />}
+                onClick={handleCloseClick}
+                variant="filled"
+                color="primary"
+                style={{ height: 55, width: 55, marginLeft: 30 }}
+                disabled={isActiveOrder}
+              />
+            </AutoCenter>
+            <Divider
+              style={{ color: '#1c0bd8', borderColor: '#1c0bd8' }}
+            >
+              Заказ итого - {Number(totalAmount)?.toLocaleString("ru-RU")}
+            </Divider>
+            <Table
+              rowKey="uid"
+              scroll={{ x: 395 }}
+              columns={orderItemMeta}
+              dataSource={filteredData}
+              size='middle'
+              pagination={{
+                position: ['bottomCenter'],
+                pageSize: 40
+              }}
+            />
+          </Card>
+        </div>
+
+      <Popup
+        visible={isPopupItemOpen}
+        showCloseButton
+        onClose={() => {
+          setIsPopupItemOpen(false);
+          formItem.resetFields();
+        }}
+        onMaskClick={() => {
+          setIsPopupItemOpen(false);
+          formItem.resetFields();
+        }}
+      >
+        <Spin spinning={loading} >
+        <Form
+          form={formItem}
+          layout="vertical"
+          initialValues={{
+            itemDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+            itemCount: 1,
+          }}
+          onFinish={actions.handleAddItem}
+          style={{ margin: '30px' }}
+        >
+          <Form.Item
+            label={OrderItemField.ItemNameLabel}
+            name={OrderItemField.ItemName}
+            rules={[FieldRules.Required]}
+          >
+            <AutoComplete
+              onSearch={actions.handleSearch}
+              placeholder={FieldPlaceholder.MenuName}
+              options={options}
+              onSelect={(value) => {
+                const selectedOption = options.find(opt => opt.value === value);
+                if (selectedOption) {
+                  formItem.setFieldsValue({
+                    sales: selectedOption.sales,
+                    price: selectedOption.price,
+                    menuId: selectedOption.menuId,
+                  });
+                }
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            label={OrderItemField.CountLabel}
+            name={OrderItemField.Count}
+            rules={[FieldRules.PaymentAmount, FieldRules.Required]}
+          >
+            <InputNumber style={FieldStyle.InputStyle} defaultValue={1} />
+          </Form.Item>
+          <Form.Item
+            label={OrderItemField.SalesLabel}
+            name={OrderItemField.Sales}
+            rules={[FieldRules.PaymentAmount, FieldRules.Required]}
+          >
+            <InputNumber style={FieldStyle.InputStyle} />
+          </Form.Item>
+          <Form.Item
+            label={OrderItemField.PriceLabel}
+            name={OrderItemField.Price}
+          >
+            <InputNumber style={FieldStyle.InputStyle} />
+          </Form.Item>
+          <Form.Item
+            label={OrderItemField.ItemDateLabel}
+            name={OrderItemField.ItemDate}
+            rules={[FieldRules.Required]}
+          >
+            <DatePicker
+              style={FieldStyle.InputStyle}
+              format={FieldFormat.Date}
+              inputReadOnly={true}
+              placeholder={FieldPlaceholder.Date}
+              defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
+              disabled
+            />
+          </Form.Item>
+          <Form.Item name={OrderItemField.MenuId} hidden={true}></Form.Item>
+          <Form.Item style={{ textAlign: "center", marginBottom: 50 }}>
+            <Button type="primary" htmlType="submit">
+              {BUTTON_TEXT.Add}
+            </Button>
+            <Button onClick={() => {
+              setIsPopupItemOpen(false);
+              formItem.resetFields();
+            }} style={{ marginLeft: 8,  marginTop: 10}}>
+              {BUTTON_TEXT.Cancel}
+            </Button>
+          </Form.Item>
+        </Form>
+        </Spin>
+      </Popup>
+      </Space>
+      </Spin>
+    </Popup>
+  );
+};

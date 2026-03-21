@@ -1,7 +1,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
-
+@import "tailwindcss";
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -117,13 +117,14 @@
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1126px;
   margin: 0 auto;
+  /*padding: 0 16px;  добавили отступы */
   text-align: center;
   border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
+  min-height: 80dvh;
+
   flex-direction: column;
   box-sizing: border-box;
 }
@@ -134,33 +135,46 @@
 
 body {
   margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+  padding: 0;
+  overflow-x: hidden; /* защита от скролла вбок */
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+  font-size: 32px;
+  letter-spacing: -0.8px;
+  margin: 20px 0;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 44px;
+    margin: 24px 0;
   }
 }
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 56px;
+    margin: 32px 0;
+  }
+}
+
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
+  font-size: 18px;
+}
+
+@media (min-width: 768px) {
+  h2 {
     font-size: 20px;
   }
 }
+
+@media (min-width: 1024px) {
+  h2 {
+    font-size: 24px;
+  }
+}
+
 p {
   margin: 0;
 }
@@ -263,3 +277,32 @@ code {
     @apply bg-background text-foreground;}
   html {
     @apply font-sans;}}
+
+.adm-capsule-tabs-content {
+    padding: 0px !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+section {
+  padding: 24px 0;
+}
+
+@media (min-width: 768px) {
+  section {
+    padding: 32px 0;
+  }
+}
+
+
+p {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
