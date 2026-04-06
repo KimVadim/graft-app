@@ -13,9 +13,9 @@ interface OrderItem {
   order_id: string;
 }
 
-interface orderItemState {
+export type orderItemState = {
   orderItem: OrderItem[];
-}
+};
 
 const initialState: orderItemState = {
   orderItem: [],

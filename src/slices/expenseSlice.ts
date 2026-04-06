@@ -10,9 +10,9 @@ interface Expense {
   count: number;
 }
 
-interface ExpenseState {
+export type ExpenseState = {
   expense: Expense[];
-}
+};
 
 const initialState: ExpenseState = {
   expense: [],

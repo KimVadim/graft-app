@@ -15,9 +15,9 @@ interface Menu {
   comment: string;
 }
 
-interface MenuState {
+export type MenuState = {
   menu: Menu[];
-}
+};
 
 const initialState: MenuState = {
   menu: [],

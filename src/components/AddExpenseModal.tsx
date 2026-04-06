@@ -1,8 +1,8 @@
 import { AutoComplete, Button, Form, InputNumber, Modal, Select, Spin } from "antd";
 import React, { useState } from "react"
-import { AppDispatch, RootState } from "../store.ts";
-import { useDispatch, useSelector } from "react-redux";
-import { addExpense, getExpenseData } from "../service/appServiceBackend.ts";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import { addExpense } from "../service/appServiceBackend";
 import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
 import { BUTTON_TEXT, EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.js";
@@ -15,7 +15,6 @@ interface AddExpenseModalProps {
 }
 
 export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense}) => {
-    const dispatch: AppDispatch = useDispatch();
     const [form] = Form.useForm();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string; apartNum: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[]
@@ -26,17 +25,8 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
       setLoading(true);
       addExpense(values)
         .then((expenseId) => {
-          const fetchData = async () => {
-            setLoading(true);
-            try {
-              await getExpenseData(dispatch);
-            } catch (error) {
-              console.error("Ошибка загрузки данных:", error);
-            } finally {
-              setLoading(false);
-            }
-          };
-          fetchData();
+          setLoading(true);
+
           setLoading(false);
           setIsAddExpense(false);
           form.resetFields();
@@ -116,7 +106,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                           <AutoComplete
                             style={{ width: "100%" }}
                             onSearch={handleSearch}
-                            placeholder={FieldPlaceholder.OptyName}
+                            placeholder={FieldPlaceholder.Date}
                             options={options}
                             onSelect={(value: string, option: any) => {
                               form.setFieldsValue({

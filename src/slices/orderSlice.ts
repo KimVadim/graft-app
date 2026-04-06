@@ -19,9 +19,9 @@ interface Order {
   total_amount: string;
 }
 
-interface OrderState {
+export type OrderState = {
   order: Order[];
-}
+};
 
 const initialState: OrderState = {
   order: [],

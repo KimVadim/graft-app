@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/userSlice.ts';
-import orderReducer from './slices/orderSlice.ts';
-import orderItemReducer from './slices/orderitemSlice.ts';
-import contactReducer from './slices/contactSlice.ts';
-import dailyReportReducer from './slices/dailyReportSlice.ts';
-import expenseReducer from './slices/expenseSlice.ts';
-import accessGroup from './slices/accessGroupSlice.ts';
-import menuReducer from './slices/menuSlice.ts';
+import userReducer from './slices/userSlice';
+import orderReducer from './slices/orderSlice';
+import orderItemReducer from './slices/orderitemSlice';
+import contactReducer from './slices/contactSlice';
+import dailyReportReducer from './slices/dailyReportSlice';
+import expenseReducer from './slices/expenseSlice';
+import accessGroup from './slices/accessGroupSlice';
+import menuReducer from './slices/menuSlice';
 
 export const store = configureStore({
   reducer: {

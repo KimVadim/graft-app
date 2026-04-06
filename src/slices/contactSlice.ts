@@ -12,9 +12,9 @@ interface Contact {
 }
 
 // Определяем интерфейс состояния
-interface contactState {
+export type contactState = {
   contact: Contact[];
-}
+};
 
 // Начальное состояние
 const initialState: contactState = {

@@ -36,7 +36,7 @@ export const opportunityMeta = [{
     dataIndex: OrderFieldData.FirstName,
     key: OrderFieldData.FirstName,
     ellipsis: true,
-    render: (full_name: String, record: any) => {
+    render: (full_name: String) => {
       return <><strong className="full-name">{full_name}</strong><br/></>
   },
 }];
@@ -46,7 +46,7 @@ export const expenseMeta = [{
   title: ExpenseField.ExpenseLabel,
   dataIndex: ExpenseFieldData.ApartNum,
   key: ExpenseFieldData.ApartNum,
-  render: (status: String, record: any) => {
+  render: (record: any) => {
     const date = new Date(record?.[ExpenseFieldData.ExpenseDate]);
     const apartNum = record?.[ExpenseFieldData.ApartNum];
 
@@ -66,7 +66,7 @@ export const expenseMeta = [{
     dataIndex: ExpenseFieldData.Sum,
     key: ExpenseField.Amount,
     width: 90,
-      render: (status: string, record: any) => {
+      render: (record: any) => {
       const rawSum = Number(record?.[ExpenseFieldData.Sum]) || 0
       const expenseSum = rawSum.toLocaleString("ru-RU")
 
@@ -83,7 +83,7 @@ export const contactMeta = [
     title: ContactField.ContactLabel,
     dataIndex: ContactFieldData.FirstName,
     key: ContactFieldData.FirstName,
-    render: (status: string, record: any) => {
+    render: (record: any) => {
       return (
         <>
           <Tag color="#2db7f5">{record?.[ContactFieldData.Type]}</Tag>

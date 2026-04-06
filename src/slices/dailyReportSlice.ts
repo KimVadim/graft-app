@@ -8,9 +8,9 @@ interface DailyReport {
   total_profit: string;
 }
 
-interface DailyReportState {
+export type DailyReportState = {
   dailyReport: DailyReport[];
-}
+};
 
 const initialState: DailyReportState = {
   dailyReport: [],

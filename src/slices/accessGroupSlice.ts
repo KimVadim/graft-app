@@ -7,11 +7,11 @@ interface AccessGroup {
   active: string;
 }
 
-interface AccessGroupState {
+export type AccessGroupState = {
   accessGroup: AccessGroup[];
-}
+};
 
-const initialState: AccessGroupState = {
+export const initialState: AccessGroupState = {
   accessGroup: [],
 };
 
