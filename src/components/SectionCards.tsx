@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis } from "recharts"
 import { RootState } from "../store";
 
+
 export function ChartAreaInteractive() {
   const dailyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
   const chartData = (dailyReportData || []).slice(0, 90);
@@ -57,8 +58,8 @@ export function ChartAreaInteractive() {
             year: "numeric",
           })
         }
-        formatter={(value: number, name: string) => [
-          value.toLocaleString(),
+        formatter={(value, name) => [
+          Number(value ?? 0).toLocaleString(),
           name === "total_revenue" ? "Доход" : "Прибыль",
         ]}
       />

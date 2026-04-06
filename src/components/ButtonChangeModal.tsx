@@ -11,6 +11,7 @@ import { updateOrder } from '../service/appServiceBackend';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateOrderAction } from '../slices/orderSlice';
 import { RootState } from '../store';
+import { PickerValue } from 'antd-mobile/es/components/picker-view';
 
 interface ButtonChangeModalProps {
   orderId: string;
@@ -26,7 +27,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
   const [loading, setLoading] = React.useState<boolean>(false);
   const [isUserInfo, setIsUserInfo] = React.useState<boolean>(false)
   const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<string[]>([]);
+  const [selectedTime, setSelectedTime] = useState<PickerValue[]>([]);
   const [timeField, setTimeField] = useState<string | null>(null);
   const order = useSelector((state: RootState) =>
     state.order.order.find(o => o.id === orderId)
@@ -97,13 +98,15 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
         setLoading(false);
       }
     },
-    handleTimeChange: (val: string[]) => {
+    handleTimeChange: (val: PickerValue[]) => {
       setSelectedTime(val);
     },
     handleTimeConfirm: () => {
       if (!selectedTime.length) return;
 
-      const [hour, minute] = selectedTime;
+      const hour = String(selectedTime[0] ?? '0');
+      const minute = String(selectedTime[1] ?? '00');
+
       const formattedTime = `${hour.padStart(2, '0')}:${minute}`;
 
       form.setFieldsValue({

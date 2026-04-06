@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getOrderAllData } from "../service/appServiceBackend";
 import { OrderFieldData, OrderStatus, OrderType } from "../constants/appConstant";
+// @ts-ignore
 import '../index.css';
 import { CapsuleTabs, Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu";

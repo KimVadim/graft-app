@@ -11,6 +11,7 @@ import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils";
 import { setOrder } from "../slices/orderSlice.js";
 import { setOrderItem } from "../slices/orderitemSlice.js";
+import { PickerValue } from "antd-mobile/es/components/picker-view";
 
 interface AddOrderModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -87,17 +88,18 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
     }
 
     const [isPopupStartOpen, setIsPopupStartOpen] = useState(false);
-    const [selectedTime, setSelectedTime] = useState<string[]>([]);
+    const [selectedTime, setSelectedTime] = useState<PickerValue[]>([]);
     const [timeField, setTimeField] = useState<string | null>(null);
 
-    const handleTimeChange = (val: string[]) => {
+    const handleTimeChange = (val: PickerValue[]) => {
       setSelectedTime(val);
     };
 
     const handleTimeConfirm = () => {
       if (!selectedTime.length) return;
 
-      const [hour, minute] = selectedTime;
+      const hour = String(selectedTime[0] ?? '0');
+      const minute = String(selectedTime[1] ?? '00');
       const formattedTime = `${hour.padStart(2, '0')}:${minute}`;
 
       form.setFieldsValue({
