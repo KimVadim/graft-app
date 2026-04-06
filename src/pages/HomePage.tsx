@@ -3,6 +3,7 @@ import { Opportunity } from './Order';
 import { AddFloatButton } from '../components/AddFloatButton';
 import { AddExpenseModal } from '../components/AddExpenseModal';
 import { AddOrderModal } from '../components/AddOrderModal';
+import { ConfigProvider } from 'antd';
 
 interface HomePageProps {
   view: string;
@@ -14,7 +15,13 @@ export const HomePage: React.FC<HomePageProps> = ({view}) => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
-    <>
+    <ConfigProvider
+      theme={{
+        token: {
+          controlHeightLG: 50,
+        },
+      }}
+    >
       <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
         {view === 'Opportunity' && <Opportunity />}
         <AddFloatButton
@@ -29,7 +36,7 @@ export const HomePage: React.FC<HomePageProps> = ({view}) => {
           setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}
         />}
       </div>
-    </>
+    </ConfigProvider>
   );
 }
 
