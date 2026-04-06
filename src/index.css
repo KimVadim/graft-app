@@ -94,13 +94,11 @@
   --sidebar-ring: oklch(0.708 0 0)
 }
 
-@custom-variant dark (&:is(.dark *));
-
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
     --text-h: #f3f4f6;
-    --bg: #16171d;
+    --bg: #fff;
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
@@ -120,13 +118,14 @@
   width: 100%;
   max-width: 1126px;
   margin: 0 auto;
-  /*padding: 0 16px;  добавили отступы */
   text-align: center;
   border-inline: 1px solid var(--border);
   min-height: 80dvh;
 
   flex-direction: column;
   box-sizing: border-box;
+  min-height: 100dvh; /* Было 80dvh, теперь на весь экран */
+  background: var(--bg); /* Гарантируем, что фон внутри белый */
 }
 
 @tailwind base;
@@ -136,7 +135,8 @@
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* защита от скролла вбок */
+  overflow-x: hidden;
+  background-color: var(--bg);
 }
 
 h1 {
