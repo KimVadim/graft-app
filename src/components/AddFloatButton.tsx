@@ -1,5 +1,5 @@
 import React from "react"
-import { FloatButton } from "antd";
+import { ConfigProvider, FloatButton } from "antd";
 import { FileDoneOutlined, PlusOutlined, WalletOutlined } from '@ant-design/icons';
 
 interface AddFloatButtonProps {
@@ -9,14 +9,23 @@ interface AddFloatButtonProps {
 
 export const AddFloatButton: React.FC<AddFloatButtonProps> = ({setIsAddOpty, setIsAddExpense}) => {
     return (
-        <FloatButton.Group
-            trigger="click"
-            type="primary"
-            style={{ insetInlineEnd: 24 }}
-            icon={<PlusOutlined />}
+        <ConfigProvider
+        theme={{
+            token: {
+            controlHeightLG: 55,
+            },
+        }}
         >
-            {setIsAddOpty && <FloatButton icon={<FileDoneOutlined />} onClick={() => setIsAddOpty(true)} />}
-            {setIsAddExpense && <FloatButton icon={<WalletOutlined />} onClick={() => setIsAddExpense(true)}/>}
-        </FloatButton.Group>
+            <FloatButton.Group
+                trigger="click"
+                type="primary"
+                style={{ insetInlineEnd: 24 }}
+                icon={<PlusOutlined style={{ fontSize: 24 }} />}
+            >
+                {setIsAddOpty && <FloatButton icon={<FileDoneOutlined style={{ fontSize: 24 }} />} onClick={() => setIsAddOpty(true)} />}
+                {setIsAddExpense && <FloatButton icon={<WalletOutlined style={{ fontSize: 24 }} />} onClick={() => setIsAddExpense(true)}/>}
+            </FloatButton.Group>
+        </ConfigProvider>
+
     );
 }

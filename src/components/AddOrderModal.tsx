@@ -68,14 +68,9 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
       handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value;
         const cursorPos = e.target.selectionStart || 0;
-
-        // Форматируем номер
         const formatted = formattedPhone(input);
 
-        // Обновляем поле формы
         form.setFieldValue('phone', formatted);
-
-        // Чтобы курсор не прыгал
         setTimeout(() => {
           const inputElement = e.target as HTMLInputElement;
           if (inputElement.setSelectionRange) {
@@ -130,7 +125,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             padding: '0 16px',
             boxSizing: 'border-box',
             overflowY: 'auto',
-            maxHeight: '80vh',
+            maxHeight: '75vh',
             marginTop: '20px',
             marginBottom: '20px'
           }}
@@ -140,8 +135,6 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             form={form}
             layout="vertical"
             initialValues={{
-              //phone: '+7',
-              //prepayAmount: 0,
               saunaNum: ['SaunaFour'],
               prepaySource: [Payment.GoldAN],
               orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
@@ -149,12 +142,6 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             }}
             onFinish={handleSubmit}
           >
-            {/*<Form.Item
-              label={OrderField.LastNameLabel}
-              name={OrderField.LastName}
-            >
-              <Input style={FieldStyle.InputStyle}/>
-            </Form.Item>*/}
             <Form.Item
               label={OrderField.FisrtNameLabel}
               name={OrderField.FisrtName}

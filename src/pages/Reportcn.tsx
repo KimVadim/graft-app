@@ -18,8 +18,6 @@ import { setDeilyReport } from '../slices/dailyReportSlice';
 import { ChartAreaInteractive } from '../components/SectionCards';
 import { SectionCards } from '../components/section-cards';
 import { CapsuleTabs } from 'antd-mobile';
-import dayjs from 'dayjs';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
 
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -39,36 +37,11 @@ export const IncomeReportcn: React.FC = () => {
   }, [loadOrders]);
   const dailyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
   const chartData = (dailyReportData || []).slice(0, 30);
-  dayjs.extend(weekOfYear);
-  const getWeeklyData = (data: any[]) => {
-    const weeks: Record<string, any> = {};
 
-    data.forEach((item) => {
-      // Группируем по году и номеру недели (например, "2024-w12")
-      const weekKey = `${dayjs(item.order_dt).year()}-w${dayjs(item.order_dt).week()}`;
-
-      if (!weeks[weekKey]) {
-        weeks[weekKey] = {
-          // Сохраняем дату начала недели для отображения на оси X
-          order_dt: dayjs(item.order_dt).startOf('week').format('YYYY-MM-DD'),
-          total_revenue: 0,
-          total_profit: 0,
-          count: 0,
-        };
-      }
-
-      weeks[weekKey].total_revenue += Number(item.total_revenue || 0);
-      weeks[weekKey].total_profit += Number(item.total_profit || 0);
-      weeks[weekKey].count += 1;
-    });
-
-    return Object.values(weeks);
-  };
-  console.log(getWeeklyData)
   return (
     <div style={{ paddingTop: '10px', paddingLeft: '0px', width: '390px', maxWidth: '100%', margin: '0 auto' }}>
       <Row align="middle" gutter={15}>
-        <Col flex="auto" style={{ maxWidth: '115px' }}>
+        <Col flex="auto" style={{ maxWidth: '120px' }}>
           <MenuComp/>
         </Col>
         <Col>
@@ -76,14 +49,14 @@ export const IncomeReportcn: React.FC = () => {
         </Col>
       </Row>
       <Row align="middle" gutter={15}>
-        <Col flex="auto" style={{ maxWidth: '500px', marginTop: '10px' }}>
+        <Col flex="auto" style={{ maxWidth: '500px'}}>
           <PaymentProgreesBar
             setIsPaymentModal={setIsModalPayment}
             isPaymentModal={isModalPayment}
           />
         </Col>
       </Row>
-      <CapsuleTabs style={{ marginTop: 12 }}>
+      <CapsuleTabs>
         <CapsuleTabs.Tab title='Сводка' key='Dashboard'>
            <SectionCards/>
         </CapsuleTabs.Tab>

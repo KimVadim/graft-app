@@ -121,7 +121,7 @@ export const Opportunity: React.FC = () => {
             </Button>
           </Col>
         </Row>
-      <CapsuleTabs style={{ marginTop: 12 }}>
+      <CapsuleTabs>
         <CapsuleTabs.Tab title='Бронь' key='fruits'>
           <Table
             rowKey="uid"

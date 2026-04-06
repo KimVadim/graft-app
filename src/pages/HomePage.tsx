@@ -3,7 +3,6 @@ import { Opportunity } from './Order';
 import { AddFloatButton } from '../components/AddFloatButton';
 import { AddExpenseModal } from '../components/AddExpenseModal';
 import { AddOrderModal } from '../components/AddOrderModal';
-import { ConfigProvider } from 'antd';
 
 interface HomePageProps {
   view: string;
@@ -15,28 +14,20 @@ export const HomePage: React.FC<HomePageProps> = ({view}) => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          controlHeightLG: 50,
-        },
-      }}
-    >
-      <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
-        {view === 'Opportunity' && <Opportunity />}
-        <AddFloatButton
-          setIsAddOpty={setIsAddOpty}
-          setIsAddExpense={['Opportunity'].includes(view) ? setIsAddExpense : undefined }
-        />
-        {isAddOpty && <AddOrderModal
-          setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
-          setLoading={setLoading} loading={loading} view={view}
-        />}
-        {isAddExpense && <AddExpenseModal
-          setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}
-        />}
-      </div>
-    </ConfigProvider>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      {view === 'Opportunity' && <Opportunity />}
+      <AddFloatButton
+        setIsAddOpty={setIsAddOpty}
+        setIsAddExpense={['Opportunity'].includes(view) ? setIsAddExpense : undefined }
+      />
+      {isAddOpty && <AddOrderModal
+        setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
+        setLoading={setLoading} loading={loading} view={view}
+      />}
+      {isAddExpense && <AddExpenseModal
+        setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}
+      />}
+    </div>
   );
 }
 
