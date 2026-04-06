@@ -8,7 +8,6 @@ type MenuItem = Required<MenuProps>['items'][number];
 export const MenuComp: React.FC = () => {
   const navigate = useNavigate();
   const [current, setCurrent] = useState('mail');
-
   const menuItems: MenuItem[] = [
     {
       label: 'Меню',
