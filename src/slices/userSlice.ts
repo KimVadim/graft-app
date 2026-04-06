@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UserState {
+export type UserState = {
   login: string | null;
-}
+};
 
 const initialState: UserState = {
   login: localStorage.getItem('login'),
