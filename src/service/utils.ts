@@ -1,4 +1,4 @@
-import { NotificationType } from '../../grafit-vite/src/constants/appConstant';
+import { NotificationType } from '../constants/appConstant';
 import { NotificationInstance } from 'antd/es/notification/interface';
 
 export const formatPhoneNumber = (phone: String) => {

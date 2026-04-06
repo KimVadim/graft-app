@@ -108,7 +108,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                             onSearch={handleSearch}
                             placeholder={FieldPlaceholder.Date}
                             options={options}
-                            onSelect={(value: string, option: any) => {
+                            onSelect={(option: any) => {
                               form.setFieldsValue({
                                 optyId: option.optyId,
                                 apartNum: option.apartNum,

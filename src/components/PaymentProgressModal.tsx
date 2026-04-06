@@ -21,7 +21,6 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
     payments,
     paymentsCount,
     optyActiveCount,
-    optyAllCount,
 }) => {
     const optyData = useSelector((state: RootState) => state.order.order as unknown as OrderType[])
         .filter((x)=> x['status'] === 'Заключили');

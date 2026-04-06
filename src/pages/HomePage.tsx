@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Opportunity } from './Order.tsx';
-import { AddFloatButton } from '../components/AddFloatButton.tsx';
-import { AddExpenseModal } from '../components/AddExpenseModal.tsx';
-import { AddOrderModal } from '../components/AddOrderModal.tsx';
+import { Opportunity } from './Order';
+import { AddFloatButton } from '../components/AddFloatButton';
+import { AddExpenseModal } from '../components/AddExpenseModal';
+import { AddOrderModal } from '../components/AddOrderModal';
 
 interface HomePageProps {
   view: string;

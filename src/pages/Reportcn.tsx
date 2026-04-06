@@ -22,7 +22,7 @@ import { SectionCards } from '../components/section-cards';
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalPayment, setIsModalPayment] = useState(false);
-  const loadOrders = useCallback(async (showToast = false) => {
+  const loadOrders = useCallback(async () => {
     try {
       const response = await getDailyReportData();
 

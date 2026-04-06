@@ -1,7 +1,7 @@
 import { Col } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../store.ts";
+import { RootState } from "../store";
 import { ProgressBar } from "antd-mobile";
 import { OrderFieldData, OrderItemFieldData, OrderItemType, OrderType } from "../constants/appConstant.js";
 import { PaymentProgreesModal } from "../components/PaymentProgressModal.js";

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
-import { loginUser } from '../service/appServiceBackend.ts';
+import { loginUser } from '../service/appServiceBackend';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../slices/userSlice.ts';
-import { AppDispatch } from '../store.ts';
+import { setUser } from '../slices/userSlice';
+import { AppDispatch } from '../store';
 import { useDispatch } from 'react-redux';
 import { Space } from 'antd-mobile';
-import { FieldPlaceholder } from '../constants/appConstant.ts';
+import { FieldPlaceholder } from '../constants/appConstant';
 
 type FieldType = {
   username?: string;

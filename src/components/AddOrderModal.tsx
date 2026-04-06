@@ -1,14 +1,14 @@
 import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React, { useState } from "react"
 import dayjs from 'dayjs';
-import { addOrder, getOrder, getOrderItem } from "../service/appServiceBackend.ts";
+import { addOrder, getOrder, getOrderItem } from "../service/appServiceBackend";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store.ts";
+import { AppDispatch } from "../store";
 import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT, PRODUCT_PRICE_MAP, RECOMMENDATION_TYPE } from "../constants/dictionaries.js";
 import { AddOrder, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OrderField } from "../constants/appConstant.js";
 import { CascadePickerView, Selector, Toast, Popup } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
-import { formattedPhone } from "../service/utils.ts";
+import { formattedPhone } from "../service/utils";
 import { setOrder } from "../slices/orderSlice.js";
 import { setOrderItem } from "../slices/orderitemSlice.js";
 
