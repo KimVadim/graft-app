@@ -1,16 +1,15 @@
 import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React, { useState } from "react"
 import dayjs from 'dayjs';
-import { addOrder, getOrder, getOrderItem } from "../service/appServiceBackend";
+import { addOrder, getOrder } from "../service/appServiceBackend";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
-import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT, PRODUCT_PRICE_MAP, RECOMMENDATION_TYPE } from "../constants/dictionaries.js";
+import { BUTTON_TEXT, Payment, PAYMENT_TYPE, PRODUCT, PRODUCT_PRICE_MAP, Recommendation, RECOMMENDATION_TYPE } from "../constants/dictionaries.js";
 import { AddOrder, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, OrderField } from "../constants/appConstant.js";
 import { CascadePickerView, Selector, Toast, Popup } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils";
 import { setOrder } from "../slices/orderSlice.js";
-import { setOrderItem } from "../slices/orderitemSlice.js";
 import { PickerValue } from "antd-mobile/es/components/picker-view";
 
 interface AddOrderModalProps {
@@ -52,10 +51,6 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
       addOrder(values).then((orderId) => {
         getOrder().then((response) => {
             dispatch(setOrder(response?.order));
-        }).then(()=> {
-          getOrderItem().then((response)=> {
-            dispatch(setOrderItem(response?.orderItem));
-          })
         });
         setLoading(false);
         setIsAddOpty(false);
@@ -139,6 +134,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               prepaySource: [Payment.GoldAN],
               orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
               price: 5000,
+              [OrderField.Recommendation]: Recommendation.TwoGis
             }}
             onFinish={handleSubmit}
           >
@@ -153,7 +149,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               label={OrderField.PhoneLabel}
               name={OrderField.Phone}
               rules={[
-                FieldRules.Required//, FieldRules.PhoneFormat
+                FieldRules.Required
               ]}
             >
               <Input
@@ -171,10 +167,16 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             >
               <Selector
                 options={PAYMENT_TYPE}
-                onChange={(arr) =>
-                  form.setFieldsValue({
-                    [OrderField.PrepaySource]: arr
-                  })
+                onChange={(value) => {
+                    form.setFieldsValue({
+                      [OrderField.PrepaySource]: value
+                    });
+                    if (value[0] === Payment.No) {
+                      form.setFieldsValue({
+                        [OrderField.PrepayAmount]: 0
+                      });
+                    }
+                  }
                 }
               />
             </Form.Item>

@@ -1,13 +1,14 @@
 import { Col, Row, Spin, Table, Tag, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
-import { AppDispatch, RootState } from "../store";
+import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { getExpenseData } from "../service/appServiceBackend";
-import { expenseMeta } from "./AllApplicationMeta";
-import { ExpenseFieldData, ExpenseType, FieldPlaceholder, ModalTitle, OrderType } from "../constants/appConstant";
-import { AddFloatButton } from "../components/AddFloatButton";
-import { AddExpenseModal } from "../components/AddExpenseModal";
-import { MenuComp } from "../components/Menu";
+import { getExpenseData } from "../../service/appServiceBackend";
+import { FieldPlaceholder, ModalTitle, OrderType } from "../../constants/appConstant";
+import { AddFloatButton } from "../../components/AddFloatButton";
+import { AddExpenseModal } from "./AddExpenseModal";
+import { MenuComp } from "../../components/Menu";
+import { setExpense } from "../../slices/expenseSlice";
+import { ExpenseFieldData, expenseMeta, ExpenseType } from "./ExpensesMeta";
 
 export const Expenses: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -24,11 +25,11 @@ export const Expenses: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        await getExpenseData(
+        const expense = await getExpenseData(
           dateRef.current.getFullYear(),
           dateRef.current.getMonth() + 1,
-          dispatch
         );
+        dispatch(setExpense(expense));
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       } finally {
@@ -43,7 +44,7 @@ export const Expenses: React.FC = () => {
   useEffect(() => {
     if (searchText) {
       const filtered = expenseData.filter((item: ExpenseType) =>
-        item[ExpenseFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+        item[ExpenseFieldData.ExpenseName]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
         item[ExpenseFieldData.Comment]?.toString().toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(filtered);
@@ -78,15 +79,15 @@ export const Expenses: React.FC = () => {
           </Col>
         </Row>
         <Table
-          rowKey="ID"
+          rowKey="id"
           scroll={{ x: 395 }}
           columns={expenseMeta}
           dataSource={filteredData}
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
-                <Tag color={"green"}>{record?.[ExpenseFieldData.PaymentType]}</Tag>
-                {record?.[ExpenseFieldData.Comment]}
+                <Tag color="#270d9a">{record?.[ExpenseFieldData.ExpenseName]}</Tag>
+                <p>{record?.[ExpenseFieldData.Comment]}</p>
               </p>
             ),
           }}

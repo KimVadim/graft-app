@@ -6,8 +6,8 @@ interface Expense {
   expense_name: string;
   amount: number;
   comment: string;
-  apartNum: number;
-  count: number;
+  type: string;
+  source: string;
 }
 
 export type ExpenseState = {

@@ -1,27 +1,18 @@
 import { MenuProps } from 'antd';
 
 export enum ExpenseType {
-  Deposit = 'Депозит',
-  Return = 'Возврат',
   Expense = 'Расход',
-  Income = 'Пополнение',
+  Salary = 'Зарплата',
   Removal = 'Снятие',
-  TenantUtilities = 'Комм. Жильцы',
-  AlatauUtilities = 'Комм. Алатау',
-  PavlenkoUtilities = 'Комм. Павленко',
+  ServiceUtilities = 'Комм. усл.',
   Other = 'Другое',
 }
 
 export const EXPENSE_TYPE = [
   { value: ExpenseType.Expense, label: ExpenseType.Expense },
-  { value: ExpenseType.Income, label: ExpenseType.Income },
+  { value: ExpenseType.Salary, label: ExpenseType.Salary },
   { value: ExpenseType.Removal, label: ExpenseType.Removal },
-  { value: ExpenseType.TenantUtilities, label: ExpenseType.TenantUtilities },
-  { value: ExpenseType.AlatauUtilities, label: ExpenseType.AlatauUtilities },
-  {
-    value: ExpenseType.PavlenkoUtilities,
-    label: ExpenseType.PavlenkoUtilities,
-  },
+  { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
   { value: ExpenseType.Other, label: ExpenseType.Other },
 ];
 
@@ -91,7 +82,7 @@ export enum Payment {
   GoldAN = 'Gold А',
   GoldVK = 'Gold V',
   Cash = 'Налом',
-  No = ' Нет',
+  No = 'Нет',
 }
 
 export const PAYMENT_TYPE = [

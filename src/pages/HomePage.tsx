@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Opportunity } from './Order';
 import { AddFloatButton } from '../components/AddFloatButton';
-import { AddExpenseModal } from '../components/AddExpenseModal';
+import { AddExpenseModal } from './Expenses/AddExpenseModal';
 import { AddOrderModal } from '../components/AddOrderModal';
 
 interface HomePageProps {

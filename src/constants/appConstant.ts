@@ -267,73 +267,12 @@ export enum OrderItemField {
   OrderId = 'orderId',
 }
 
-// Расходы
-export interface AddExpense {
-  optyId: string;
-  expenseType: string;
-  amount: number;
-  comment: string;
-  paymentType: string;
-  apartNum: string;
-}
-
 export interface OptionType {
   optyId: string;
   value: string;
   label: string;
   apartNum: string;
 }
-
-export enum ExpenseField {
-  ProductLabel = 'Продукт',
-  AmountLabel = 'Сумма',
-  OptyNameLabel = 'Договор',
-  ExpenseTypeLabel = 'Тип',
-  ApartNumLabel = 'Номер квартиры',
-  PaymnetTypeLabel = 'Получатель',
-  CommentLabel = 'Комментарий',
-  ExpenseLabel = 'Тип / № / Дата расхода',
-
-  Product = 'product',
-  Amount = 'amount',
-  OptyName = 'optyName',
-  ExpenseType = 'expenseType',
-  ApartNum = 'apartNum',
-  PaymentType = 'paymentType',
-  Comment = 'comment',
-  OptyId = 'optyId',
-  ContactId = 'conId',
-}
-
-export enum ExpenseFieldData {
-  Id = 'ID',
-  Contact = 'Contact',
-  Company = 'Company',
-  Type = 'Type',
-  ExpenseDate = 'CreatedDt',
-  CreatedBy = 'Author',
-  Sum = 'Sum',
-  Comment = 'Comment',
-  ApartNum = 'AppartNum',
-  PaymentType = 'PaymentType',
-  Invoice = 'Invoice',
-  Processed = 'Processed',
-}
-
-export type ExpenseType = {
-  [ExpenseFieldData.Id]: string;
-  [ExpenseFieldData.Contact]: string;
-  [ExpenseFieldData.Company]: string;
-  [ExpenseFieldData.Type]: string;
-  [ExpenseFieldData.ExpenseDate]: string;
-  [ExpenseFieldData.CreatedBy]: string;
-  [ExpenseFieldData.Sum]: string;
-  [ExpenseFieldData.Comment]: string;
-  [ExpenseFieldData.ApartNum]: string;
-  [ExpenseFieldData.PaymentType]: string;
-  [ExpenseFieldData.Invoice]: string;
-  [ExpenseFieldData.Processed]: string;
-};
 
 export type FieldType = {
   username?: string;

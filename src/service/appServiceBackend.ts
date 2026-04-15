@@ -1,15 +1,12 @@
-import { AppDispatch } from '../store';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import {
-  AddExpense,
   AddOrder,
   AddOrderItem,
-  FieldFormat,
   OrderStatus,
   UpdateOrder,
 } from '../constants/appConstant';
-import { setExpense } from '../slices/expenseSlice';
+import { AddExpense, ExpenseFieldData } from '../pages/Expenses/ExpensesMeta';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
 
@@ -18,10 +15,9 @@ export const endpoints = {
   ORDER_ITEM: `${API_URL}/endpoints/fs/orderitem`,
   ORDER_ALL_DATA: `${API_URL}/endpoints/fs/orderalldata`,
   LOGIN: `${API_URL}/endpoints/login`,
-  EXPENSE: `${API_URL}/endpoints/expense`,
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   DAILY_REPORT: `${API_URL}/endpoints/fs/v2/dailyreport`,
-  EXPENSES: `${API_URL}/endpoints/expenses`,
+  EXPENSES: `${API_URL}/endpoints/fs/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
 };
@@ -104,24 +100,20 @@ export const addOrderItem = async (values: AddOrderItem, orderId: string) => {
 export const addExpense = async (values: AddExpense) => {
   try {
     const payload = {
-      optyId: values.optyId,
-      expenseType: values.expenseType,
-      paymentType: values.paymentType,
-      amount: ['Комм. Алатау', 'Снятие', 'Расход', 'Комм. Павленко'].includes(
-        values.expenseType
-      )
-        ? -values.amount
-        : values.amount,
-      createBy: localStorage.getItem('login')
-        ? localStorage.getItem('login')
-        : 'newApp',
-      expenseDate: dayjs().format(FieldFormat.DateEN),
-      comment: values.comment,
-      apartNum: values.apartNum,
-      invoice: values.expenseType === 'Комм. Алатау' ? 'Выставить Комм' : '',
+      [ExpenseFieldData.ExpenseName]: values?.[ExpenseFieldData.ExpenseName],
+      [ExpenseFieldData.Type]: values?.[ExpenseFieldData.Type],
+      [ExpenseFieldData.Source]: values?.[ExpenseFieldData.Source],
+      [ExpenseFieldData.Amount]: values?.[ExpenseFieldData.Amount],
+      [ExpenseFieldData.Comment]: values?.[ExpenseFieldData.Comment],
+      [ExpenseFieldData.ExpenseDate]: dayjs()
+        .hour(12)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
     };
 
-    const response = await axios.post(endpoints.EXPENSE, payload);
+    const response = await axios.post(endpoints.EXPENSES, payload);
 
     return response?.data?.message?.expense_id;
   } catch (error: any) {
@@ -188,19 +180,14 @@ export const getDailyReportData = async () => {
   }
 };
 
-export const getExpenseData = async (
-  year: number,
-  month: number,
-  dispatch: AppDispatch
-) => {
+export const getExpenseData = async (year: number, month: number) => {
   try {
     const { data } = await axios.get(endpoints.EXPENSES, {
       params: { year, month },
     });
+    const expense = data.message?.expense || [];
 
-    const expense = data.message?.expenses || [];
-
-    dispatch(setExpense(expense));
+    return { expense };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);

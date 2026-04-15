@@ -2,7 +2,7 @@ import './index.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from '../src/pages/HomePage';
 import { IncomeReportcn } from '../src/pages/Reportcn';
-import { Expenses } from '../src/pages/Expenses';
+import { Expenses } from './pages/Expenses/Expenses';
 import Login from '../src/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
 

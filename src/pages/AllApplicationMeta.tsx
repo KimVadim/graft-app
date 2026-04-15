@@ -1,5 +1,5 @@
 import { Space, Table, Tag } from "antd";
-import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OrderField, OrderFieldData, OrderItemField, OrderItemFieldData, OrderStatus } from "../constants/appConstant"
+import { ContactField, ContactFieldData, OrderField, OrderFieldData, OrderItemField, OrderItemFieldData, OrderStatus } from "../constants/appConstant"
 import { PRODUCT_MAP } from "../constants/dictionaries";
 import dayjs from "dayjs";
 import 'dayjs/locale/ru';
@@ -44,43 +44,6 @@ export const opportunityMeta = [{
       return <><strong className="full-name">{full_name}</strong><br/></>
   },
 }];
-
-
-export const expenseMeta = [{
-  title: ExpenseField.ExpenseLabel,
-  dataIndex: ExpenseFieldData.ApartNum,
-  key: ExpenseFieldData.ApartNum,
-  render: (record: any) => {
-    const date = new Date(record?.[ExpenseFieldData.ExpenseDate]);
-    const apartNum = record?.[ExpenseFieldData.ApartNum];
-
-    return <>
-      <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.Type]}</Tag>
-      <Tag color="blue">
-        {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
-      </Tag>
-      {apartNum && <Tag color={"red"}>{apartNum}</Tag>}
-    </>
-  },
-  width: 260,
-}, {
-    title: ExpenseField.AmountLabel,
-    dataIndex: ExpenseFieldData.Sum,
-    key: ExpenseField.Amount,
-    width: 90,
-      render: (record: any) => {
-      const rawSum = Number(record?.[ExpenseFieldData.Sum]) || 0
-      const expenseSum = rawSum.toLocaleString("ru-RU")
-
-      return (
-        <Tag color={rawSum > 0 ? "green" : "red"}>
-          {expenseSum}
-        </Tag>
-      )
-    },
-  }, Table.EXPAND_COLUMN];
 
 export const contactMeta = [
   {
