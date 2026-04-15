@@ -25,11 +25,12 @@ export const Expenses: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const expense = await getExpenseData(
+        getExpenseData(
           dateRef.current.getFullYear(),
           dateRef.current.getMonth() + 1,
-        );
-        dispatch(setExpense(expense));
+        ).then((response) => {
+          dispatch(setExpense(response?.expense));
+        });
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       } finally {
