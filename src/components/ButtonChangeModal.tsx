@@ -132,7 +132,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
       <Popup
         visible={isUserInfo}
         showCloseButton
-        bodyStyle={{ height: '70vh' }}
+        bodyStyle={{ height: '72vh' }}
         onClose={actions.handleClose}
         onMaskClick={actions.handleClose}
       >

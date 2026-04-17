@@ -61,7 +61,7 @@ export const IncomeReportcn: React.FC = () => {
            <SectionCards/>
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Дневной' key='DailyReport'>
-          <ResponsiveContainer width="100%" height={730}>
+          <ResponsiveContainer width="100%" height={700}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,

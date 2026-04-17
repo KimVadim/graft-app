@@ -51,7 +51,7 @@ export function ChartAreaInteractive() {
       color: '#1f2937',
       paddingLeft: '10px',
       marginTop: '16px',
-      borderLeft: '4px solid #15803d',
+      borderLeft: '4px solid #4f46e5',
       whiteSpace: 'nowrap'
     }}>
       Детализация: Общий доход
@@ -103,7 +103,7 @@ export function ChartAreaInteractive() {
     }}>
       Детализация: Доход баня
     </h3>
-    <ResponsiveContainer width="100%" height={700}>
+    <ResponsiveContainer width="100%" height={750}>
       <BarChart
         data={weeklyData}
         margin={{ top: 10, right: 50, left: 25, bottom: 10 }}
@@ -157,7 +157,7 @@ export function ChartAreaInteractive() {
     <ResponsiveContainer width="100%" height={2000}>
       <BarChart
         data={weeklyData}
-        margin={{ top: 10, right: 50, left: 25, bottom: 10 }}
+        margin={{ top: 10, right: 50, left: 25, bottom: 30 }}
         layout="vertical"
       >
         <XAxis type="number" hide />
