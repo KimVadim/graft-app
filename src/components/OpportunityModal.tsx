@@ -6,7 +6,7 @@ import { addOrderItem, getOrderItemData, updateOrder } from '../service/appServi
 import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries';
 import dayjs from 'dayjs';
-import { AddCircleOutline, CheckCircleOutline } from 'antd-mobile-icons';
+import { AddCircleOutline, CheckCircleOutline, StopOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
@@ -71,6 +71,14 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         setIsModalOpen(false);
       });
     },
+    handleCancelOrder: (orderId: string) => {
+      setLoading(true);
+      updateOrder({orderId, status: OrderStatus.Cancel}).then((result) => {
+        dispatch(updateOrderAction(result?.['data']));
+        setLoading(false);
+        setIsModalOpen(false);
+      });
+    },
     handleUpdateOrder: (values: UpdateOrder) => {
       setLoading(true);
       updateOrder(values).then(() => {
@@ -123,6 +131,21 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       cancelText: BUTTON_TEXT.Cancel,
       onOk: async () => {
         await actions.handleCloseOrder(orderId, totalAmount);
+        message.success('Заказ закрыт');
+      },
+    });
+  };
+
+  const handleCancelClick = () => {
+    modal.confirm({
+      title: 'Подтверждение',
+      content: MODAL_TEXT.OptyCloseText,
+      okText: BUTTON_TEXT.Ok,
+      width: 300,
+      centered: true,
+      cancelText: BUTTON_TEXT.Cancel,
+      onOk: async () => {
+        await actions.handleCancelOrder(orderId);
         message.success('Заказ закрыт');
       },
     });
@@ -210,6 +233,14 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <ButtonChangeModal
                 orderId={record?.id}
                 setIsOrderPopup={setIsModalOpen}
+                disabled={isActiveOrder}
+              />
+              <Button
+                icon={<StopOutline style={{ fontSize: 36 }} />}
+                onClick={handleCancelClick}
+                variant="filled"
+                color="primary"
+                style={{ height: 55, width: 55, marginLeft: 30 }}
                 disabled={isActiveOrder}
               />
               <Button

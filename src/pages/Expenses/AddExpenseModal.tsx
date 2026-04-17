@@ -1,11 +1,11 @@
-import { Button, Form, Input, InputNumber, Modal, Spin } from "antd";
+import { Button, Form, Input, InputNumber, Spin } from "antd";
 import React from "react"
 import { useDispatch } from "react-redux";
 import { addExpense, getExpenseData } from "../../service/appServiceBackend";
 import TextArea from "antd/es/input/TextArea";
 import { BUTTON_TEXT, EXPENSE_TYPE, PAYMENT_TYPE } from "../../constants/dictionaries.js";
-import { FieldPlaceholder, FieldRules, FieldStyle, ModalTitle } from "../../constants/appConstant.js";
-import { Selector, Toast } from "antd-mobile";
+import { FieldPlaceholder, FieldRules, FieldStyle } from "../../constants/appConstant.js";
+import { Popup, Selector, Toast } from "antd-mobile";
 import { AddExpense, ExpenseFieldData, ExpenseFieldLabel } from "./ExpensesMeta";
 import { setExpense } from "../../slices/expenseSlice";
 import { AppDispatch } from "../../store";
@@ -38,16 +38,31 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
 
     return (
       <>
-        <Modal
-          title={ModalTitle.AddExpense}
-          open={isAddExpense}
-          onCancel={() => {
+        <Popup
+          visible={isAddExpense}
+          showCloseButton
+          onClose={() => {
             setIsAddExpense(false);
             form.resetFields();
           }}
-          style={{ maxWidth: '80%' }}
-          footer={null}
+          onMaskClick={() => {
+            setIsAddExpense(false);
+            form.resetFields();
+          }}
         >
+          <div
+            style={{
+              maxWidth: '480px',
+              width: '100%',
+              margin: '0 auto',
+              padding: '0 16px',
+              boxSizing: 'border-box',
+              overflowY: 'auto',
+              maxHeight: '75vh',
+              marginTop: '20px',
+              marginBottom: '20px'
+            }}
+          >
           <Spin spinning={loading}>
             <Form
               form={form}
@@ -114,7 +129,8 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               </Form.Item>
             </Form>
           </Spin>
-        </Modal>
+          </div>
+        </Popup>
       </>
     )
 }

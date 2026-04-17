@@ -146,7 +146,7 @@ export type OrderType = {
   [OrderFieldData.StartTime]: string;
   [OrderFieldData.EndTime]: string;
   [OrderFieldData.Comment]: string;
-  [OrderFieldData.OrderDt]: string;
+  [OrderFieldData.OrderDt]: Date;
   [OrderFieldData.CreatedBy]: string;
   [OrderFieldData.Price]: string;
   [OrderFieldData.PeopleCount]: string;
@@ -367,6 +367,7 @@ export interface UpdateOrder {
   startTime?: string;
   endTime?: string;
   saunaNum?: string;
+  orderDate?: string;
 }
 
 export enum OrderStatus {

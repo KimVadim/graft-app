@@ -61,7 +61,16 @@ export const IncomeReportcn: React.FC = () => {
            <SectionCards/>
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Дневной' key='DailyReport'>
-          <ResponsiveContainer width="100%" height={900}>
+          <ResponsiveContainer width="100%" height={730}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1f2937',
+              marginTop: '16px',
+              paddingLeft: '10px',
+              borderLeft: '4px solid #4f46e5',
+              whiteSpace: 'nowrap'
+            }}>Детализация: Доход за 30 дней</h3>
             <BarChart data={chartData} margin={{ top: 10, right: 50, left: 25, bottom: 10 }} layout="vertical">
               <XAxis type="number" hide />
               <YAxis
@@ -70,6 +79,7 @@ export const IncomeReportcn: React.FC = () => {
                 tickLine={false}
                 axisLine={false}
                 width={50}
+                interval={0}
                 tick={({ x, y, payload }) => {
                   const date = new Date(payload.value);
                   const day = date.getDate();
@@ -88,7 +98,7 @@ export const IncomeReportcn: React.FC = () => {
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6">
+              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -96,7 +106,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5">
+              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5}>
                 <LabelList
                   position="right"
                   fill="#1f2937"

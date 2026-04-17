@@ -253,6 +253,12 @@ export const updateOrder = async (values: UpdateOrder) => {
       start_time: values?.startTime,
       end_time: values?.endTime,
       sauna_num: values?.saunaNum?.[0],
+      order_dt: dayjs(values.orderDate)
+        .hour(12)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString(),
     };
 
     const response = await axios.post(endpoints.UPDATE_ORDER, payload);
