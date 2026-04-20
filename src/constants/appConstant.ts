@@ -220,7 +220,7 @@ export enum OrderField {
   OrderNameLabel = '№ / Статус / День / Время',
   OrderDateLabel = 'Дата брони',
   TotalAmountLabel = 'Сумма заказа',
-  TotalLabel = 'Итого - Предоплата',
+  TotalLabel = 'Итого к оплате',
   TotalOrderItemLabel = 'Итого',
 
   PrepaySource = 'prepaySource',

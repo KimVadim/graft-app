@@ -33,6 +33,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   let orderId = record?.[OrderFieldData.Id]
 
   const loadOrders = useCallback(async (showToast = false) => {
+    if (!orderId) return;
     try {
       setLoading(true);
       const response = await getOrderItemData(orderId);
@@ -217,8 +218,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               {Number(totalAmount)?.toLocaleString("ru-RU")}
             </p>
             <p className="opty-card">
-              <strong>{`${OrderField.TotalLabel}: `}</strong>
-              {Number(totalAmount - prepayAmount)?.toLocaleString("ru-RU")}
+              <strong style={{ fontSize: "1.2em", color: "#000" }}>
+                {`${OrderField.TotalLabel}: `}
+                {Number(totalAmount - prepayAmount)?.toLocaleString("ru-RU")}
+              </strong>
             </p>
             <AutoCenter style={{ marginTop: '20px' }}>
               <Button

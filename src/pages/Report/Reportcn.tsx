@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Col, Row } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
-import { getDailyReportData } from '../service/appServiceBackend';
-import { PaymentProgreesBar } from '../components/PaymentProgressBar';
+import { AppDispatch, RootState } from '../../store';
+import { getDailyReportData } from '../../service/appServiceBackend';
+import { PaymentProgreesBar } from '../../components/PaymentProgressBar';
 import {
   BarChart,
   Bar,
@@ -13,11 +13,23 @@ import {
   Legend,
   YAxis,
 } from 'recharts'
-import { MenuComp } from '../components/Menu';
-import { setDeilyReport } from '../slices/dailyReportSlice';
-import { ChartAreaInteractive } from '../components/SectionCards';
-import { SectionCards } from '../components/section-cards';
+import { MenuComp } from '../../components/Menu';
+import { setDeilyReport } from '../../slices/dailyReportSlice';
+import { ChartAreaInteractive } from './SectionCards';
+import { SectionCards } from '../../components/section-cards';
 import { CapsuleTabs } from 'antd-mobile';
+
+export const dailyCustomTick = ({ x, y, payload }: any) => {
+  const date = new Date(payload.value);
+  const day = date.getDate();
+  const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3);
+  const weekday = date.toLocaleString("ru-RU", { weekday: "short" }).slice(0, 2);
+  return (
+    <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={13} fill="#1f2937">
+      {`${weekday} ${day} ${month}`}
+    </text>
+  );
+};
 
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -36,7 +48,10 @@ export const IncomeReportcn: React.FC = () => {
     loadOrders();
   }, [loadOrders]);
   const dailyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
-  const chartData = (dailyReportData || []).slice(0, 30);
+  const chartData = useMemo(() =>
+    (dailyReportData || []).slice(0, 30),
+    [dailyReportData]
+  );
 
   return (
     <div style={{ paddingTop: '10px', paddingLeft: '0px', width: '390px', maxWidth: '100%', margin: '0 auto' }}>
@@ -61,7 +76,7 @@ export const IncomeReportcn: React.FC = () => {
            <SectionCards/>
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Дневной' key='DailyReport'>
-          <ResponsiveContainer width="100%" height={700}>
+          <ResponsiveContainer width="100%" height={680}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,
@@ -118,9 +133,7 @@ export const IncomeReportcn: React.FC = () => {
           </ResponsiveContainer>
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Недельный' key='WeeklyReport'>
-          <ResponsiveContainer width="100%" height={300}>
-            <ChartAreaInteractive/>
-          </ResponsiveContainer>
+          <ChartAreaInteractive/>
         </CapsuleTabs.Tab>
       </CapsuleTabs>
     </div>

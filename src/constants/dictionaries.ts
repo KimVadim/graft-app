@@ -3,15 +3,15 @@ import { MenuProps } from 'antd';
 export enum ExpenseType {
   Expense = 'Расход',
   Salary = 'Зарплата',
-  Removal = 'Снятие',
+  Procurement = 'Закупки',
   ServiceUtilities = 'Комм. усл.',
   Other = 'Другое',
 }
 
 export const EXPENSE_TYPE = [
+  { value: ExpenseType.Procurement, label: ExpenseType.Procurement },
   { value: ExpenseType.Expense, label: ExpenseType.Expense },
   { value: ExpenseType.Salary, label: ExpenseType.Salary },
-  { value: ExpenseType.Removal, label: ExpenseType.Removal },
   { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
   { value: ExpenseType.Other, label: ExpenseType.Other },
 ];
@@ -121,6 +121,7 @@ export enum BUTTON_TEXT {
   Cancel = 'Отмена',
   Add = 'Добавить',
   Save = 'Сохранить',
+  Edit = 'Изменить',
 }
 
 export enum MODAL_TEXT {

@@ -34,7 +34,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
     state.order.order.find(o => o.id === orderId)
   );
   React.useEffect(() => {
-    if (!order) return;
+    if (!order || !isUserInfo) return;
 
     form.setFieldsValue({
       [OrderField.Phone]: order?.phone,
@@ -44,7 +44,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
       [OrderField.Comment]: order?.comment,
       [OrderField.OrderDate]: order?.[OrderFieldData.OrderDt] ? dayjs(order[OrderFieldData.OrderDt]) : null,
     });
-  }, [order, form]);
+  }, [order, form, isUserInfo]);
 
   const actions = {
     handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,7 +132,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
       <Popup
         visible={isUserInfo}
         showCloseButton
-        bodyStyle={{ height: '72vh' }}
+        bodyStyle={{ height: '74vh' }}
         onClose={actions.handleClose}
         onMaskClick={actions.handleClose}
       >
@@ -228,7 +228,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
             </Form.Item>
             <Form.Item style={{ textAlign: "center" }}>
               <Button type="primary" htmlType="submit">
-                {BUTTON_TEXT.Add}
+                {BUTTON_TEXT.Edit}
               </Button>
               <Button onClick={() => {}} style={{ marginLeft: 8,  marginTop: 10}}>
                 {BUTTON_TEXT.Cancel}
