@@ -230,7 +230,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
               <Button type="primary" htmlType="submit">
                 {BUTTON_TEXT.Edit}
               </Button>
-              <Button onClick={() => {}} style={{ marginLeft: 8,  marginTop: 10}}>
+              <Button onClick={() => actions.handleClose()} style={{ marginLeft: 8,  marginTop: 10}}>
                 {BUTTON_TEXT.Cancel}
               </Button>
             </Form.Item>

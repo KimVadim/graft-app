@@ -17,6 +17,7 @@ export const endpoints = {
   LOGIN: `${API_URL}/endpoints/login`,
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   DAILY_REPORT: `${API_URL}/endpoints/fs/v2/dailyreport`,
+  DAILY_WEEKLY_REPORT: `${API_URL}/endpoints/fs/dailyweeklyreport`,
   EXPENSES: `${API_URL}/endpoints/fs/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
@@ -180,6 +181,23 @@ export const getDailyReportData = async () => {
   }
 };
 
+export const getDailyWeeklyReportData = async () => {
+  try {
+    const { data } = await axios.get(endpoints.DAILY_WEEKLY_REPORT);
+
+    const dailyReport = data.message?.df_daily || [];
+    const weeklyReport = data.message?.df_weekly || [];
+
+    return { dailyReport, weeklyReport };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
 export const getExpenseData = async (year: number, month: number) => {
   try {
     const { data } = await axios.get(endpoints.EXPENSES, {
@@ -252,6 +270,7 @@ export const updateOrder = async (values: UpdateOrder) => {
       total_amount: values?.totalAmount,
       start_time: values?.startTime,
       end_time: values?.endTime,
+      phone: values?.phone,
       sauna_num: values?.saunaNum?.[0],
       ...(values.orderDate && {
         order_dt: dayjs(values.orderDate)

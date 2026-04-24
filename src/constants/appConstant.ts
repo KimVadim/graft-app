@@ -368,6 +368,7 @@ export interface UpdateOrder {
   endTime?: string;
   saunaNum?: string;
   orderDate?: string;
+  phone?: string;
 }
 
 export enum OrderStatus {

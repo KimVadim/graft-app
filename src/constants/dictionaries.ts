@@ -6,14 +6,16 @@ export enum ExpenseType {
   Procurement = 'Закупки',
   ServiceUtilities = 'Комм. усл.',
   Other = 'Другое',
+  Rent = 'Аренда',
 }
 
 export const EXPENSE_TYPE = [
   { value: ExpenseType.Procurement, label: ExpenseType.Procurement },
   { value: ExpenseType.Expense, label: ExpenseType.Expense },
   { value: ExpenseType.Salary, label: ExpenseType.Salary },
+  { value: ExpenseType.Rent, label: ExpenseType.Rent },
   { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
-  { value: ExpenseType.Other, label: ExpenseType.Other },
+  //{ value: ExpenseType.Other, label: ExpenseType.Other },
 ];
 
 export enum Product {

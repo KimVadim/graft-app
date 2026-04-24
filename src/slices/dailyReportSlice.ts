@@ -10,6 +10,7 @@ interface DailyReport {
   profit_sauna_total: number;
   revenue_kitchen_total: number;
   profit_kitchen_total: number;
+  order_count_total: number;
 }
 
 export type DailyReportState = {

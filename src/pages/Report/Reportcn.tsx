@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Col, Row } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { getDailyReportData } from '../../service/appServiceBackend';
+import { getDailyWeeklyReportData } from '../../service/appServiceBackend';
 import { PaymentProgreesBar } from '../../components/PaymentProgressBar';
 import {
   BarChart,
@@ -18,6 +18,7 @@ import { setDeilyReport } from '../../slices/dailyReportSlice';
 import { ChartAreaInteractive } from './SectionCards';
 import { SectionCards } from '../../components/section-cards';
 import { CapsuleTabs } from 'antd-mobile';
+import { setWeeklyReport } from '../../slices/weeklyReportSlice';
 
 export const dailyCustomTick = ({ x, y, payload }: any) => {
   const date = new Date(payload.value);
@@ -36,9 +37,10 @@ export const IncomeReportcn: React.FC = () => {
   const [isModalPayment, setIsModalPayment] = useState(false);
   const loadOrders = useCallback(async () => {
     try {
-      const response = await getDailyReportData();
+      const response = await getDailyWeeklyReportData();
 
       dispatch(setDeilyReport(response?.dailyReport));
+      dispatch(setWeeklyReport(response?.weeklyReport));
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);
     }
