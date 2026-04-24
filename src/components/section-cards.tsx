@@ -111,7 +111,9 @@ export function SectionCards() {
       valuePrev: Math.round(avgCheckPrev).toLocaleString("ru-RU"),
       trend: avgPercent >= 0 ? "up" : "down",
       badge: `${avgPercent > 0 ? "+" : ""}${avgPercent.toFixed(1)}%`,
-      footerMain: "Текущая неделя vs прошлая",
+      footerMain: avgPercent >= 0
+        ? `Текущая vs прошлая Рост на ${avgPercent.toFixed(1)}%`
+        : `Текущая vs прошлая Сниж. на ${Math.abs(avgPercent).toFixed(1)}%`,
       footerSub: "Сравнение одинаковых дней недели",
     }, {
       label: "Средняя прибыль на чек",
@@ -130,8 +132,8 @@ export function SectionCards() {
       {cards.map((card) => (
         <Card key={card.label} className="@container/card">
           <CardHeader>
-            <CardDescription>{card.label}</CardDescription>
-            <CardTitle className="text-lg font-semibold tabular-nums @[250px]/card:text-xl">
+            <CardDescription className="text-xs">{card.label}</CardDescription>
+            <CardTitle className="text-lg font-semibold tabular-nums @[250px]/card:text-xm">
               {card.value} / {card.valuePrev}
             </CardTitle>
             <CardAction>
