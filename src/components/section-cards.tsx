@@ -131,7 +131,7 @@ export function SectionCards() {
         <Card key={card.label} className="@container/card">
           <CardHeader>
             <CardDescription>{card.label}</CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-2xl">
+            <CardTitle className="text-lg font-semibold tabular-nums @[250px]/card:text-xl">
               {card.value} / {card.valuePrev}
             </CardTitle>
             <CardAction>
@@ -141,14 +141,14 @@ export function SectionCards() {
               </Badge>
             </CardAction>
           </CardHeader>
-          <CardFooter className="flex-col items-start text-sm">
+          <CardFooter className="flex-col items-start text-xs">
             <div className="line-clamp-1 flex gap-2 font-medium">
               {card.footerMain}
               {card.trend === "up"
                 ? <IconTrendingUp className="size-4" />
                 : <IconTrendingDown className="size-4" />}
             </div>
-            <div className="text-muted-foreground">{card.footerSub}</div>
+            <div className="text-muted-foreground text-[11px]">{card.footerSub}</div>
           </CardFooter>
         </Card>
       ))}
