@@ -183,17 +183,30 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     {
       title: '',
       width: 60,
-      render: (_: any, record: any) => (
-        <Button
-          size="small"
-          color="danger"
-          onClick={() => handleDeleteItemClick(record[OrderItemFieldData.Id])}
-        >
-          ✕
-        </Button>
-      )
+      render: (_: any, recordItem: any) => {
+        const canDelete = recordItem.status !== 'Брн';
+        console.log('record',record)
+
+        if (!canDelete) {
+          return null; // Или <Button disabled...> если хотите оставить кнопку видимой
+        }
+
+        return (
+          <Button
+            size="small"
+            danger // Используем стандартный атрибут antd для красного цвета
+            onClick={(e) => {
+              e.stopPropagation(); // Важно: предотвращает клик по строке таблицы
+              handleDeleteItemClick(recordItem[OrderItemFieldData.Id]);
+            }}
+          >
+            ✕
+          </Button>
+        );
+      }
     }
   ];
+
   return (
     <Popup
       visible={isModalOpen}

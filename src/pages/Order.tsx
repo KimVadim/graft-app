@@ -1,6 +1,6 @@
 import { Button, Spin, Table, Row, Col, Input } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { OpportunityModal } from "../components/OpportunityModal";
+import { OpportunityModal } from "../components/OrderModal";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getOrderAllData } from "../service/appServiceBackend";
