@@ -128,6 +128,7 @@ export enum BUTTON_TEXT {
 
 export enum MODAL_TEXT {
   OptyCloseText = 'Подтвердите оплату брони!',
+  DeleteOrderItemText = 'Подтвердите удаление позиции!',
   NotFound = 'Не найдено',
   UpdateOptyPaymentDate = 'Подтвердите изменение даты платежа',
 }

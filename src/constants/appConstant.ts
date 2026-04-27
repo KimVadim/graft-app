@@ -160,6 +160,7 @@ export enum OrderItemFieldData {
   Amount = 'amount',
   ItemCount = 'item_count',
   OrderId = 'order_id',
+  Status = 'status',
 }
 
 export type OrderItemType = {
@@ -170,6 +171,7 @@ export type OrderItemType = {
   [OrderItemFieldData.Amount]: string;
   [OrderItemFieldData.ItemCount]: string;
   [OrderItemFieldData.OrderId]: string;
+  [OrderItemFieldData.Status]: string;
 };
 
 export enum MenuFieldData {
@@ -371,8 +373,18 @@ export interface UpdateOrder {
   phone?: string;
 }
 
+export interface UpdateOrderItem {
+  itemId: string;
+  status?: string;
+}
+
 export enum OrderStatus {
   Pay = 'Опл',
   Reservation = 'Брн',
   Cancel = 'Отм',
+}
+
+export enum OrderItemStatus {
+  Disable = 'Disable',
+  Active = 'Active',
 }

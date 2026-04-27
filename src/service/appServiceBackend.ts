@@ -5,6 +5,7 @@ import {
   AddOrderItem,
   OrderStatus,
   UpdateOrder,
+  UpdateOrderItem,
 } from '../constants/appConstant';
 import { AddExpense, ExpenseFieldData } from '../pages/Expenses/ExpensesMeta';
 
@@ -20,6 +21,7 @@ export const endpoints = {
   DAILY_WEEKLY_REPORT: `${API_URL}/endpoints/fs/dailyweeklyreport`,
   EXPENSES: `${API_URL}/endpoints/fs/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
+  UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/updateorderitem`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
 };
 
@@ -283,6 +285,25 @@ export const updateOrder = async (values: UpdateOrder) => {
     };
 
     const response = await axios.post(endpoints.UPDATE_ORDER, payload);
+
+    return response?.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.data);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const updateOrderItem = async (values: UpdateOrderItem) => {
+  try {
+    const payload = {
+      id: values.itemId,
+      status: values?.status,
+    };
+
+    const response = await axios.post(endpoints.UPDATE_ORDER_ITEM, payload);
 
     return response?.data;
   } catch (error: any) {

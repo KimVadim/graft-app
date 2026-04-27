@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Col, Row } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { getDailyWeeklyReportData } from '../../service/appServiceBackend';
@@ -35,14 +35,18 @@ export const dailyCustomTick = ({ x, y, payload }: any) => {
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalPayment, setIsModalPayment] = useState(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const loadOrders = useCallback(async () => {
     try {
+      setLoading(true)
       const response = await getDailyWeeklyReportData();
 
       dispatch(setDeilyReport(response?.dailyReport));
       dispatch(setWeeklyReport(response?.weeklyReport));
+      setLoading(false)
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);
+      setLoading(false)
     }
   }, [dispatch]);
 
@@ -56,6 +60,7 @@ export const IncomeReportcn: React.FC = () => {
   );
 
   return (
+    <Spin spinning={loading} >
     <div style={{ paddingTop: '10px', paddingLeft: '0px', width: '390px', maxWidth: '100%', margin: '0 auto' }}>
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '120px' }}>
@@ -139,5 +144,6 @@ export const IncomeReportcn: React.FC = () => {
         </CapsuleTabs.Tab>
       </CapsuleTabs>
     </div>
+    </Spin>
   );
 };

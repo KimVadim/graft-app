@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
-import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder } from '../constants/appConstant';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder, OrderItemStatus } from '../constants/appConstant';
 import { formatPhoneNumber } from '../service/utils';
-import { addOrderItem, getOrderItemData, updateOrder } from '../service/appServiceBackend';
+import { addOrderItem, getOrderItemData, updateOrder, updateOrderItem } from '../service/appServiceBackend';
 import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { BUTTON_TEXT, MODAL_TEXT } from '../constants/dictionaries';
 import dayjs from 'dayjs';
@@ -52,7 +52,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     loadOrders();
   }, [loadOrders]);
 
-  const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId) || [];
+  const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId && x[OrderItemFieldData.Status] === OrderItemStatus.Active) || [];
   const optyPayDate = new Date(record?.[OrderField.OrderDate]);
   const prepayAmount = Number(record?.[OrderFieldData.PrepayAmount]);
   const totalAmount = filteredData?.reduce((sum, item) => {
@@ -78,6 +78,17 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         dispatch(updateOrderAction(result?.['data']));
         setLoading(false);
         setIsModalOpen(false);
+      });
+    },
+    handleDeleteOrderItem: (itemId: string) => {
+      setLoading(true);
+      updateOrderItem({itemId, status: OrderItemStatus.Disable}).then((result) => {
+        if (result?.message?.status === 'success') {
+          getOrderItemData(orderId).then((response) => {
+            response && dispatch(setOrderItem(response));
+          })
+        }
+        setLoading(false);
       });
     },
     handleUpdateOrder: (values: UpdateOrder) => {
@@ -152,6 +163,37 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     });
   };
 
+  const handleDeleteItemClick = (itemId: string) => {
+    modal.confirm({
+      title: 'Подтверждение',
+      content: MODAL_TEXT.DeleteOrderItemText,
+      okText: BUTTON_TEXT.Ok,
+      width: 300,
+      centered: true,
+      cancelText: BUTTON_TEXT.Cancel,
+      onOk: async () => {
+        await actions.handleDeleteOrderItem(itemId);
+        message.success('Позиция удалена');
+      },
+    });
+  };
+
+  const columns = [
+    ...orderItemMeta,
+    {
+      title: '',
+      width: 60,
+      render: (_: any, record: any) => (
+        <Button
+          size="small"
+          color="danger"
+          onClick={() => handleDeleteItemClick(record[OrderItemFieldData.Id])}
+        >
+          ✕
+        </Button>
+      )
+    }
+  ];
   return (
     <Popup
       visible={isModalOpen}
@@ -263,7 +305,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             <Table
               rowKey="uid"
               scroll={{ x: 395 }}
-              columns={orderItemMeta}
+              columns={columns}
               dataSource={filteredData}
               size='middle'
               pagination={{

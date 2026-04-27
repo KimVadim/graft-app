@@ -108,5 +108,5 @@ export const orderItemMeta = [
     dataIndex: 'amount',
     key: 'amount',
     width: 30,
-  }
+  },
 ];

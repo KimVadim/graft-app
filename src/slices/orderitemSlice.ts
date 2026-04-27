@@ -11,6 +11,7 @@ interface OrderItem {
   created_by: string;
   item_dt: string;
   order_id: string;
+  status: string;
 }
 
 export type orderItemState = {
