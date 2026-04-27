@@ -184,8 +184,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       title: '',
       width: 60,
       render: (_: any, recordItem: any) => {
-        const canDelete = recordItem.status !== 'Брн';
-        console.log('record',record)
+        const canDelete = record.status === 'Брн';
 
         if (!canDelete) {
           return null; // Или <Button disabled...> если хотите оставить кнопку видимой
@@ -206,7 +205,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       }
     }
   ];
-
   return (
     <Popup
       visible={isModalOpen}
