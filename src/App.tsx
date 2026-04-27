@@ -13,8 +13,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<PrivateRoute />}>
           <Route path="/order" element={<HomePage view='Opportunity'/>} />
-          <Route path="/incomereportcn" element={<IncomeReportcn/>} />
           <Route path='/expenses' element={<Expenses/>} />
+        </Route>
+        <Route element={<PrivateRoute allowedRoles={['vkim', 'anurmuhametov']} />}>
+          <Route path="/incomereportcn" element={<IncomeReportcn/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>
