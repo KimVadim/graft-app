@@ -20,8 +20,6 @@ export function SectionCards() {
   const currentWeek = today.isoWeek()
   const prevWeek = today.subtract(1, "week").isoWeek()
   const currentWeekday = today.isoWeekday()
-
-  // текущая неделя
   const currentWeekData = deilyReportData.filter(d => {
     const dt = dayjs(d.order_dt)
     return dt.isoWeek() === currentWeek && dt.isoWeekday() <= currentWeekday
@@ -31,8 +29,6 @@ export function SectionCards() {
 
   const currentWeekCount = currentWeekData
   .reduce((sum, d) => sum + Number(d.order_count_total || 0), 0)
-
-  // предыдущая неделя
   const prevWeekData = deilyReportData.filter(d => {
     const dt = dayjs(d.order_dt)
     return dt.isoWeek() === prevWeek && dt.isoWeekday() <= currentWeekday - 1
