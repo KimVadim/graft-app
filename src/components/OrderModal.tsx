@@ -263,6 +263,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               {`${record?.[OrderFieldData.StartTime]} - ${record?.[OrderFieldData.EndTime]} · ${record?.[OrderFieldData.PeopleCount]} чел · ${record?.[OrderFieldData.Recommendation]}`}
             </p>
             <p className="opty-card">
+              <strong>{`${OrderField.CreatedByLabel}: `}</strong>
+              {record?.[OrderFieldData.CreatedBy]}
+            </p>
+            <p className="opty-card">
               <strong>{`${OrderField.CommentLabel}: `}</strong>
               {record?.[OrderFieldData.Comment]}
             </p>

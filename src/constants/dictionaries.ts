@@ -15,7 +15,6 @@ export const EXPENSE_TYPE = [
   { value: ExpenseType.Salary, label: ExpenseType.Salary },
   { value: ExpenseType.Rent, label: ExpenseType.Rent },
   { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
-  //{ value: ExpenseType.Other, label: ExpenseType.Other },
 ];
 
 export enum Product {
@@ -31,54 +30,49 @@ export enum Product {
 }
 
 export const PRODUCT_MAP = {
-  SaunaOne: 'Каб. 1',
-  SaunaTwo: 'Каб. 2',
-  SaunaThree: 'Каб. 3',
-  SaunaFour: 'Каб. 4',
+  '1': 'Каб. 1',
+  '2': 'Каб. 2',
+  '3': 'Каб. 3',
+  '4': 'Каб. 4',
 };
 
 export const PRODUCT_PRICE_MAP = {
-  SaunaOne: Product.SaunaOne,
-  SaunaTwo: Product.SaunaTwo,
-  SaunaThree: Product.SaunaThree,
-  SaunaFour: Product.SaunaFour,
+  '1': Product.SaunaOne,
+  '2': Product.SaunaTwo,
+  '3': Product.SaunaThree,
+  '4': Product.SaunaFour,
 };
 
 export const PRODUCT = [
   {
-    value: 'SaunaOne',
+    value: '1',
     label: Product.SaunaOneValue,
     optyFlg: false,
     payFlg: false,
     storageFlg: false,
   },
   {
-    value: 'SaunaTwo',
+    value: '2',
     label: Product.SaunaTwoValue,
     optyFlg: true,
     payFlg: true,
     storageFlg: false,
   },
   {
-    value: 'SaunaThree',
+    value: '3',
     label: Product.SaunaThreeValue,
     optyFlg: true,
     payFlg: true,
     storageFlg: false,
   },
   {
-    value: 'SaunaFour',
+    value: '4',
     label: Product.SaunaFourValue,
     optyFlg: false,
     payFlg: true,
     storageFlg: false,
   },
 ];
-
-export const productMap = {
-  [Product.SaunaFour]: Product.SaunaFourValue,
-  [Product.SaunaTwo]: Product.SaunaTwoValue,
-};
 
 export enum Payment {
   GoldAN = 'Gold А',
