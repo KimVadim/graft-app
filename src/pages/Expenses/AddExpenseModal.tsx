@@ -23,7 +23,11 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
       setLoading(true);
       addExpense(values)
         .then((expenseId) => {
-          getExpenseData(2026, 12).then((response) => {
+          const currentDate = new Date();
+          const currentYear = currentDate.getFullYear();
+          const currentMonth = currentDate.getMonth() + 1;
+
+          getExpenseData(currentYear, currentMonth).then((response) => {
               dispatch(setExpense(response?.expense));
           });
 
@@ -50,6 +54,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
             form.resetFields();
           }}
         >
+        <Spin spinning={loading}>
           <div
             style={{
               maxWidth: '480px',
@@ -63,7 +68,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               marginBottom: '20px'
             }}
           >
-          <Spin spinning={loading}>
             <Form
               form={form}
               layout="vertical"
@@ -77,13 +81,13 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 <Selector
                   options={EXPENSE_TYPE}
                   onChange={(arr) => {
-                    arr.length > 0 && form.setFieldsValue({[ExpenseFieldData.Type]: arr[0]});
+                  arr.length > 0 && form.setFieldsValue({[ExpenseFieldData.Type]: arr[0]});
                   }}
                 />
               </Form.Item>
               <Form.Item
                 label={ExpenseFieldLabel.ExpenseNameLabel}
-                name={ExpenseFieldData.ExpenseName}
+              name={ExpenseFieldData.ExpenseName}
                 rules={[FieldRules.Required]}
               >
                 <Input style={FieldStyle.InputStyle} />
@@ -128,8 +132,8 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 </Button>
               </Form.Item>
             </Form>
-          </Spin>
           </div>
+          </Spin>
         </Popup>
       </>
     )

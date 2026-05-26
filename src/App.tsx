@@ -5,6 +5,7 @@ import { IncomeReportcn } from './pages/Report/Reportcn';
 import { Expenses } from './pages/Expenses/Expenses';
 import Login from '../src/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
+import { Menu } from './pages/Menu/Menu';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/order" element={<HomePage view='Opportunity'/>} />
           <Route path='/expenses' element={<Expenses/>} />
+          <Route path='/menu' element={<Menu/>} />
         </Route>
         <Route element={<PrivateRoute allowedRoles={['vkim', 'anurmuhametov']} />}>
           <Route path="/incomereportcn" element={<IncomeReportcn/>} />

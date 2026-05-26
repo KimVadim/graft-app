@@ -6,13 +6,14 @@ interface Menu {
   menu_type: string;
   sales: number;
   pecent: number;
-  menu_dt: string;
+  created_at: string;
   count: number;
   price: number;
   amount: number;
   sales_amount: number;
-  menu_status: string;
+  status: string;
   comment: string;
+  type_name: string;
 }
 
 export type MenuState = {

@@ -7,7 +7,7 @@ dayjs.locale('ru');
 
 export type ProductKey = keyof typeof PRODUCT_MAP;
 
-export const opportunityMeta = [{
+export const orderMeta = [{
   title: OrderField.OrderNameLabel,
   dataIndex: OrderFieldData.Status,
   key: OrderFieldData.Status,

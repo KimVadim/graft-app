@@ -9,11 +9,11 @@ import { OrderFieldData, OrderStatus, OrderType } from "../constants/appConstant
 import '../index.css';
 import { CapsuleTabs, Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu";
-import { opportunityMeta } from "./AllApplicationMeta";
+import { orderMeta } from "./AllApplicationMeta";
 import { setOrder } from "../slices/orderSlice";
 import { setMenu } from "../slices/menuSlice";
 
-export const Opportunity: React.FC = () => {
+export const Order: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<OrderType | null>(null);
@@ -126,7 +126,7 @@ export const Opportunity: React.FC = () => {
           <Table
             rowKey="uid"
             scroll={{ x: 385 }}
-            columns={opportunityMeta}
+            columns={orderMeta}
             dataSource={reservationData}
             size='middle'
             pagination={{
@@ -142,7 +142,7 @@ export const Opportunity: React.FC = () => {
           <Table
             rowKey="uid"
             scroll={{ x: 385 }}
-            columns={opportunityMeta}
+            columns={orderMeta}
             dataSource={paidData}
             size='middle'
             pagination={{

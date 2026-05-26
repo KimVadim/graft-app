@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Opportunity } from './Order';
+import { Order } from './Order';
 import { AddFloatButton } from '../components/AddFloatButton';
 import { AddExpenseModal } from './Expenses/AddExpenseModal';
 import { AddOrderModal } from '../components/AddOrderModal';
@@ -15,7 +15,7 @@ export const HomePage: React.FC<HomePageProps> = ({view}) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      {view === 'Opportunity' && <Opportunity />}
+      {view === 'Opportunity' && <Order />}
       <AddFloatButton
         setIsAddOpty={setIsAddOpty}
         setIsAddExpense={['Opportunity'].includes(view) ? setIsAddExpense : undefined }

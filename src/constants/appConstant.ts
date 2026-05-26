@@ -389,3 +389,8 @@ export enum OrderItemStatus {
   Disable = 'Disable',
   Active = 'Active',
 }
+
+export enum AppConstants {
+  AppName = 'Grafit',
+  MenuStatusActive = 'Active',
+}

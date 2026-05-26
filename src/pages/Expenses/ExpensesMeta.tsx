@@ -14,12 +14,13 @@ export enum ExpenseFieldLabel {
 
 export enum ExpenseFieldData {
   Id = 'id',
-  ExpenseDate = 'expense_dt',
+  ExpenseDate = 'created_at',
   Source = 'source',
   Comment = 'comment',
   Amount = 'amount',
   Type = 'type',
   ExpenseName = 'expense_name',
+  AppName = 'app_name',
 }
 
 export interface AddExpense {
@@ -29,6 +30,7 @@ export interface AddExpense {
   [ExpenseFieldData.Comment]: string;
   [ExpenseFieldData.Source]: string;
   [ExpenseFieldData.ExpenseDate]: string;
+  [ExpenseFieldData.AppName]: string;
 }
 
 export type ExpenseType = {
@@ -38,6 +40,7 @@ export type ExpenseType = {
   [ExpenseFieldData.Comment]: string;
   [ExpenseFieldData.Amount]: string;
   [ExpenseFieldData.ExpenseName]: string;
+  [ExpenseFieldData.AppName]: string;
 };
 
 export const expenseMeta = [{
@@ -54,7 +57,7 @@ export const expenseMeta = [{
           .toString()
           .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
       </Tag>
-      <Tag color={"#797b75"}>{record?.[ExpenseFieldData.ExpenseName].substring(0, 10)+'...'}</Tag>
+      <Tag color={"#797b75"}>{record?.[ExpenseFieldData.ExpenseName] && record?.[ExpenseFieldData.ExpenseName].substring(0, 10)+'...'}</Tag>
     </>
   },
   width: 260,

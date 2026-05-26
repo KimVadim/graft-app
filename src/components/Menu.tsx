@@ -20,6 +20,7 @@ export const MenuComp: React.FC = () => {
           children: [
             { label: 'Заказы', key: '/order' },
             { label: 'Расходы', key: '/expenses' },
+            { label: 'Меню', key: '/menu' },
           ],
         },
         {

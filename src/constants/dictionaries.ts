@@ -17,6 +17,27 @@ export const EXPENSE_TYPE = [
   { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
 ];
 
+export enum MenuTypeValue {
+  BathSupplies = 'Банные принадлежности',
+  Kitchen = 'Кухня',
+  Bar = 'Бар',
+  Sauna = 'Баня',
+}
+
+export enum MenuType {
+  BathSupplies = 'Bath supplies',
+  Kitchen = 'Kitchen',
+  Bar = 'Bar',
+  Sauna = 'Sauna',
+}
+
+export const MENU_TYPE = [
+  { value: MenuType.Sauna, label: MenuTypeValue.Sauna },
+  { value: MenuType.Bar, label: MenuTypeValue.Bar },
+  { value: MenuType.Kitchen, label: MenuTypeValue.Kitchen },
+  { value: MenuType.BathSupplies, label: MenuTypeValue.BathSupplies },
+];
+
 export enum Product {
   SaunaOne = 7500,
   SaunaTwo = 7500,

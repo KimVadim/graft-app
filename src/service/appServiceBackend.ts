@@ -3,10 +3,12 @@ import axios from 'axios';
 import {
   AddOrder,
   AddOrderItem,
+  AppConstants,
   OrderStatus,
   UpdateOrder,
   UpdateOrderItem,
 } from '../constants/appConstant';
+import { AddMenu, MenuFieldData } from '../pages/Menu/MenuMeta';
 import { AddExpense, ExpenseFieldData } from '../pages/Expenses/ExpensesMeta';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
@@ -19,10 +21,11 @@ export const endpoints = {
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   DAILY_REPORT: `${API_URL}/endpoints/fs/v2/dailyreport`,
   DAILY_WEEKLY_REPORT: `${API_URL}/endpoints/fs/dailyweeklyreport`,
-  EXPENSES: `${API_URL}/endpoints/fs/expense`,
+  EXPENSES: `${API_URL}/endpoints/fs/sb/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
   UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/updateorderitem`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
+  MENU: `${API_URL}/endpoints/fs/sb/menu`,
 };
 
 export const addOrder = async (values: AddOrder) => {
@@ -114,6 +117,7 @@ export const addExpense = async (values: AddExpense) => {
         .second(0)
         .millisecond(0)
         .toISOString(),
+      [ExpenseFieldData.AppName]: AppConstants.AppName,
     };
 
     const response = await axios.post(endpoints.EXPENSES, payload);
@@ -325,6 +329,49 @@ export const getOrderItemData = async (orderId: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getMenuData = async () => {
+  try {
+    const { data } = await axios.get(endpoints.MENU);
+    const menu = data.message?.menu || [];
+
+    return { menu };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const addMenu = async (values: AddMenu) => {
+  try {
+    const payload = {
+      [MenuFieldData.MenuName]: values?.[MenuFieldData.MenuName],
+      [MenuFieldData.MenuType]: values?.[MenuFieldData.MenuType],
+      [MenuFieldData.Sales]: values?.[MenuFieldData.Sales],
+      [MenuFieldData.Percent]: values?.[MenuFieldData.Percent],
+      [MenuFieldData.Count]: values?.[MenuFieldData.Count],
+      [MenuFieldData.Price]: values?.[MenuFieldData.Price],
+      [MenuFieldData.Amount]: values?.[MenuFieldData.Amount],
+      [MenuFieldData.SalesAmount]: values?.[MenuFieldData.SalesAmount],
+      [MenuFieldData.Comment]: values?.[MenuFieldData.Comment],
+      [MenuFieldData.Status]: AppConstants.MenuStatusActive,
+      [MenuFieldData.TypeName]: values?.[MenuFieldData.TypeName]?.[0],
+    };
+
+    const response = await axios.post(endpoints.MENU, payload);
+
+    return response?.data?.message?.menu_id;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
       console.error('Непредвиденная ошибка:', error);
     }
