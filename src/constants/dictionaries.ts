@@ -17,6 +17,24 @@ export const EXPENSE_TYPE = [
   { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
 ];
 
+export enum AppNameValue {
+  Grafit = 'Grafit',
+  Pavlenko = 'Apart',
+  Alatau = 'Alatau',
+}
+
+export enum AppName {
+  Grafit = 'Графит',
+  Pavlenko = 'Павленко',
+  Alatau = 'Алатау',
+}
+
+export const APP_NAME = [
+  { value: AppNameValue.Grafit, label: AppName.Grafit },
+  { value: AppNameValue.Pavlenko, label: AppName.Pavlenko },
+  { value: AppNameValue.Alatau, label: AppName.Alatau },
+];
+
 export enum MenuTypeValue {
   BathSupplies = 'Банные принадлежности',
   Kitchen = 'Кухня',

@@ -87,7 +87,7 @@ export const Expenses: React.FC = () => {
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
-                <Tag color="#270d9a">{record?.[ExpenseFieldData.ExpenseName]}</Tag>
+                <Tag color="#066d1e">{record?.[ExpenseFieldData.ExpenseName]}</Tag>
                 <p>{record?.[ExpenseFieldData.Comment]}</p>
               </p>
             ),

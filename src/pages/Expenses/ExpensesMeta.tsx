@@ -5,11 +5,13 @@ export enum ExpenseFieldLabel {
   AmountLabel = 'Сумма',
   OptyNameLabel = 'Договор',
   ExpenseTypeLabel = 'Тип',
+  AppNameLabel = 'Назначение',
   ApartNumLabel = 'Номер квартиры',
   SourceLabel = 'Счёт',
   CommentLabel = 'Комментарий',
   ExpenseLabel = 'Тип / Дата расхода',
   ExpenseNameLabel = 'Название',
+  ExpenseDateLabel = 'Дата расхода',
 }
 
 export enum ExpenseFieldData {
@@ -51,16 +53,16 @@ export const expenseMeta = [{
     const date = new Date(record?.[ExpenseFieldData.ExpenseDate]);
 
     return <>
+      <Tag color={"#096bec"}>{record?.[ExpenseFieldData.AppName]}</Tag>
       <Tag color={"#69930f"}>{value}</Tag>
       <Tag color="blue">
         {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
           .toString()
           .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
       </Tag>
-      <Tag color={"#797b75"}>{record?.[ExpenseFieldData.ExpenseName] && record?.[ExpenseFieldData.ExpenseName].substring(0, 10)+'...'}</Tag>
     </>
   },
-  width: 260,
+  width: 265,
 }, {
     title: ExpenseFieldLabel.AmountLabel,
     dataIndex: ExpenseFieldData.Amount,

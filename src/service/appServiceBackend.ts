@@ -111,13 +111,15 @@ export const addExpense = async (values: AddExpense) => {
       [ExpenseFieldData.Source]: values?.[ExpenseFieldData.Source],
       [ExpenseFieldData.Amount]: values?.[ExpenseFieldData.Amount],
       [ExpenseFieldData.Comment]: values?.[ExpenseFieldData.Comment],
-      [ExpenseFieldData.ExpenseDate]: dayjs()
+      [ExpenseFieldData.ExpenseDate]: dayjs(
+        values?.[ExpenseFieldData.ExpenseDate]
+      )
         .hour(12)
         .minute(0)
         .second(0)
         .millisecond(0)
         .toISOString(),
-      [ExpenseFieldData.AppName]: AppConstants.AppName,
+      [ExpenseFieldData.AppName]: values?.[ExpenseFieldData.AppName],
     };
 
     const response = await axios.post(endpoints.EXPENSES, payload);

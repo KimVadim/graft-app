@@ -1,14 +1,15 @@
-import { Button, Form, Input, InputNumber, Spin } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React from "react"
 import { useDispatch } from "react-redux";
 import { addExpense, getExpenseData } from "../../service/appServiceBackend";
 import TextArea from "antd/es/input/TextArea";
-import { BUTTON_TEXT, EXPENSE_TYPE, PAYMENT_TYPE } from "../../constants/dictionaries.js";
-import { FieldPlaceholder, FieldRules, FieldStyle } from "../../constants/appConstant.js";
+import { APP_NAME, BUTTON_TEXT, EXPENSE_TYPE, PAYMENT_TYPE } from "../../constants/dictionaries.js";
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle } from "../../constants/appConstant.js";
 import { Popup, Selector, Toast } from "antd-mobile";
 import { AddExpense, ExpenseFieldData, ExpenseFieldLabel } from "./ExpensesMeta";
 import { setExpense } from "../../slices/expenseSlice";
 import { AppDispatch } from "../../store";
+import dayjs from "dayjs";
 
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
@@ -74,6 +75,18 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               onFinish={handleSubmit}
             >
               <Form.Item
+                label={ExpenseFieldLabel.AppNameLabel}
+                name={ExpenseFieldData.AppName}
+                rules={[FieldRules.Required]}
+              >
+                <Selector
+                  options={APP_NAME}
+                  onChange={(arr) => {
+                  arr.length > 0 && form.setFieldsValue({[ExpenseFieldData.AppName]: arr[0]});
+                  }}
+                />
+              </Form.Item>
+              <Form.Item
                 label={ExpenseFieldLabel.ExpenseTypeLabel}
                 name={ExpenseFieldData.Type}
                 rules={[FieldRules.Required]}
@@ -110,6 +123,19 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 rules={[FieldRules.Required,FieldRules.ExpenseAmount]}
               >
                 <InputNumber style={FieldStyle.InputStyle} />
+              </Form.Item>
+              <Form.Item
+                label={ExpenseFieldLabel.ExpenseDateLabel}
+                name={ExpenseFieldData.ExpenseDate}
+                rules={[FieldRules.Required]}
+              >
+                <DatePicker
+                  style={FieldStyle.InputStyle}
+                  format={FieldFormat.Date}
+                  inputReadOnly={true}
+                  placeholder={FieldPlaceholder.Date}
+                  defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
+                />
               </Form.Item>
               <Form.Item
                 label={ExpenseFieldLabel.CommentLabel}

@@ -42,7 +42,7 @@ export const OrderTime = HOURS.map((h) => {
   };
 });
 
-export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
+export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [phone, setPhone] = useState("");
@@ -281,7 +281,6 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               label={OrderField.OrderDateLabel}
               name={OrderField.OrderDate}
               rules={[FieldRules.Required]}
-              hidden={view && view==='Storage' ? true : false}
             >
               <DatePicker
                 style={FieldStyle.InputStyle}
