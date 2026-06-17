@@ -82,7 +82,8 @@ export const Menu: React.FC = () => {
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
-                <Tag color="#270d9a">{record?.[MenuFieldData.MenuName]}</Tag>
+                <Tag color="#270d9a">Себес. - {record?.[MenuFieldData.Price]}</Tag>
+                <Tag color="#5533e9">Колл. - {record?.[MenuFieldData.Count]}</Tag>
                 <p>{record?.[MenuFieldData.Comment]}</p>
               </p>
             ),

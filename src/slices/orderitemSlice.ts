@@ -12,6 +12,7 @@ interface OrderItem {
   item_dt: string;
   order_id: string;
   status: string;
+  type_name: string;
 }
 
 export type orderItemState = {

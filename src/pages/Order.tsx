@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { OpportunityModal } from "../components/OrderModal";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { getOrderAllData } from "../service/appServiceBackend";
+import { getMenuData, getOrderAllData } from "../service/appServiceBackend";
 import { OrderFieldData, OrderStatus, OrderType } from "../constants/appConstant";
 // @ts-ignore
 import '../index.css';
@@ -25,8 +25,11 @@ export const Order: React.FC = () => {
       setLoading(true);
       const response = await getOrderAllData();
 
-      dispatch(setOrder(response?.order));
-      dispatch(setMenu(response?.menu));
+      dispatch(setOrder(response?.orders));
+
+      const responseMenu = await getMenuData();
+
+      dispatch(setMenu(responseMenu?.menu));
 
       if (showToast) {
         Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
@@ -60,8 +63,8 @@ export const Order: React.FC = () => {
   }, [searchText, optyData]);
 
   const sortOrders = (a: OrderType, b: OrderType) => {
-    const dateA = new Date(a[OrderFieldData.OrderDt]).getTime();
-    const dateB = new Date(b[OrderFieldData.OrderDt]).getTime();
+    const dateA = new Date(a[OrderFieldData.CreatedAt]).getTime();
+    const dateB = new Date(b[OrderFieldData.CreatedAt]).getTime();
 
     if (dateA !== dateB) return dateA - dateB;
 

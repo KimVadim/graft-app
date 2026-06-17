@@ -4,6 +4,7 @@ import {
   AddOrder,
   AddOrderItem,
   AppConstants,
+  OrderItemStatus,
   OrderStatus,
   UpdateOrder,
   UpdateOrderItem,
@@ -14,16 +15,16 @@ import { AddExpense, ExpenseFieldData } from '../pages/Expenses/ExpensesMeta';
 export const API_URL = 'https://palvenko-production.up.railway.app';
 
 export const endpoints = {
-  ORDER: `${API_URL}/endpoints/fs/order`,
-  ORDER_ITEM: `${API_URL}/endpoints/fs/orderitem`,
-  ORDER_ALL_DATA: `${API_URL}/endpoints/fs/orderalldata`,
+  ORDER: `${API_URL}/endpoints/fs/sb/orders`,
+  ORDER_ITEM: `${API_URL}/endpoints/fs/sb/orderitems`,
+  ORDER_ALL_DATA: `${API_URL}/endpoints/fs/sb/orders`,
   LOGIN: `${API_URL}/endpoints/login`,
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   DAILY_REPORT: `${API_URL}/endpoints/fs/v2/dailyreport`,
   DAILY_WEEKLY_REPORT: `${API_URL}/endpoints/fs/dailyweeklyreport`,
   EXPENSES: `${API_URL}/endpoints/fs/sb/expense`,
-  UPDATE_ORDER: `${API_URL}/endpoints/fs/updateorder`,
-  UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/updateorderitem`,
+  UPDATE_ORDER: `${API_URL}/endpoints/fs/sb/updateorder`,
+  UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/sb/updateorderitem`,
   ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
   MENU: `${API_URL}/endpoints/fs/sb/menu`,
 };
@@ -31,34 +32,34 @@ export const endpoints = {
 export const addOrder = async (values: AddOrder) => {
   try {
     const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
+      first_name: values.firstName,
+      last_name: values.lastName,
       phone: values.phone,
       status: OrderStatus.Reservation,
-      saunaNum: values.saunaNum?.[0],
-      prepaySource: values.prepaySource?.[0],
-      prepayAmount: values.prepayAmount,
-      createBy: localStorage.getItem('login')
+      sauna_num: values.saunaNum?.[0],
+      prepay_source: values.prepaySource?.[0],
+      prepay_amount: values.prepayAmount,
+      created_by: localStorage.getItem('login')
         ? localStorage.getItem('login')
         : 'newApp',
-      orderDate: dayjs(values.orderDate)
+      created_at: dayjs(values.orderDate)
         .hour(12)
         .minute(0)
         .second(0)
         .millisecond(0)
         .toISOString(),
       recommendation: values.recommendation?.[0],
-      startTime: values.startTime,
-      endTime: values.endTime,
+      start_time: values.startTime,
+      end_time: values.endTime,
       comment: values.comment,
       price: values.price,
-      peopleCount: values.peopleCount,
-      totalAmount: 0,
+      people_count: values.peopleCount,
+      total_amount: 0,
     };
 
     const response = await axios.post(endpoints.ORDER, payload);
 
-    return response?.data?.message?.order_id;
+    return response?.data?.message?.orders;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -70,30 +71,31 @@ export const addOrder = async (values: AddOrder) => {
 
 export const addOrderItem = async (values: AddOrderItem, orderId: string) => {
   try {
-    //const amount = values.price * values.itemCount;
     const payload = {
-      itemName: values.itemName,
-      menuId: values.menuId,
+      item_name: values.itemName,
+      menu_id: String(values.menuId),
       sales: values.sales,
-      createBy: localStorage.getItem('login')
+      created_by: localStorage.getItem('login')
         ? localStorage.getItem('login')
         : 'newApp',
-      itemDt: dayjs(values.itemDt)
+      created_at: dayjs(values.itemDt)
         .hour(12)
         .minute(0)
         .second(0)
         .millisecond(0)
         .toISOString(),
       amount: values.sales * values.itemCount,
+      menu_type: values.menuType,
       price: values.price,
-      priceAmount: values.price * values.itemCount,
-      itemCount: values.itemCount,
-      orderId: orderId,
+      price_amt: values.price * values.itemCount,
+      item_count: values.itemCount,
+      order_id: orderId,
+      status: OrderItemStatus.Active,
     };
 
     const response = await axios.post(endpoints.ORDER_ITEM, payload);
 
-    return response?.data?.message?.order_item_id;
+    return response?.data?.message?.order_items?.['id'];
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -226,10 +228,10 @@ export const getExpenseData = async (year: number, month: number) => {
 export const getOrderAllData = async () => {
   try {
     const { data } = await axios.get(endpoints.ORDER_ALL_DATA);
-    const order = data.message?.order || [];
-    const menu = data.message?.['menu_df'] || [];
+    const orders = data.message?.orders || [];
+    //const menu = data.message?.['menu_df'] || [];
 
-    return { order, menu };
+    return { orders };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
@@ -242,9 +244,9 @@ export const getOrderAllData = async () => {
 export const getOrder = async () => {
   try {
     const { data } = await axios.get(endpoints.ORDER);
-    const order = data.message?.order || [];
+    const orders = data.message?.orders || [];
 
-    return { order };
+    return { orders };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
@@ -257,9 +259,9 @@ export const getOrder = async () => {
 export const getOrderItem = async () => {
   try {
     const { data } = await axios.get(endpoints.ORDER_ITEM);
-    const orderItem = data.message?.['orderitem'] || [];
+    const orderItems = data.message?.['order_items'] || [];
 
-    return { orderItem };
+    return { orderItems };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
@@ -271,8 +273,8 @@ export const getOrderItem = async () => {
 
 export const updateOrder = async (values: UpdateOrder) => {
   try {
+    console.log('Update order result:', values);
     const payload = {
-      id: values.orderId,
       status: values?.status,
       comment: values?.comment,
       total_amount: values?.totalAmount,
@@ -281,7 +283,7 @@ export const updateOrder = async (values: UpdateOrder) => {
       phone: values?.phone,
       sauna_num: values?.saunaNum?.[0],
       ...(values.orderDate && {
-        order_dt: dayjs(values.orderDate)
+        created_at: dayjs(values.orderDate)
           .hour(12)
           .minute(0)
           .second(0)
@@ -290,9 +292,11 @@ export const updateOrder = async (values: UpdateOrder) => {
       }),
     };
 
-    const response = await axios.post(endpoints.UPDATE_ORDER, payload);
+    const response = await axios.post(endpoints.UPDATE_ORDER, payload, {
+      params: { order_id: values.orderId },
+    });
 
-    return response?.data;
+    return response?.data?.message?.order;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -305,13 +309,14 @@ export const updateOrder = async (values: UpdateOrder) => {
 export const updateOrderItem = async (values: UpdateOrderItem) => {
   try {
     const payload = {
-      id: values.itemId,
       status: values?.status,
     };
 
-    const response = await axios.post(endpoints.UPDATE_ORDER_ITEM, payload);
+    const response = await axios.post(endpoints.UPDATE_ORDER_ITEM, payload, {
+      params: { order_item_id: values.itemId },
+    });
 
-    return response?.data;
+    return response?.data?.message?.order_item;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
@@ -324,10 +329,10 @@ export const updateOrderItem = async (values: UpdateOrderItem) => {
 export const getOrderItemData = async (orderId: string) => {
   try {
     const { data } = await axios.get(endpoints.ORDER_ITEM, {
-      params: { orderId },
+      params: { order_id: orderId },
     });
 
-    return data.message?.orderitem || [];
+    return data.message?.order_items || [];
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);

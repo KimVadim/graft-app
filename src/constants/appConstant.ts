@@ -110,7 +110,8 @@ export interface AddOrderItem {
   itemCount: number;
   priceAmount: number;
   createdBy: string;
-  //orderId: string;
+  menuType: string;
+  status: string;
 }
 
 export enum OrderFieldData {
@@ -118,6 +119,7 @@ export enum OrderFieldData {
   ContactId = 'con_id',
   LastName = 'last_name',
   FirstName = 'first_name',
+  CreatedAt = 'created_at',
   Phone = 'phone',
   Status = 'status',
   PrepaySource = 'prepay_source',
@@ -126,8 +128,7 @@ export enum OrderFieldData {
   StartTime = 'start_time',
   EndTime = 'end_time',
   Comment = 'comment',
-  OrderDt = 'order_dt',
-  CreatedBy = 'create_by',
+  CreatedBy = 'created_by',
   Price = 'price',
   PeopleCount = 'people_count',
   Recommendation = 'recommendation',
@@ -146,7 +147,7 @@ export type OrderType = {
   [OrderFieldData.StartTime]: string;
   [OrderFieldData.EndTime]: string;
   [OrderFieldData.Comment]: string;
-  [OrderFieldData.OrderDt]: Date;
+  [OrderFieldData.CreatedAt]: Date;
   [OrderFieldData.CreatedBy]: string;
   [OrderFieldData.Price]: string;
   [OrderFieldData.PeopleCount]: string;
@@ -185,8 +186,9 @@ export enum MenuFieldData {
   Price = 'price',
   Amount = 'amount',
   SalesAmount = 'sales_amount',
-  MenuStatus = 'menu_status',
+  MenuStatus = 'status',
   Comment = 'comment',
+  TypeName = 'type_name',
 }
 
 export type MenuType = {
@@ -202,6 +204,7 @@ export type MenuType = {
   [MenuFieldData.SalesAmount]: number;
   [MenuFieldData.MenuStatus]: string;
   [MenuFieldData.Comment]: string;
+  [MenuFieldData.TypeName]: string;
 };
 
 export enum OrderField {
@@ -268,6 +271,8 @@ export enum OrderItemField {
   Sum = 'sum',
   ItemDate = 'itemDate',
   OrderId = 'orderId',
+  MenuType = 'menuType',
+  TypeName = 'typeName',
 }
 
 export interface OptionType {

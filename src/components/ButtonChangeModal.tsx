@@ -42,7 +42,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
       [OrderField.StartTime]: order?.start_time,
       [OrderField.EndTime]: order?.end_time,
       [OrderField.Comment]: order?.comment,
-      [OrderField.OrderDate]: order?.[OrderFieldData.OrderDt] ? dayjs(order[OrderFieldData.OrderDt]) : null,
+      [OrderField.OrderDate]: order?.[OrderFieldData.CreatedAt] ? dayjs(order[OrderFieldData.CreatedAt]) : null,
     });
   }, [order, form, isUserInfo]);
 
@@ -74,9 +74,8 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
         setLoading(true);
 
         const orderId = await updateOrder(payload).then((result)=> {
-          dispatch(updateOrderAction(result?.['data']));
-
-          return result?.['data']?.['id']
+          dispatch(updateOrderAction(result));
+          return result?.['id']
         });
 
         if (!orderId) throw new Error();

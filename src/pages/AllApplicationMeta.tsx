@@ -26,7 +26,7 @@ export const orderMeta = [{
           {status}
         </Tag>
         <Tag color={"green"}>
-          {dayjs(record?.[OrderFieldData.OrderDt]).format("dd DD.MM.YY")}
+          {dayjs(record?.[OrderFieldData.CreatedAt]).format("dd DD.MM.YY")}
         </Tag>
         <Tag color="blue">
           {`${record?.[OrderFieldData.StartTime]}-${record?.[OrderFieldData.EndTime]}`}

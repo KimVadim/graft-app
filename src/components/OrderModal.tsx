@@ -26,7 +26,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const dispatch: AppDispatch = useDispatch();
   const [formItem] = Form.useForm();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [options, setOptions] = useState<{ menuId: String; sales: number; price: number; value: string; label: string }[]>([]);
+  const [options, setOptions] = useState<{ menuId: String; sales: number; price: number; value: string; label: string, typeName: string }[]>([]);
   const [isPopupItemOpen, setIsPopupItemOpen] = useState(false);
   const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
   const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
@@ -58,8 +58,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const totalAmount = filteredData?.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
-  const parsedDate = record?.[OrderFieldData.OrderDt]
-    ? dayjs(record[OrderFieldData.OrderDt])
+  const parsedDate = record?.[OrderFieldData.CreatedAt]
+    ? dayjs(record[OrderFieldData.CreatedAt])
     : null;
   const isActiveOrder = record?.[OrderFieldData.Status] === 'Опл'
 
@@ -67,7 +67,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     handleCloseOrder: (orderId: string, totalAmount: number) => {
       setLoading(true);
       updateOrder({orderId, totalAmount, status: OrderStatus.Pay}).then((result) => {
-        dispatch(updateOrderAction(result?.['data']));
+        dispatch(updateOrderAction(result));
         setLoading(false);
         setIsModalOpen(false);
       });
@@ -75,7 +75,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     handleCancelOrder: (orderId: string) => {
       setLoading(true);
       updateOrder({orderId, status: OrderStatus.Cancel}).then((result) => {
-        dispatch(updateOrderAction(result?.['data']));
+        console.log('Cancel order result:', result);
+        dispatch(updateOrderAction(result));
         setLoading(false);
         setIsModalOpen(false);
       });
@@ -83,10 +84,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     handleDeleteOrderItem: (itemId: string) => {
       setLoading(true);
       updateOrderItem({itemId, status: OrderItemStatus.Disable}).then((result) => {
-        if (result?.message?.status === 'success') {
-          getOrderItemData(orderId).then((response) => {
-            response && dispatch(setOrderItem(response));
-          })
+        if (result) {
+          dispatch(setOrderItem(result));
         }
         setLoading(false);
       });
@@ -125,8 +124,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             menuId: item[MenuFieldData.Id],
             sales: Number(item[MenuFieldData.Sales]),
             price: Number(item[MenuFieldData.Price]),
+            menuType: item[MenuFieldData.MenuType],
             value: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
             label: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
+            typeName: item[MenuFieldData.TypeName]
           }));
 
         setOptions(filteredOptions);
@@ -370,6 +371,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                     sales: selectedOption.sales,
                     price: selectedOption.price,
                     menuId: selectedOption.menuId,
+                    menuType: selectedOption.typeName,
                   });
                 }
               }}
@@ -410,6 +412,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             />
           </Form.Item>
           <Form.Item name={OrderItemField.MenuId} hidden={true}></Form.Item>
+          <Form.Item name={OrderItemField.MenuType} hidden={true}></Form.Item>
           <Form.Item style={{ textAlign: "center", marginBottom: 50 }}>
             <Button type="primary" htmlType="submit">
               {BUTTON_TEXT.Add}

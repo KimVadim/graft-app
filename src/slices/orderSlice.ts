@@ -11,7 +11,7 @@ interface Order {
   start_time: string;
   end_time: string;
   comment: string;
-  order_dt: Date;
+  created_at: Date;
   create_by: string;
   price: string;
   people_count: string;

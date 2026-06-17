@@ -50,7 +50,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
       setLoading(true);
       addOrder(values).then((orderId) => {
         getOrder().then((response) => {
-            dispatch(setOrder(response?.order));
+            dispatch(setOrder(response?.orders));
         });
         setLoading(false);
         setIsAddOpty(false);
