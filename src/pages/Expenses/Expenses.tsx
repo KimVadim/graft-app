@@ -1,47 +1,46 @@
-import { Col, Row, Spin, Table, Tag, Input } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import { Col, Row, Spin, Table, Tag, Input, DatePicker } from "antd";
+import React, { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { getExpenseData } from "../../service/appServiceBackend";
-import { FieldPlaceholder, ModalTitle, OrderType } from "../../constants/appConstant";
+import { FieldPlaceholder, ModalTitle } from "../../constants/appConstant";
 import { AddFloatButton } from "../../components/AddFloatButton";
 import { AddExpenseModal } from "./AddExpenseModal";
 import { MenuComp } from "../../components/Menu";
 import { setExpense } from "../../slices/expenseSlice";
 import { ExpenseFieldData, expenseMeta, ExpenseType } from "./ExpensesMeta";
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/ru";
+import locale from "antd/es/date-picker/locale/ru_RU";
+
 
 export const Expenses: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [loading, setLoading] = useState<boolean>(false);
   const expenseData = useSelector((state: RootState) => state.expense.expense) as unknown as ExpenseType[];
-  const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
   const [isAddExpense, setIsAddExpense] = useState(false);
-  const isCalledRef = useRef(false);
-  const dateRef = useRef(new Date());
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await getExpenseData(
+        selectedDate.year(),
+        selectedDate.month() + 1,
+      );
+      dispatch(setExpense(response?.expense));
+    } catch (error) {
+      console.error("Ошибка загрузки данных:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        getExpenseData(
-          dateRef.current.getFullYear(),
-          dateRef.current.getMonth() + 1,
-        ).then((response) => {
-          dispatch(setExpense(response?.expense));
-        });
-      } catch (error) {
-        console.error("Ошибка загрузки данных:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (!isCalledRef.current) {
-      fetchData();
-      isCalledRef.current = true;
-    }
-  }, [dispatch, optyData]);
+    fetchData();
+  }, [selectedDate]);
+
   useEffect(() => {
     if (searchText) {
       const filtered = expenseData.filter((item: ExpenseType) =>
@@ -67,7 +66,7 @@ export const Expenses: React.FC = () => {
           <Col flex="auto" style={{ maxWidth: "115px" }}>
             <MenuComp/>
           </Col>
-          <Col>
+          <Col style={{ maxWidth: "70px" }}>
             <strong>{ModalTitle.Expenses}</strong>
           </Col>
           <Col>
@@ -75,7 +74,17 @@ export const Expenses: React.FC = () => {
               placeholder={FieldPlaceholder.SearchApartNum}
               value={searchText}
               onChange={actions.handleSearch}
-              style={{ width: 170 }}
+              style={{ width: 90 }}
+            />
+          </Col>
+          <Col>
+            <DatePicker.MonthPicker
+              value={selectedDate}
+              onChange={(date) => date && setSelectedDate(date)}
+              allowClear={false}
+              format="MMM YYYY"
+              style={{ width: 105 }}
+              locale={locale}
             />
           </Col>
         </Row>
