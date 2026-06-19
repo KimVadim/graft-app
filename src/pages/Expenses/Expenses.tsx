@@ -82,7 +82,7 @@ export const Expenses: React.FC = () => {
               value={selectedDate}
               onChange={(date) => date && setSelectedDate(date)}
               allowClear={false}
-              format="MMM YYYY"
+              format="MMM YY"
               style={{ width: 105 }}
               locale={locale}
             />
