@@ -25,10 +25,10 @@ export const Menu: React.FC = () => {
       try {
         getMenuData().then((response) => {
           dispatch(setMenu(response?.menu));
+          setLoading(false);
         });
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
-      } finally {
         setLoading(false);
       }
     };
