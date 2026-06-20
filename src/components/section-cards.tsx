@@ -21,16 +21,16 @@ export function SectionCards() {
   const prevWeek = today.subtract(1, "week").isoWeek()
   const currentWeekday = today.isoWeekday()
   const currentWeekData = deilyReportData.filter(d => {
-    const dt = dayjs(d.order_dt)
+    const dt = dayjs(d.day)
     return dt.isoWeek() === currentWeek && dt.isoWeekday() <= currentWeekday
   })
   const currentWeekSum = currentWeekData
     .reduce((sum, d) => sum + Number(d.total_profit || 0), 0)
 
   const currentWeekCount = currentWeekData
-  .reduce((sum, d) => sum + Number(d.order_count_total || 0), 0)
+  .reduce((sum, d) => sum + Number(d.orders_count || 0), 0)
   const prevWeekData = deilyReportData.filter(d => {
-    const dt = dayjs(d.order_dt)
+    const dt = dayjs(d.day)
     return dt.isoWeek() === prevWeek && dt.isoWeekday() <= currentWeekday - 1
   })
 
@@ -38,7 +38,7 @@ export function SectionCards() {
     .reduce((sum, d) => sum + Number(d.total_profit || 0), 0)
 
   const prevWeekCount = prevWeekData
-  .reduce((sum, d) => sum + Number(d.order_count_total || 0), 0)
+  .reduce((sum, d) => sum + Number(d.orders_count || 0), 0)
 
   const percent =
     prevWeekSum === 0

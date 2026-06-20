@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Col, Row, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { getDailyWeeklyReportData } from '../../service/appServiceBackend';
 import { PaymentProgreesBar } from '../../components/PaymentProgressBar';
 import {
   BarChart,
@@ -18,6 +17,7 @@ import { setDeilyReport } from '../../slices/dailyReportSlice';
 import { ChartAreaInteractive } from './SectionCards';
 import { SectionCards } from '../../components/section-cards';
 import { CapsuleTabs } from 'antd-mobile';
+import { getDailyReportData, getWeeklyReportData } from '../../service/appServiceBackend';
 import { setWeeklyReport } from '../../slices/weeklyReportSlice';
 
 export const dailyCustomTick = ({ x, y, payload }: any) => {
@@ -39,10 +39,12 @@ export const IncomeReportcn: React.FC = () => {
   const loadOrders = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await getDailyWeeklyReportData();
+      const dailyReport = await getDailyReportData();
+      dispatch(setDeilyReport(dailyReport?.dailyReport));
 
-      dispatch(setDeilyReport(response?.dailyReport));
-      dispatch(setWeeklyReport(response?.weeklyReport));
+      const weeklyReport = await getWeeklyReportData();
+      dispatch(setWeeklyReport(weeklyReport?.weeklyReport));
+
       setLoading(false)
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);
@@ -97,19 +99,34 @@ export const IncomeReportcn: React.FC = () => {
               <XAxis type="number" hide />
               <YAxis
                 type="category"
-                dataKey="order_dt"
+                dataKey="day"
                 tickLine={false}
                 axisLine={false}
                 width={50}
                 interval={0}
                 tick={({ x, y, payload }) => {
-                  const date = new Date(payload.value);
-                  const day = date.getDate();
-                  const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3);
-                  const weekday = date.toLocaleString("ru-RU", { weekday: "short" }).slice(0, 2);
+                  const [year, month, day] = payload.value.split("-").map(Number);
+
+                  const date = new Date(year, month - 1, day);
+
+                  const monthName = date
+                    .toLocaleString("ru-RU", { month: "short" })
+                    .replace(".", "").slice(0, 3);;
+
+                  const weekday = date
+                    .toLocaleString("ru-RU", { weekday: "short" })
+                    .slice(0, 2);
+
                   return (
-                    <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={13} fill="#1f2937">
-                      {`${weekday} ${day} ${month}`}
+                    <text
+                      x={x}
+                      y={y}
+                      textAnchor="end"
+                      dominantBaseline="middle"
+                      fontSize={13}
+                      fill="#1f2937"
+                    >
+                      {`${weekday} ${day} ${monthName}`}
                     </text>
                   );
                 }}

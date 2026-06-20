@@ -1,16 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface DailyReport {
-  order_dt: string;
-  weekday: string;
+  day: string;
+  day_of_week: string;
   total_revenue: number;
-  total_price: number;
   total_profit: number;
-  revenue_sauna_total: number;
-  profit_sauna_total: number;
-  revenue_kitchen_total: number;
-  profit_kitchen_total: number;
-  order_count_total: number;
+  kitchen_revenue: number;
+  kitchen_profit: number;
+  bar_revenue: number;
+  bar_profit: number;
+  sauna_revenue: number;
+  sauna_profit: number;
+  orders_count: number;
+  people_count: number;
 }
 
 export type DailyReportState = {

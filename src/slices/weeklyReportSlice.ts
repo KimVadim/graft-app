@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface WeeklyReport {
-  order_dt: string;
-  weekday: string;
+  week_start: string;
+  week_label: string;
   total_revenue: number;
-  total_price: number;
   total_profit: number;
-  revenue_sauna_total: number;
-  profit_sauna_total: number;
-  revenue_kitchen_total: number;
-  profit_kitchen_total: number;
+  people_count: number;
+  orders_count: number;
+  sauna_profit: number;
+  sauna_revenue: number;
+  kitchen_profit: number;
+  kitchen_revenue: number;
+  bar_profit: number;
+  bar_revenue: number;
 }
 
 export type WeeklyReportState = {

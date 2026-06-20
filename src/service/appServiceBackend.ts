@@ -20,8 +20,8 @@ export const endpoints = {
   ORDER_ALL_DATA: `${API_URL}/endpoints/fs/sb/orders`,
   LOGIN: `${API_URL}/endpoints/login`,
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
-  DAILY_REPORT: `${API_URL}/endpoints/fs/v2/dailyreport`,
-  DAILY_WEEKLY_REPORT: `${API_URL}/endpoints/fs/dailyweeklyreport`,
+  DAILY_REPORT: `${API_URL}/endpoints/fs/sb/dailyreport`,
+  WEEKLY_REPORT: `${API_URL}/endpoints/fs/sb/weeklyreport`,
   EXPENSES: `${API_URL}/endpoints/fs/sb/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/sb/updateorder`,
   UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/sb/updateorderitem`,
@@ -179,7 +179,7 @@ export const getDailyReportData = async () => {
   try {
     const { data } = await axios.get(endpoints.DAILY_REPORT);
 
-    const dailyReport = data.message?.daily_report || [];
+    const dailyReport = data.message?.daily_revenue || [];
 
     return { dailyReport };
   } catch (error) {
@@ -191,14 +191,13 @@ export const getDailyReportData = async () => {
   }
 };
 
-export const getDailyWeeklyReportData = async () => {
+export const getWeeklyReportData = async () => {
   try {
-    const { data } = await axios.get(endpoints.DAILY_WEEKLY_REPORT);
+    const { data } = await axios.get(endpoints.WEEKLY_REPORT);
 
-    const dailyReport = data.message?.df_daily || [];
-    const weeklyReport = data.message?.df_weekly || [];
+    const weeklyReport = data.message?.weekly_revenue || [];
 
-    return { dailyReport, weeklyReport };
+    return { weeklyReport };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);

@@ -14,15 +14,34 @@ export const CHART_CONFIGS = [
     height: 300,
     bars: [
       {
-        dataKey: 'profit_sauna_total',
+        dataKey: 'sauna_profit',
         name: 'Баня приб.',
         fill: '#4ade80',
         size: 7,
       },
       {
-        dataKey: 'revenue_sauna_total',
+        dataKey: 'sauna_revenue',
         name: 'Баня дох.',
         fill: '#15803d',
+        size: 5,
+      },
+    ],
+  },
+  {
+    title: 'Детализация: Доход бар',
+    accentColor: '#0ea5a4',
+    height: 300,
+    bars: [
+      {
+        dataKey: 'bar_profit',
+        name: 'Бар приб.',
+        fill: '#ccd709',
+        size: 7,
+      },
+      {
+        dataKey: 'bar_revenue',
+        name: 'Бар дох.',
+        fill: '#8e9508',
         size: 5,
       },
     ],
@@ -33,13 +52,13 @@ export const CHART_CONFIGS = [
     height: 300,
     bars: [
       {
-        dataKey: 'profit_kitchen_total',
+        dataKey: 'kitchen_profit',
         name: 'Кухня приб.',
         fill: '#67e8f9',
         size: 7,
       },
       {
-        dataKey: 'revenue_kitchen_total',
+        dataKey: 'kitchen_revenue',
         name: 'Кухня дох.',
         fill: '#0ea5a4',
         size: 5,

@@ -23,7 +23,7 @@ export const WeeklyBarChart: React.FC<WeeklyBarChartProps> = ({ data, title, acc
     <BarChart data={data} margin={{ top: 10, right: 50, left: 25, bottom: 10 }} layout="vertical">
       <XAxis type="number" hide />
       <YAxis
-        type="category" dataKey="week"
+        type="category" dataKey="week_label"
         tickLine={false} axisLine={false}
         width={90} interval={0}
         tick={customTick ?? { fontSize: 12, fill: 'var(--text)' }}

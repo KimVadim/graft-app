@@ -12,7 +12,7 @@ export function ChartAreaInteractive() {
   return (
     <div style={{ marginBottom: '50px' }}>
       {CHART_CONFIGS.map(config => (
-        <WeeklyBarChart key={config.title} data={weeklyReportData} {...config} />
+        <WeeklyBarChart key={config.title} data={weeklyReportData.slice(0, 12)} {...config} />
       ))}
     </div>
   );

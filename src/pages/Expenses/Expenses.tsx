@@ -74,7 +74,7 @@ export const Expenses: React.FC = () => {
               placeholder={FieldPlaceholder.SearchApartNum}
               value={searchText}
               onChange={actions.handleSearch}
-              style={{ width: 90 }}
+              style={{ width: 95 }}
             />
           </Col>
           <Col>
@@ -83,7 +83,7 @@ export const Expenses: React.FC = () => {
               onChange={(date) => date && setSelectedDate(date)}
               allowClear={false}
               format="MMM YY"
-              style={{ width: 105 }}
+              style={{ width: 100 }}
               locale={locale}
             />
           </Col>
