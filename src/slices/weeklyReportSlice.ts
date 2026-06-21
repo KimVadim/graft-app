@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface WeeklyReport {
   week_start: string;
   week_label: string;
+  week_number: number;
+  year: number;
   total_revenue: number;
   total_profit: number;
   people_count: number;

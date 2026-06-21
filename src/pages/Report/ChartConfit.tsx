@@ -65,4 +65,23 @@ export const CHART_CONFIGS = [
       },
     ],
   },
+  {
+    title: 'Детализация: Банные принадлежности',
+    accentColor: '#0ea5a4',
+    height: 300,
+    bars: [
+      {
+        dataKey: 'bath_supplies_profit',
+        name: 'Банные принад. приб.',
+        fill: '#0ed88e',
+        size: 7,
+      },
+      {
+        dataKey: 'bath_supplies_revenue',
+        name: 'Банные принад. дох.',
+        fill: '#048858',
+        size: 5,
+      },
+    ],
+  },
 ];

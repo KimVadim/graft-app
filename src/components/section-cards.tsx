@@ -15,114 +15,92 @@ import isoWeek from "dayjs/plugin/isoWeek"
 dayjs.extend(isoWeek)
 
 export function SectionCards() {
-  const deilyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
+  const weeklyReportData = useSelector((state: RootState) => state.weeklyReport.weeklyReport);
+
   const today = dayjs()
-  const currentWeek = today.isoWeek()
-  const prevWeek = today.subtract(1, "week").isoWeek()
-  const currentWeekday = today.isoWeekday()
-  const currentWeekData = deilyReportData.filter(d => {
-    const dt = dayjs(d.day)
-    return dt.isoWeek() === currentWeek && dt.isoWeekday() <= currentWeekday
-  })
-  const currentWeekSum = currentWeekData
-    .reduce((sum, d) => sum + Number(d.total_profit || 0), 0)
+  const currentWeekNumber = today.isoWeek()
+  const currentYear = today.year()
+  const prevWeekDay = today.subtract(1, "week")
+  const prevWeekNumber = prevWeekDay.isoWeek()
+  const prevYear = prevWeekDay.year()
 
-  const currentWeekCount = currentWeekData
-  .reduce((sum, d) => sum + Number(d.orders_count || 0), 0)
-  const prevWeekData = deilyReportData.filter(d => {
-    const dt = dayjs(d.day)
-    return dt.isoWeek() === prevWeek && dt.isoWeekday() <= currentWeekday - 1
-  })
+  const currentWeek = weeklyReportData.find(
+    d => d.week_number === currentWeekNumber && d.year === currentYear
+  )
+  const prevWeek = weeklyReportData.find(
+    d => d.week_number === prevWeekNumber && d.year === prevYear
+  )
 
-  const prevWeekSum = prevWeekData
-    .reduce((sum, d) => sum + Number(d.total_profit || 0), 0)
+  function diff(curr: number, prev: number) {
+    const delta = curr - prev
+    const percent = prev === 0 ? 0 : (delta / prev) * 100
+    return { delta, percent, trend: delta >= 0 ? "up" : "down" as "up" | "down" }
+  }
 
-  const prevWeekCount = prevWeekData
-  .reduce((sum, d) => sum + Number(d.orders_count || 0), 0)
+  const profitCurr = Number(currentWeek?.total_profit || 0)
+  const profitPrev = Number(prevWeek?.total_profit || 0)
+  const profit = diff(profitCurr, profitPrev)
 
-  const percent =
-    prevWeekSum === 0
-      ? 0
-      : ((currentWeekSum - prevWeekSum) / prevWeekSum) * 100
-  const ordersDiff = currentWeekCount - prevWeekCount
+  const countCurr = Number(currentWeek?.orders_count || 0)
+  const countPrev = Number(prevWeek?.orders_count || 0)
+  const orders = diff(countCurr, countPrev)
 
-  const ordersPercent = prevWeekCount === 0
-    ? 0
-    : Math.round((ordersDiff / prevWeekCount) * 100)
+  const revCurr = Number(currentWeek?.total_revenue || 0)
+  const revPrev = Number(prevWeek?.total_revenue || 0)
+  const avgCheckCurr = countCurr === 0 ? 0 : revCurr / countCurr
+  const avgCheckPrev = countPrev === 0 ? 0 : revPrev / countPrev
+  const avgCheck = diff(avgCheckCurr, avgCheckPrev)
 
-  const ordersTrend = ordersDiff >= 0 ? "up" : "down"
+  const avgProfitCurr = countCurr === 0 ? 0 : profitCurr / countCurr
+  const avgProfitPrev = countPrev === 0 ? 0 : profitPrev / countPrev
+  const avgProfit = diff(avgProfitCurr, avgProfitPrev)
 
-  const currentWeekRevenue = currentWeekData
-    .reduce((sum, d) => sum + Number(d.total_revenue || 0), 0)
+  function footerMain(d: ReturnType<typeof diff>) {
+    const pct = Math.abs(d.percent).toFixed(1)
+    return d.trend === "up"
+      ? `Текущая vs прошлая  Рост на ${pct}%`
+      : `Текущая vs прошлая  Сниж. на ${pct}%`
+  }
 
-  const prevWeekRevenue = prevWeekData
-    .reduce((sum, d) => sum + Number(d.total_revenue || 0), 0)
-
-  const avgCheckCurrent =
-    currentWeekCount === 0 ? 0 : currentWeekRevenue / currentWeekCount
-
-  const avgCheckPrev =
-    prevWeekCount === 0 ? 0 : prevWeekRevenue / prevWeekCount
-
-  const avgPercent =
-    avgCheckPrev === 0
-      ? 0
-      : ((avgCheckCurrent - avgCheckPrev) / avgCheckPrev) * 100
-
-  const avgProfitCurrent =
-  currentWeekCount === 0 ? 0 : currentWeekSum / currentWeekCount
-
-  const avgProfitPrev =
-    prevWeekCount === 0 ? 0 : prevWeekSum / prevWeekCount
-
-  const avgProfitPercent =
-    avgProfitPrev === 0
-      ? 0
-      : ((avgProfitCurrent - avgProfitPrev) / avgProfitPrev) * 100
+  const currentLabel = currentWeek?.week_label ?? `Нед. ${currentWeekNumber}`
+  const prevLabel = prevWeek?.week_label ?? `Нед. ${prevWeekNumber}`
+  const footerSub = `${currentLabel} vs ${prevLabel}`
 
   const cards = [
     {
-      label: "Доход за неделю",
-      value: currentWeekSum.toLocaleString("ru-RU"),
-      valuePrev: prevWeekSum.toLocaleString("ru-RU"),
-      trend: percent >= 0 ? "up" : "down",
-      badge: `${percent > 0 ? "+" : ""}${percent.toFixed(1)}%`,
-      footerMain: percent >= 0
-        ? `Текущая vs прошлая Рост на ${percent.toFixed(1)}%`
-        : `Текущая vs прошлая Сниж. на ${percent.toFixed(1)}%`,
-      footerSub: "Сравнение одинаковых дней недели",
-    }, {
+      label: "Прибыль за неделю",
+      value: profitCurr.toLocaleString("ru-RU"),
+      valuePrev: profitPrev.toLocaleString("ru-RU"),
+      d: profit,
+      badge: `${profit.percent > 0 ? "+" : ""}${profit.percent.toFixed(1)}%`,
+      footerMain: footerMain(profit),
+    },
+    {
       label: "Количество заказов",
-      value: currentWeekCount.toLocaleString("ru-RU"),
-      valuePrev: prevWeekCount.toLocaleString("ru-RU"),
-      trend: ordersTrend,
-      badge: `${ordersPercent > 0 ? "+" : ""}${ordersPercent}%`,
-      footerMain: ordersDiff >= 0
-        ? `Текущая vs прошлая Рост на ${Math.abs(ordersPercent)}%`
-        : `Текущая vs прошлая Сниж. на ${Math.abs(ordersPercent)}%`,
-      footerSub: "Сравнение одинаковых дней недели",
-    }, {
+      value: countCurr.toLocaleString("ru-RU"),
+      valuePrev: countPrev.toLocaleString("ru-RU"),
+      d: orders,
+      badge: `${orders.percent > 0 ? "+" : ""}${Math.round(orders.percent)}%`,
+      footerMain: footerMain(orders),
+    },
+    {
       label: "Средний чек",
-      value: Math.round(avgCheckCurrent).toLocaleString("ru-RU"),
+      value: Math.round(avgCheckCurr).toLocaleString("ru-RU"),
       valuePrev: Math.round(avgCheckPrev).toLocaleString("ru-RU"),
-      trend: avgPercent >= 0 ? "up" : "down",
-      badge: `${avgPercent > 0 ? "+" : ""}${avgPercent.toFixed(1)}%`,
-      footerMain: avgPercent >= 0
-        ? `Текущая vs прошлая Рост на ${avgPercent.toFixed(1)}%`
-        : `Текущая vs прошлая Сниж. на ${Math.abs(avgPercent).toFixed(1)}%`,
-      footerSub: "Сравнение одинаковых дней недели",
-    }, {
+      d: avgCheck,
+      badge: `${avgCheck.percent > 0 ? "+" : ""}${avgCheck.percent.toFixed(1)}%`,
+      footerMain: footerMain(avgCheck),
+    },
+    {
       label: "Средняя прибыль на чек",
-      value: Math.round(avgProfitCurrent).toLocaleString("ru-RU"),
+      value: Math.round(avgProfitCurr).toLocaleString("ru-RU"),
       valuePrev: Math.round(avgProfitPrev).toLocaleString("ru-RU"),
-      trend: avgProfitPercent >= 0 ? "up" : "down",
-      badge: `${avgProfitPercent > 0 ? "+" : ""}${avgProfitPercent.toFixed(1)}%`,
-      footerMain: avgProfitPercent >= 0
-        ? `Текущая vs прошлая Рост на ${avgProfitPercent.toFixed(1)}%`
-        : `Текущая vs прошлая Сниж. на ${Math.abs(avgProfitPercent).toFixed(1)}%`,
-      footerSub: "Сравнение одинаковых дней недели",
+      d: avgProfit,
+      badge: `${avgProfit.percent > 0 ? "+" : ""}${avgProfit.percent.toFixed(1)}%`,
+      footerMain: footerMain(avgProfit),
     },
   ]
+
   return (
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
       {cards.map((card) => (
@@ -134,7 +112,7 @@ export function SectionCards() {
             </CardTitle>
             <CardAction>
               <Badge variant="outline">
-                {card.trend === "up" ? <IconTrendingUp /> : <IconTrendingDown />}
+                {card.d.trend === "up" ? <IconTrendingUp /> : <IconTrendingDown />}
                 {card.badge}
               </Badge>
             </CardAction>
@@ -142,11 +120,11 @@ export function SectionCards() {
           <CardFooter className="flex-col items-start text-xs">
             <div className="line-clamp-1 flex gap-2 font-medium">
               {card.footerMain}
-              {card.trend === "up"
+              {card.d.trend === "up"
                 ? <IconTrendingUp className="size-4" />
                 : <IconTrendingDown className="size-4" />}
             </div>
-            <div className="text-muted-foreground text-[11px]">{card.footerSub}</div>
+            <div className="text-muted-foreground text-[11px]">{footerSub}</div>
           </CardFooter>
         </Card>
       ))}
