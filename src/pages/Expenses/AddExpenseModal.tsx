@@ -73,6 +73,9 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               form={form}
               layout="vertical"
               onFinish={handleSubmit}
+              initialValues={{
+                [ExpenseFieldData.ExpenseDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+              }}
             >
               <Form.Item
                 label={ExpenseFieldLabel.AppNameLabel}

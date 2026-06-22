@@ -14,12 +14,12 @@ import {
 } from 'recharts'
 import { MenuComp } from '../../components/Menu';
 import { setDeilyReport } from '../../slices/dailyReportSlice';
-import { ChartAreaInteractive } from './SectionCards';
-import { SectionCards } from '../../components/section-cards';
+import { ChartAreaInteractive } from './WeeklySectionCards';
 import { CapsuleTabs } from 'antd-mobile';
 import { getDailyReportData, getMonthlyReportData, getWeeklyReportData } from '../../service/appServiceBackend';
 import { setWeeklyReport } from '../../slices/weeklyReportSlice';
 import { setMonthlyReport } from '../../slices/monthlyReportSlice';
+import { SectionCards } from './SectionCards';
 
 export const dailyCustomTick = ({ x, y, payload }: any) => {
   const date = new Date(payload.value);

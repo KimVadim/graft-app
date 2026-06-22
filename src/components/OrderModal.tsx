@@ -345,6 +345,19 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         }}
       >
         <Spin spinning={loading} >
+        <div
+          style={{
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            padding: '0 16px',
+            boxSizing: 'border-box',
+            overflowY: 'auto',
+            maxHeight: '75vh',
+            marginTop: '20px',
+            marginBottom: '20px'
+          }}
+        >
         <Form
           form={formItem}
           layout="vertical"
@@ -425,6 +438,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </Button>
           </Form.Item>
         </Form>
+        </div>
         </Spin>
       </Popup>
       </Space>
