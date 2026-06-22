@@ -5,6 +5,7 @@ import orderItemReducer from './slices/orderitemSlice';
 import contactReducer from './slices/contactSlice';
 import dailyReportReducer from './slices/dailyReportSlice';
 import weeklyReportReducer from './slices/weeklyReportSlice';
+import monthlyReportReducer from './slices/monthlyReportSlice';
 import expenseReducer from './slices/expenseSlice';
 import accessGroup from './slices/accessGroupSlice';
 import menuReducer from './slices/menuSlice';
@@ -18,6 +19,7 @@ export const store = configureStore({
     contact: contactReducer,
     dailyReport: dailyReportReducer,
     weeklyReport: weeklyReportReducer,
+    monthlyReport: monthlyReportReducer,
     expense: expenseReducer,
     menu: menuReducer,
   },

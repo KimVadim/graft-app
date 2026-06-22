@@ -17,8 +17,9 @@ import { setDeilyReport } from '../../slices/dailyReportSlice';
 import { ChartAreaInteractive } from './SectionCards';
 import { SectionCards } from '../../components/section-cards';
 import { CapsuleTabs } from 'antd-mobile';
-import { getDailyReportData, getWeeklyReportData } from '../../service/appServiceBackend';
+import { getDailyReportData, getMonthlyReportData, getWeeklyReportData } from '../../service/appServiceBackend';
 import { setWeeklyReport } from '../../slices/weeklyReportSlice';
+import { setMonthlyReport } from '../../slices/monthlyReportSlice';
 
 export const dailyCustomTick = ({ x, y, payload }: any) => {
   const date = new Date(payload.value);
@@ -45,6 +46,10 @@ export const IncomeReportcn: React.FC = () => {
       const weeklyReport = await getWeeklyReportData();
       dispatch(setWeeklyReport(weeklyReport?.weeklyReport));
 
+      const monthlyReport = await getMonthlyReportData();
+      dispatch(setMonthlyReport(monthlyReport?.monthlyReport));
+      console.log('monthlyReport', monthlyReport)
+
       setLoading(false)
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);
@@ -56,8 +61,9 @@ export const IncomeReportcn: React.FC = () => {
     loadOrders();
   }, [loadOrders]);
   const dailyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
+  const monthlyReportData = useSelector((state: RootState) => state.monthlyReport.monthlyReport);
   const chartData = useMemo(() =>
-    (dailyReportData || []).slice(0, 30),
+    (dailyReportData || []).slice(0, 21),
     [dailyReportData]
   );
 
@@ -81,11 +87,8 @@ export const IncomeReportcn: React.FC = () => {
         </Col>
       </Row>
       <CapsuleTabs>
-        <CapsuleTabs.Tab title='Сводка' key='Dashboard'>
-           <SectionCards/>
-        </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Дневной' key='DailyReport'>
-          <ResponsiveContainer width="100%" height={680}>
+          <ResponsiveContainer width="100%" height={500} style={{marginBottom: '40px'}}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,
@@ -155,9 +158,64 @@ export const IncomeReportcn: React.FC = () => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+          <SectionCards/>
         </CapsuleTabs.Tab>
-        <CapsuleTabs.Tab title='Недельный' key='WeeklyReport'>
+        <CapsuleTabs.Tab title='По неделям' key='WeeklyReport'>
           <ChartAreaInteractive/>
+        </CapsuleTabs.Tab>
+        <CapsuleTabs.Tab title='По месяцам' key='MonthlyReport'>
+          <ResponsiveContainer width="100%" height={300} style={{marginBottom: '40px'}}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1f2937',
+              marginTop: '16px',
+              paddingLeft: '10px',
+              borderLeft: '4px solid #4f46e5',
+              whiteSpace: 'nowrap'
+            }}>Доход за последний год</h3>
+            <BarChart data={monthlyReportData} margin={{ top: 10, right: 50, left: 25, bottom: 10 }} layout="vertical">
+              <XAxis type="number" hide />
+              <YAxis
+                type="category"
+                dataKey="month_label"
+                tickLine={false}
+                axisLine={false}
+                width={50}
+                interval={0}
+              />
+              <Legend
+                wrapperStyle={{ paddingTop: "5px" }}
+                formatter={(value) => (
+                  <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
+                )}
+              />
+              <Bar dataKey="sauna_profit" name="Приб. баня" fill="#cee0f9" barSize={7}>
+                <LabelList
+                  position="right"
+                  fill="#1f2937"
+                  fontSize={11}
+                  formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
+                />
+              </Bar>
+              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7}>
+                <LabelList
+                  position="right"
+                  fill="#1f2937"
+                  fontSize={11}
+                  formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
+                />
+              </Bar>
+              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5}>
+                <LabelList
+                  position="right"
+                  fill="#1f2937"
+                  fontSize={11}
+                  formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </CapsuleTabs.Tab>
       </CapsuleTabs>
     </div>

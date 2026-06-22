@@ -22,6 +22,7 @@ export const endpoints = {
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   DAILY_REPORT: `${API_URL}/endpoints/fs/sb/dailyreport`,
   WEEKLY_REPORT: `${API_URL}/endpoints/fs/sb/weeklyreport`,
+  MONTHLY_REPORT: `${API_URL}/endpoints/fs/sb/monthlyreport`,
   EXPENSES: `${API_URL}/endpoints/fs/sb/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/sb/updateorder`,
   UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/sb/updateorderitem`,
@@ -198,6 +199,22 @@ export const getWeeklyReportData = async () => {
     const weeklyReport = data.message?.weekly_revenue || [];
 
     return { weeklyReport };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getMonthlyReportData = async () => {
+  try {
+    const { data } = await axios.get(endpoints.MONTHLY_REPORT);
+
+    const monthlyReport = data.message?.monthly_revenue || [];
+
+    return { monthlyReport };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
