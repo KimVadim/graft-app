@@ -117,7 +117,7 @@ export function SectionCards() {
               </Badge>
             </CardAction>
           </CardHeader>
-          <CardFooter className="flex-col items-start text-xs">
+          <CardFooter className="flex-col items-center text-center text-xs">
             <div className="line-clamp-1 flex gap-2 font-medium">
               {card.footerMain}
               {card.d.trend === "up"

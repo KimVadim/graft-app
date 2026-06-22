@@ -29,7 +29,7 @@ export const CHART_CONFIGS = [
   },
   {
     title: 'Детализация: Доход бар',
-    accentColor: '#0ea5a4',
+    accentColor: '#8e9508',
     height: 300,
     bars: [
       {
@@ -67,18 +67,18 @@ export const CHART_CONFIGS = [
   },
   {
     title: 'Детализация: Банные принадлежности',
-    accentColor: '#0ea5a4',
+    accentColor: '#048858',
     height: 300,
     bars: [
       {
         dataKey: 'bath_supplies_profit',
-        name: 'Банные принад. приб.',
+        name: 'Бан. прин. приб.',
         fill: '#0ed88e',
         size: 7,
       },
       {
         dataKey: 'bath_supplies_revenue',
-        name: 'Банные принад. дох.',
+        name: 'Бан. прин. дох.',
         fill: '#048858',
         size: 5,
       },
