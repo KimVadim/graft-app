@@ -7,6 +7,7 @@ export enum ExpenseType {
   ServiceUtilities = 'Комм. усл.',
   Other = 'Другое',
   Rent = 'Аренда',
+  ReturnDeposit = 'Возврат депозита',
 }
 
 export const EXPENSE_TYPE = [
@@ -15,6 +16,7 @@ export const EXPENSE_TYPE = [
   { value: ExpenseType.Salary, label: ExpenseType.Salary },
   { value: ExpenseType.Rent, label: ExpenseType.Rent },
   { value: ExpenseType.ServiceUtilities, label: ExpenseType.ServiceUtilities },
+  { value: ExpenseType.ReturnDeposit, label: ExpenseType.ReturnDeposit },
 ];
 
 export enum AppNameValue {
