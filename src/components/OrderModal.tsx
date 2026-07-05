@@ -125,8 +125,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             sales: Number(item[MenuFieldData.Sales]),
             price: Number(item[MenuFieldData.Price]),
             menuType: item[MenuFieldData.MenuType],
-            value: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
-            label: `${item[MenuFieldData.Id]} ${item[MenuFieldData.MenuName]}`,
+            value: `${item[MenuFieldData.MenuName]}`,
+            label: `${item[MenuFieldData.MenuName]}`,
             typeName: item[MenuFieldData.TypeName]
           }));
 
