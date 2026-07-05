@@ -13,8 +13,8 @@ import { setOrder } from "../slices/orderSlice.js";
 import { PickerValue } from "antd-mobile/es/components/picker-view";
 
 interface AddOrderModalProps {
-  setIsAddOpty: (isOpen: boolean) => void;
-  isAddOpty: boolean;
+  setIsAddOrder: (isOpen: boolean) => void;
+  isAddOrder: boolean;
   setLoading: (isOpen: boolean) => void;
   loading: boolean;
   view?: string;
@@ -42,7 +42,7 @@ export const OrderTime = HOURS.map((h) => {
   };
 });
 
-export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
+export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOrder, isAddOrder, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [phone, setPhone] = useState("");
@@ -53,7 +53,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
             dispatch(setOrder(response?.orders));
         });
         setLoading(false);
-        setIsAddOpty(false);
+        setIsAddOrder(false);
         orderId
           ? Toast.show({content: <div><b>Готово!</b><div>Договор № {orderId}</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
@@ -101,14 +101,14 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
 
     return (
       <Popup
-        visible={isAddOpty}
+        visible={isAddOrder}
         showCloseButton
         onClose={() => {
-          setIsAddOpty(false);
+          setIsAddOrder(false);
           form.resetFields();
         }}
         onMaskClick={() => {
-          setIsAddOpty(false);
+          setIsAddOrder(false);
           form.resetFields();
         }}
       >
@@ -294,7 +294,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOpty, isAdd
               <Button type="primary" htmlType="submit">
                 {BUTTON_TEXT.Add}
               </Button>
-              <Button onClick={() => setIsAddOpty(false)} style={{ marginLeft: 8,  marginTop: 10}}>
+              <Button onClick={() => setIsAddOrder(false)} style={{ marginLeft: 8,  marginTop: 10}}>
                 {BUTTON_TEXT.Cancel}
               </Button>
             </Form.Item>

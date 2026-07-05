@@ -7,7 +7,7 @@ import { getMenuData, getOrderAllData } from "../service/appServiceBackend";
 import { OrderFieldData, OrderStatus, OrderType } from "../constants/appConstant";
 // @ts-ignore
 import '../index.css';
-import { CapsuleTabs, Toast } from "antd-mobile";
+import { Tabs, Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu";
 import { orderMeta } from "./AllApplicationMeta";
 import { setOrder } from "../slices/orderSlice";
@@ -124,40 +124,40 @@ export const Order: React.FC = () => {
             </Button>
           </Col>
         </Row>
-      <CapsuleTabs>
-        <CapsuleTabs.Tab title='Бронь' key='fruits'>
-          <Table
-            rowKey="uid"
-            scroll={{ x: 385 }}
-            columns={orderMeta}
-            dataSource={reservationData}
-            size='middle'
-            pagination={{
-              position: ['bottomCenter'],
-              pageSize: 20
-            }}
-            onRow={(record) => ({
-              onClick: () => actions.handleRowClick(record),
-            })}
-          />
-        </CapsuleTabs.Tab>
-        <CapsuleTabs.Tab title='Оплаченые' key='vegetables' >
-          <Table
-            rowKey="uid"
-            scroll={{ x: 385 }}
-            columns={orderMeta}
-            dataSource={paidData}
-            size='middle'
-            pagination={{
-              position: ['bottomCenter'],
-              pageSize: 20
-            }}
-            onRow={(record) => ({
-              onClick: () => actions.handleRowClick(record),
-            })}
-          />
-        </CapsuleTabs.Tab>
-      </CapsuleTabs>
+        <Tabs>
+          <Tabs.Tab title='Бронь' key='fruits'>
+            <Table
+              rowKey="uid"
+              scroll={{ x: 385 }}
+              columns={orderMeta}
+              dataSource={reservationData}
+              size='middle'
+              pagination={{
+                position: ['bottomCenter'],
+                pageSize: 20
+              }}
+              onRow={(record) => ({
+                onClick: () => actions.handleRowClick(record),
+              })}
+            />
+          </Tabs.Tab>
+          <Tabs.Tab title='Оплаченые' key='vegetables'>
+            <Table
+              rowKey="uid"
+              scroll={{ x: 385 }}
+              columns={orderMeta}
+              dataSource={paidData}
+              size='middle'
+              pagination={{
+                position: ['bottomCenter'],
+                pageSize: 20
+              }}
+              onRow={(record) => ({
+                onClick: () => actions.handleRowClick(record),
+              })}
+            />
+          </Tabs.Tab>
+        </Tabs>
       </Spin>
       <OpportunityModal
         isModalOpen={isModalOpen}

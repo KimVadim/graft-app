@@ -3,12 +3,12 @@ import { ConfigProvider, FloatButton } from "antd";
 import { FileAddOutlined, FileDoneOutlined, PlusOutlined, WalletOutlined } from '@ant-design/icons';
 
 interface AddFloatButtonProps {
-    setIsAddOpty?: (isOpen: boolean) => void;
+    setIsAddOrder?: (isOpen: boolean) => void;
     setIsAddExpense?: (isOpen: boolean) => void;
     setIsAddMenu?: (isOpen: boolean) => void;
 }
 
-export const AddFloatButton: React.FC<AddFloatButtonProps> = ({setIsAddOpty, setIsAddExpense, setIsAddMenu}) => {
+export const AddFloatButton: React.FC<AddFloatButtonProps> = ({setIsAddOrder, setIsAddExpense, setIsAddMenu}) => {
     return (
         <ConfigProvider
         theme={{
@@ -23,7 +23,7 @@ export const AddFloatButton: React.FC<AddFloatButtonProps> = ({setIsAddOpty, set
                 style={{ insetInlineEnd: 24 }}
                 icon={<PlusOutlined style={{ fontSize: 24 }} />}
             >
-                {setIsAddOpty && <FloatButton icon={<FileDoneOutlined style={{ fontSize: 24 }} />} onClick={() => setIsAddOpty(true)} />}
+                {setIsAddOrder && <FloatButton icon={<FileDoneOutlined style={{ fontSize: 24 }} />} onClick={() => setIsAddOrder(true)} />}
                 {setIsAddExpense && <FloatButton icon={<WalletOutlined style={{ fontSize: 24 }} />} onClick={() => setIsAddExpense(true)}/>}
                 {setIsAddMenu && <FloatButton icon={<FileAddOutlined style={{ fontSize: 24 }} />} onClick={() => setIsAddMenu(true)}/>}
             </FloatButton.Group>

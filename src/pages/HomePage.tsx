@@ -9,7 +9,7 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({view}) => {
-  const [isAddOpty, setIsAddOpty] = useState(false);
+  const [isAddOrder, setIsAddOrder] = useState(false);
   const [isAddExpense, setIsAddExpense] = useState(false)
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -17,11 +17,11 @@ export const HomePage: React.FC<HomePageProps> = ({view}) => {
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       {view === 'Opportunity' && <Order />}
       <AddFloatButton
-        setIsAddOpty={setIsAddOpty}
+        setIsAddOrder={setIsAddOrder}
         setIsAddExpense={['Opportunity'].includes(view) ? setIsAddExpense : undefined }
       />
-      {isAddOpty && <AddOrderModal
-        setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
+      {isAddOrder && <AddOrderModal
+        setIsAddOrder={setIsAddOrder} isAddOrder={isAddOrder}
         setLoading={setLoading} loading={loading} view={view}
       />}
       {isAddExpense && <AddExpenseModal

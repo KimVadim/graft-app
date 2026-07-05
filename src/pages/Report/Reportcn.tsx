@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Col, Row, Spin } from 'antd';
+import { Col, Row, Spin, DatePicker } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { PaymentProgreesBar } from '../../components/PaymentProgressBar';
@@ -15,11 +15,15 @@ import {
 import { MenuComp } from '../../components/Menu';
 import { setDeilyReport } from '../../slices/dailyReportSlice';
 import { ChartAreaInteractive } from './WeeklySectionCards';
-import { CapsuleTabs } from 'antd-mobile';
-import { getDailyReportData, getMonthlyReportData, getWeeklyReportData } from '../../service/appServiceBackend';
+import { Tabs } from 'antd-mobile';
+import { getDailyReportData, getMonthlyReportData, getMonthlySalesProductReportData, getWeeklyReportData } from '../../service/appServiceBackend';
 import { setWeeklyReport } from '../../slices/weeklyReportSlice';
 import { setMonthlyReport } from '../../slices/monthlyReportSlice';
 import { SectionCards } from './SectionCards';
+import { setMonthlySalesProductReport } from '../../slices/monthlySalesProductReportSlice';
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/ru";
+import locale from "antd/es/date-picker/locale/ru_RU";
 
 export const dailyCustomTick = ({ x, y, payload }: any) => {
   const date = new Date(payload.value);
@@ -36,6 +40,7 @@ export const dailyCustomTick = ({ x, y, payload }: any) => {
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalPayment, setIsModalPayment] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [loading, setLoading] = React.useState<boolean>(false);
   const loadOrders = useCallback(async () => {
     try {
@@ -48,7 +53,6 @@ export const IncomeReportcn: React.FC = () => {
 
       const monthlyReport = await getMonthlyReportData();
       dispatch(setMonthlyReport(monthlyReport?.monthlyReport));
-      console.log('monthlyReport', monthlyReport)
 
       setLoading(false)
     } catch (error) {
@@ -60,12 +64,41 @@ export const IncomeReportcn: React.FC = () => {
   useEffect(() => {
     loadOrders();
   }, [loadOrders]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const monthlySalesProductReport = await getMonthlySalesProductReportData(
+        selectedDate.month() + 1,
+        selectedDate.year()
+      );
+      console.log('monthlySalesProductReport', monthlySalesProductReport)
+      dispatch(setMonthlySalesProductReport(monthlySalesProductReport?.monthlySalesProductReport));
+
+    } catch (error) {
+      console.error("Ошибка загрузки данных:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedDate]);
+
   const dailyReportData = useSelector((state: RootState) => state.dailyReport.dailyReport);
   const monthlyReportData = useSelector((state: RootState) => state.monthlyReport.monthlyReport);
+  const monthlySalesProductReportData = useSelector((state: RootState) => state.monthlySalesProductReport.monthlySalesProductReport);
   const chartData = useMemo(() =>
     (dailyReportData || []).slice(0, 21),
     [dailyReportData]
   );
+  const ROW_HEIGHT = 30; // высота под один товар (2 бара + gap)
+  const MARGIN = 20; // легенда + margin.top + margin.bottom
+
+  const chartHeight = useMemo(() => {
+    return monthlySalesProductReportData.length * ROW_HEIGHT + MARGIN;
+  }, [monthlySalesProductReportData]);
 
   return (
     <Spin spinning={loading} >
@@ -86,8 +119,8 @@ export const IncomeReportcn: React.FC = () => {
           />
         </Col>
       </Row>
-      <CapsuleTabs>
-        <CapsuleTabs.Tab title='Дневной' key='DailyReport'>
+      <Tabs>
+        <Tabs.Tab title='Дневной' key='DailyReport'>
           <ResponsiveContainer width="100%" height={500} style={{marginBottom: '40px'}}>
             <h3 style={{
               fontSize: '18px',
@@ -159,11 +192,11 @@ export const IncomeReportcn: React.FC = () => {
             </BarChart>
           </ResponsiveContainer>
           <SectionCards/>
-        </CapsuleTabs.Tab>
-        <CapsuleTabs.Tab title='По неделям' key='WeeklyReport'>
+        </Tabs.Tab>
+        <Tabs.Tab title='По неделям' key='WeeklyReport'>
           <ChartAreaInteractive/>
-        </CapsuleTabs.Tab>
-        <CapsuleTabs.Tab title='По месяцам' key='MonthlyReport'>
+        </Tabs.Tab>
+        <Tabs.Tab title='По месяцам' key='MonthlyReport'>
           <ResponsiveContainer width="100%" height={300} style={{marginBottom: '40px'}}>
             <h3 style={{
               fontSize: '18px',
@@ -216,8 +249,62 @@ export const IncomeReportcn: React.FC = () => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </CapsuleTabs.Tab>
-      </CapsuleTabs>
+          <ResponsiveContainer width="100%" height={chartHeight} style={{marginBottom: '40px'}}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1f2937',
+              marginTop: '16px',
+              paddingLeft: '10px',
+              borderLeft: '4px solid #4f46e5',
+              whiteSpace: 'nowrap'
+            }}>Отчет по продажам</h3>
+            <Col>
+              <DatePicker.MonthPicker
+                value={selectedDate}
+                onChange={(date) => date && setSelectedDate(date)}
+                allowClear={false}
+                format="MMM YY"
+                style={{ width: 200 }}
+                locale={locale}
+              />
+            </Col>
+            <BarChart data={monthlySalesProductReportData} margin={{ top: 10, right: 50, left: 25, bottom: 10 }} layout="vertical">
+              <XAxis type="number" hide />
+              <YAxis
+                type="category"
+                dataKey="item_name"
+                tickLine={false}
+                axisLine={false}
+                width={150}
+                interval={0}
+              />
+              <Legend
+                wrapperStyle={{ paddingTop: "5px" }}
+                formatter={(value) => (
+                  <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
+                )}
+              />
+              <Bar dataKey="total_quantity" name="Количество" fill="#4f46e5" barSize={7}>
+                <LabelList
+                  position="right"
+                  fill="#1f2937"
+                  fontSize={11}
+                  formatter={(value) => `${Math.round(Number(value)).toLocaleString("ru-RU")} ед.`}
+                />
+              </Bar>
+              <Bar dataKey="profit_margin_pct" name="Процент прибыли" fill="#98bff6" barSize={5}>
+                <LabelList
+                  position="right"
+                  fill="#1f2937"
+                  fontSize={11}
+                  formatter={(value) => `${Math.round(Number(value)).toLocaleString("ru-RU")} %`}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Tabs.Tab>
+      </Tabs>
     </div>
     </Spin>
   );
