@@ -100,6 +100,7 @@ export const Expenses: React.FC = () => {
                 <p>{record?.[ExpenseFieldData.Comment]}</p>
               </p>
             ),
+            rowExpandable: (record) => !!record?.[ExpenseFieldData.Comment],
           }}
           size="middle"
           pagination={{
