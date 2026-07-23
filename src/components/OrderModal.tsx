@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
-import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, UpdateOrder, OrderItemStatus } from '../constants/appConstant';
+import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, OrderItemStatus } from '../constants/appConstant';
 import { formatPhoneNumber } from '../service/utils';
 import { addOrderItem, getOrderItemData, updateOrder, updateOrderItem } from '../service/appServiceBackend';
 import { Popup, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
@@ -31,7 +31,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const optyItemData = useSelector((state: RootState) => state.orderItem.orderItem) as unknown as OrderItemType[];
   const menuData = useSelector((state: RootState) => state.menu.menu) as unknown as MenuType[];
   let orderId = record?.[OrderFieldData.Id]
-
+  const orderFromStore = useSelector((state: RootState) =>
+    state.order.order.find((o: any) => o[OrderFieldData.Id] === orderId)
+  );
+  const currentRecord = orderFromStore ? { ...record, ...orderFromStore } : record;
   const loadOrders = useCallback(async (showToast = false) => {
     if (!orderId) return;
     try {
@@ -53,15 +56,15 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   }, [loadOrders]);
 
   const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId && x[OrderItemFieldData.Status] === OrderItemStatus.Active) || [];
-  const optyPayDate = new Date(record?.[OrderField.OrderDate]);
-  const prepayAmount = Number(record?.[OrderFieldData.PrepayAmount]);
+  const optyPayDate = new Date(currentRecord?.[OrderField.OrderDate]);
+  const prepayAmount = Number(currentRecord?.[OrderFieldData.PrepayAmount]);
   const totalAmount = filteredData?.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
-  const parsedDate = record?.[OrderFieldData.CreatedAt]
-    ? dayjs(record[OrderFieldData.CreatedAt])
+  const parsedDate = currentRecord?.[OrderFieldData.CreatedAt]
+    ? dayjs(currentRecord[OrderFieldData.CreatedAt])
     : null;
-  const isActiveOrder = record?.[OrderFieldData.Status] === 'Опл'
+  const isActiveOrder = currentRecord?.[OrderFieldData.Status] === 'Опл'
 
   const actions = {
     handleCloseOrder: (orderId: string, totalAmount: number) => {
@@ -88,14 +91,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           dispatch(setOrderItem(result));
         }
         setLoading(false);
-      });
-    },
-    handleUpdateOrder: (values: UpdateOrder) => {
-      setLoading(true);
-      updateOrder(values).then(() => {
-        setLoading(false);
-        setIsModalOpen(false);
-        Toast.show({content: <div><b>Готово!</b><div>Заказ обновлен</div></div>, icon: 'success', duration: 3000 })
       });
     },
     handleAddItem: (values: AddOrderItem) => {
@@ -228,16 +223,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           <Card title={ModalTitle.OrderDetail}>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
-                <strong>{`${OrderField.FullNameLabel}: `}</strong> {record?.[OrderFieldData.FirstName]}
+                <strong>{`${OrderField.FullNameLabel}: `}</strong> {currentRecord?.[OrderFieldData.FirstName]}
               </span>
             </div>
             <p className="opty-card"><strong>{`${OrderField.PhoneLabel}: `}</strong>
               <a
                 className="phone-link"
-                href={`tel:${record?.[OrderFieldData.Phone]}`}
+                href={`tel:${currentRecord?.[OrderFieldData.Phone]}`}
                 style={{ textDecoration: "none", color: "blue" }}
               >
-                {formatPhoneNumber(record?.[OrderFieldData.Phone])}
+                {formatPhoneNumber(currentRecord?.[OrderFieldData.Phone])}
               </a>
             </p>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
@@ -257,19 +252,19 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </div>
             <p className="opty-card">
               <strong>{`${OrderField.SaunaPriceLabel}: `}</strong>
-              {`${record?.[OrderFieldData.SaunaNum]} · ${Number(record?.[OrderFieldData.Price])?.toLocaleString("ru-RU")} · (${Number(record?.[OrderFieldData.PrepayAmount])?.toLocaleString("ru-RU")} предоп.)`}
+              {`${currentRecord?.[OrderFieldData.SaunaNum]} · ${Number(currentRecord?.[OrderFieldData.Price])?.toLocaleString("ru-RU")} · (${Number(currentRecord?.[OrderFieldData.PrepayAmount])?.toLocaleString("ru-RU")} предоп.)`}
             </p>
             <p className="opty-card">
               <strong>{`${OrderField.TimePeopleCountLabel}: `}</strong>
-              {`${record?.[OrderFieldData.StartTime]} - ${record?.[OrderFieldData.EndTime]} · ${record?.[OrderFieldData.PeopleCount]} чел · ${record?.[OrderFieldData.Recommendation]}`}
+              {`${currentRecord?.[OrderFieldData.StartTime]} - ${currentRecord?.[OrderFieldData.EndTime]} · ${currentRecord?.[OrderFieldData.PeopleCount]} чел · ${currentRecord?.[OrderFieldData.Recommendation]}`}
             </p>
             <p className="opty-card">
               <strong>{`${OrderField.CreatedByLabel}: `}</strong>
-              {record?.[OrderFieldData.CreatedBy]}
+              {currentRecord?.[OrderFieldData.CreatedBy]}
             </p>
             <p className="opty-card">
               <strong>{`${OrderField.CommentLabel}: `}</strong>
-              {record?.[OrderFieldData.Comment]}
+              {currentRecord?.[OrderFieldData.Comment]}
             </p>
             <p className="opty-card">
               <strong>{`${OrderField.TotalAmountLabel}: `}</strong>

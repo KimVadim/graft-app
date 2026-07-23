@@ -173,7 +173,7 @@ export const IncomeReportcn: React.FC = () => {
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7}>
+              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -181,7 +181,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5}>
+              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -223,7 +223,7 @@ export const IncomeReportcn: React.FC = () => {
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="sauna_profit" name="Приб. баня" fill="#cee0f9" barSize={7}>
+              <Bar dataKey="sauna_profit" name="Приб. баня" fill="#cee0f9" barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -231,7 +231,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7}>
+              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -239,7 +239,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5}>
+              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -250,55 +250,107 @@ export const IncomeReportcn: React.FC = () => {
             </BarChart>
           </ResponsiveContainer>
           <ResponsiveContainer width="100%" height={chartHeight} style={{marginBottom: '40px'}}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1f2937',
-              marginTop: '16px',
-              paddingLeft: '10px',
-              borderLeft: '4px solid #4f46e5',
-              whiteSpace: 'nowrap'
-            }}>Отчет по продажам</h3>
-            <Col>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                gap: 16,
+                width: "100%",
+                marginTop: 16,
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: "#1f2937",
+                  paddingLeft: 10,
+                  borderLeft: "4px solid #4f46e5",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                Отчет по продажам
+              </h3>
+
               <DatePicker.MonthPicker
                 value={selectedDate}
                 onChange={(date) => date && setSelectedDate(date)}
                 allowClear={false}
                 format="MMM YY"
-                style={{ width: 200 }}
+                style={{
+                  width: 120,
+                  flexShrink: 0,
+                }}
                 locale={locale}
               />
-            </Col>
-            <BarChart data={monthlySalesProductReportData} margin={{ top: 10, right: 50, left: 25, bottom: 10 }} layout="vertical">
+            </div>
+            <BarChart
+              data={monthlySalesProductReportData}
+              layout="vertical"
+              margin={{ top: 15, right: 70, left: 10, bottom: 15 }}
+              barCategoryGap={18}
+            >
               <XAxis type="number" hide />
+
               <YAxis
                 type="category"
                 dataKey="item_name"
+                width={150}
                 tickLine={false}
                 axisLine={false}
-                width={150}
                 interval={0}
+                tick={{
+                  fontSize: 13,
+                  fill: "#374151",
+                }}
               />
+
               <Legend
-                wrapperStyle={{ paddingTop: "5px" }}
+                wrapperStyle={{
+                  paddingBottom: 10,
+                  fontSize: 14,
+                }}
                 formatter={(value) => (
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="total_quantity" name="Количество" fill="#4f46e5" barSize={7}>
+
+              <Bar
+                dataKey="total_quantity"
+                name="Количество"
+                fill="#4f46e5"
+                barSize={8}
+                radius={[0, 6, 6, 0]}
+              >
                 <LabelList
+                  dataKey="total_quantity"
                   position="right"
-                  fill="#1f2937"
-                  fontSize={11}
-                  formatter={(value) => `${Math.round(Number(value)).toLocaleString("ru-RU")} ед.`}
+                  offset={8}
+                  fill="#111827"
+                  fontSize={12}
+                  fontWeight={600}
+                  formatter={(v) => `${v} ед.`}
                 />
               </Bar>
-              <Bar dataKey="profit_margin_pct" name="Процент прибыли" fill="#98bff6" barSize={5}>
+
+              <Bar
+                dataKey="profit_margin_pct"
+                name="Прибыль"
+                fill="#93c5fd"
+                barSize={5}
+                radius={[0, 6, 6, 0]}
+              >
                 <LabelList
+                  dataKey="profit_margin_pct"
                   position="right"
-                  fill="#1f2937"
-                  fontSize={11}
-                  formatter={(value) => `${Math.round(Number(value)).toLocaleString("ru-RU")} %`}
+                  offset={8}
+                  fill="#374151"
+                  fontSize={12}
+                  formatter={(v) => `${v}%`}
                 />
               </Bar>
             </BarChart>

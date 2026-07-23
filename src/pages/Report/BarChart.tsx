@@ -6,7 +6,7 @@ interface WeeklyBarChartProps {
   title: string;
   accentColor: string;
   height: number;
-  bars: { dataKey: string; name: string; fill: string; size: number }[];
+  bars: { dataKey: string; name: string; fill: string; size: number;}[];
   customTick?: (props: any) => JSX.Element;
 }
 
@@ -33,7 +33,7 @@ export const WeeklyBarChart: React.FC<WeeklyBarChartProps> = ({ data, title, acc
         formatter={(value) => <span style={{ color: '#1f2937', fontSize: 16 }}>{value}</span>}
       />
       {bars.map(bar => (
-        <Bar key={bar.dataKey} dataKey={bar.dataKey} name={bar.name} fill={bar.fill} barSize={bar.size}>
+        <Bar key={bar.dataKey} dataKey={bar.dataKey} name={bar.name} fill={bar.fill} barSize={bar.size} radius={[0, 6, 6, 0]}>
           <LabelList
             position="right" fill="#1f2937" fontSize={11}
             formatter={(value) => Math.round(Number(value) / 1000).toLocaleString('ru-RU')}

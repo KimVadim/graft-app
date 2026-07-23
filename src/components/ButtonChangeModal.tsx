@@ -17,12 +17,12 @@ import dayjs from 'dayjs';
 interface ButtonChangeModalProps {
   orderId: string;
   disabled?: boolean;
-  setIsOrderPopup: (isOpen: boolean) => void;
+  setIsOrderPopup?: (isOpen: boolean) => void;
 }
 
 const { TextArea } = Input;
 
-export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, setIsOrderPopup, disabled }) => {
+export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, disabled }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -73,9 +73,9 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
       try {
         setLoading(true);
 
-        const orderId = await updateOrder(payload).then((result)=> {
+        const orderId = await updateOrder(payload).then((result) => {
           dispatch(updateOrderAction(result));
-          return result?.['id']
+          return result?.['id'];
         });
 
         if (!orderId) throw new Error();
@@ -87,7 +87,7 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({ orderId, s
         });
         form.resetFields();
         setIsUserInfo(false);
-        setIsOrderPopup(false);
+        //setIsOrderPopup(false);
       } catch (e) {
         Toast.show({
           content: `Ошибка!`,
