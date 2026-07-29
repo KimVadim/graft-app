@@ -158,12 +158,14 @@ export enum Payment {
   KaspiGold = 'Kaspi Gold',
   KaspiPay = 'Kaspi Pay',
   Cash = 'Налом',
+  No = 'Нет',
 }
 
 export const PAYMENT_TYPE = [
   { value: Payment.KaspiGold, label: Payment.KaspiGold },
   { value: Payment.KaspiPay, label: Payment.KaspiPay },
   { value: Payment.Cash, label: Payment.Cash },
+  { value: Payment.No, label: Payment.No },
 ];
 
 export enum Recommendation {

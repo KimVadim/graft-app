@@ -131,7 +131,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOrder, isAd
             layout="vertical"
             initialValues={{
               saunaNum: ['SaunaFour'],
-              prepaySource: [Payment.GoldAN],
+              prepaySource: [Payment.KaspiGold],
               orderDate: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
               price: 5000,
               [OrderField.Recommendation]: Recommendation.TwoGis
