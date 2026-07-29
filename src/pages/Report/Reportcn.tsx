@@ -299,12 +299,12 @@ export const IncomeReportcn: React.FC = () => {
               <YAxis
                 type="category"
                 dataKey="item_name"
-                width={150}
+                width={140}
                 tickLine={false}
                 axisLine={false}
                 interval={0}
                 tick={{
-                  fontSize: 13,
+                  fontSize: 12,
                   fill: "#374151",
                 }}
               />
@@ -331,7 +331,7 @@ export const IncomeReportcn: React.FC = () => {
                   position="right"
                   offset={8}
                   fill="#111827"
-                  fontSize={12}
+                  fontSize={11}
                   fontWeight={600}
                   formatter={(v) => `${v} ед.`}
                 />
@@ -349,7 +349,7 @@ export const IncomeReportcn: React.FC = () => {
                   position="right"
                   offset={8}
                   fill="#374151"
-                  fontSize={12}
+                  fontSize={9}
                   formatter={(v) => `${v}%`}
                 />
               </Bar>

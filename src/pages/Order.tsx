@@ -12,6 +12,9 @@ import { MenuComp } from "../components/Menu";
 import { orderMeta } from "./AllApplicationMeta";
 import { setOrder } from "../slices/orderSlice";
 import { setMenu } from "../slices/menuSlice";
+import { AddFloatButton } from '../components/AddFloatButton';
+import { AddExpenseModal } from './Expenses/AddExpenseModal';
+import { AddOrderModal } from '../components/AddOrderModal';
 
 export const Order: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -20,6 +23,8 @@ export const Order: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
   const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
+  const [isAddOrder, setIsAddOrder] = useState(false);
+  const [isAddExpense, setIsAddExpense] = useState(false)
   const loadOrders = useCallback(async (showToast = false) => {
     try {
       setLoading(true);
@@ -164,6 +169,17 @@ export const Order: React.FC = () => {
         setIsModalOpen={setIsModalOpen}
         record={selectedRecord}
       />
+      <AddFloatButton
+        setIsAddOrder={setIsAddOrder}
+        setIsAddExpense={setIsAddExpense}
+      />
+      {isAddOrder && <AddOrderModal
+        setIsAddOrder={setIsAddOrder} isAddOrder={isAddOrder}
+        setLoading={setLoading} loading={loading} view={'Order'}
+      />}
+      {isAddExpense && <AddExpenseModal
+        setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}
+      />}
     </>
   );
 }

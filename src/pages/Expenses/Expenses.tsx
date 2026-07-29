@@ -19,6 +19,7 @@ export const Expenses: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+  const [expandedRowKeys , setExpandedRowKeys] = useState<React.Key[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const expenseData = useSelector((state: RootState) => state.expense.expense) as unknown as ExpenseType[];
   const [isAddExpense, setIsAddExpense] = useState(false);
@@ -36,6 +37,10 @@ export const Expenses: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setExpandedRowKeys(filteredData.map(item => item.id));
+  }, [filteredData]);
 
   useEffect(() => {
     fetchData();
@@ -96,11 +101,28 @@ export const Expenses: React.FC = () => {
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
-                <Tag color="#066d1e">{record?.[ExpenseFieldData.ExpenseName]}</Tag>
-                <p>{record?.[ExpenseFieldData.Comment]}</p>
+                <Tag color="#767c7c">{record?.[ExpenseFieldData.ExpenseName]}</Tag>
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "0 7px",
+                    fontSize: "12px",
+                    lineHeight: "20px",
+                    borderRadius: "4px",
+                    backgroundColor: "#edf3f2",
+                    color: "#949393",
+                    whiteSpace: "nowrap",
+                    maxWidth: "390px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {record?.[ExpenseFieldData.Comment]}
+                </div>
               </p>
             ),
-            //rowExpandable: (record) => !!record?.[ExpenseFieldData.Comment],
+            expandedRowKeys,
+            onExpandedRowsChange: (keys) => setExpandedRowKeys([...keys]),
           }}
           size="middle"
           pagination={{
