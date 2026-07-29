@@ -3,7 +3,7 @@ import React from "react"
 import { useDispatch } from "react-redux";
 import { addExpense, getExpenseData } from "../../service/appServiceBackend";
 import TextArea from "antd/es/input/TextArea";
-import { APP_NAME, BUTTON_TEXT, EXPENSE_TYPE, PAYMENT_TYPE } from "../../constants/dictionaries.js";
+import { APP_NAME, AppNameValue, BUTTON_TEXT, EXPENSE_TYPE_MAP, PAYMENT_TYPE } from "../../constants/dictionaries.js";
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle } from "../../constants/appConstant.js";
 import { Popup, Selector, Toast } from "antd-mobile";
 import { AddExpense, ExpenseFieldData, ExpenseFieldLabel } from "./ExpensesMeta";
@@ -41,6 +41,12 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
         });
     };
 
+    const appName = Form.useWatch(ExpenseFieldData.AppName, form);
+
+    const expenseTypeOptions = appName
+      ? EXPENSE_TYPE_MAP[appName as AppNameValue] ?? []
+      : [];
+
     return (
       <>
         <Popup
@@ -74,6 +80,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               layout="vertical"
               onFinish={handleSubmit}
               initialValues={{
+                [ExpenseFieldData.AppName]: AppNameValue.Grafit,
                 [ExpenseFieldData.ExpenseDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
               }}
             >
@@ -85,28 +92,32 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 <Selector
                   options={APP_NAME}
                   onChange={(arr) => {
-                  arr.length > 0 && form.setFieldsValue({[ExpenseFieldData.AppName]: arr[0]});
+                    if (arr.length > 0) {
+                      form.setFieldsValue({
+                        [ExpenseFieldData.AppName]: arr[0],
+                        [ExpenseFieldData.Type]: undefined, // сбрасываем выбранный тип
+                      });
+                    }
                   }}
                 />
               </Form.Item>
+
               <Form.Item
                 label={ExpenseFieldLabel.ExpenseTypeLabel}
                 name={ExpenseFieldData.Type}
                 rules={[FieldRules.Required]}
               >
                 <Selector
-                  options={EXPENSE_TYPE}
+                  options={expenseTypeOptions}
+                  disabled={!appName}
                   onChange={(arr) => {
-                  arr.length > 0 && form.setFieldsValue({[ExpenseFieldData.Type]: arr[0]});
+                    if (arr.length > 0) {
+                      form.setFieldsValue({
+                        [ExpenseFieldData.Type]: arr[0],
+                      });
+                    }
                   }}
                 />
-              </Form.Item>
-              <Form.Item
-                label={ExpenseFieldLabel.ExpenseNameLabel}
-              name={ExpenseFieldData.ExpenseName}
-                rules={[FieldRules.Required]}
-              >
-                <Input style={FieldStyle.InputStyle} />
               </Form.Item>
               <Form.Item
                 label={ExpenseFieldLabel.SourceLabel}
@@ -128,17 +139,11 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 <InputNumber style={FieldStyle.InputStyle} />
               </Form.Item>
               <Form.Item
-                label={ExpenseFieldLabel.ExpenseDateLabel}
-                name={ExpenseFieldData.ExpenseDate}
+                label={ExpenseFieldLabel.ExpenseNameLabel}
+              name={ExpenseFieldData.ExpenseName}
                 rules={[FieldRules.Required]}
               >
-                <DatePicker
-                  style={FieldStyle.InputStyle}
-                  format={FieldFormat.Date}
-                  inputReadOnly={true}
-                  placeholder={FieldPlaceholder.Date}
-                  defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
-                />
+                <Input style={FieldStyle.InputStyle} />
               </Form.Item>
               <Form.Item
                 label={ExpenseFieldLabel.CommentLabel}
@@ -150,6 +155,19 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                   placeholder={FieldPlaceholder.Comment}
                   autoSize={{ minRows: 2, maxRows: 4 }}
                   style={FieldStyle.AreaStyle}
+                />
+              </Form.Item>
+              <Form.Item
+                label={ExpenseFieldLabel.ExpenseDateLabel}
+                name={ExpenseFieldData.ExpenseDate}
+                rules={[FieldRules.Required]}
+              >
+                <DatePicker
+                  style={FieldStyle.InputStyle}
+                  format={FieldFormat.Date}
+                  inputReadOnly={true}
+                  placeholder={FieldPlaceholder.Date}
+                  defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
                 />
               </Form.Item>
               <Form.Item style={{ textAlign: "center" }}>

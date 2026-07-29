@@ -113,8 +113,6 @@ export const Expenses: React.FC = () => {
                     color: "#949393",
                     whiteSpace: "nowrap",
                     maxWidth: "390px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
                   }}
                 >
                   {record?.[ExpenseFieldData.Comment]}

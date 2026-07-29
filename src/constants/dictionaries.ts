@@ -39,6 +39,43 @@ export const APP_NAME = [
   { value: AppNameValue.Alatau, label: AppName.Alatau },
 ];
 
+export const EXPENSE_TYPE_MAP: Record<
+  AppNameValue,
+  { value: ExpenseType; label: ExpenseType }[]
+> = {
+  [AppNameValue.Grafit]: [
+    { value: ExpenseType.Procurement, label: ExpenseType.Procurement },
+    { value: ExpenseType.Expense, label: ExpenseType.Expense },
+    { value: ExpenseType.Salary, label: ExpenseType.Salary },
+    {
+      value: ExpenseType.ServiceUtilities,
+      label: ExpenseType.ServiceUtilities,
+    },
+  ],
+
+  [AppNameValue.Pavlenko]: [
+    { value: ExpenseType.Expense, label: ExpenseType.Expense },
+    { value: ExpenseType.Salary, label: ExpenseType.Salary },
+    { value: ExpenseType.ReturnDeposit, label: ExpenseType.ReturnDeposit },
+    {
+      value: ExpenseType.ServiceUtilities,
+      label: ExpenseType.ServiceUtilities,
+    },
+    { value: ExpenseType.Taxes, label: ExpenseType.Taxes },
+  ],
+
+  [AppNameValue.Alatau]: [
+    { value: ExpenseType.Expense, label: ExpenseType.Expense },
+    { value: ExpenseType.Salary, label: ExpenseType.Salary },
+    { value: ExpenseType.Rent, label: ExpenseType.Rent },
+    {
+      value: ExpenseType.ServiceUtilities,
+      label: ExpenseType.ServiceUtilities,
+    },
+    { value: ExpenseType.Taxes, label: ExpenseType.Taxes },
+  ],
+};
+
 export enum MenuTypeValue {
   BathSupplies = 'Банные принадлежности',
   Kitchen = 'Кухня',
@@ -118,17 +155,15 @@ export const PRODUCT = [
 ];
 
 export enum Payment {
-  GoldAN = 'Gold А',
-  GoldVK = 'Gold V',
+  KaspiGold = 'Kaspi Gold',
+  KaspiPay = 'Kaspi Pay',
   Cash = 'Налом',
-  No = 'Нет',
 }
 
 export const PAYMENT_TYPE = [
-  { value: Payment.GoldAN, label: Payment.GoldAN },
-  { value: Payment.GoldVK, label: Payment.GoldVK },
+  { value: Payment.KaspiGold, label: Payment.KaspiGold },
+  { value: Payment.KaspiPay, label: Payment.KaspiPay },
   { value: Payment.Cash, label: Payment.Cash },
-  { value: Payment.No, label: Payment.No },
 ];
 
 export enum Recommendation {
