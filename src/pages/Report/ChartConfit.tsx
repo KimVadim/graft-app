@@ -53,6 +53,7 @@ export const CHART_CONFIGS = [
     title: 'Детализация: Доход кухня',
     accentColor: '#0ea5a4',
     height: 300,
+    label: 'week_label',
     bars: [
       {
         dataKey: 'kitchen_profit',
