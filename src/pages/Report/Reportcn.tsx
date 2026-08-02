@@ -93,8 +93,8 @@ export const IncomeReportcn: React.FC = () => {
     (dailyReportData || []).slice(0, 21),
     [dailyReportData]
   );
-  const ROW_HEIGHT = 30; // высота под один товар (2 бара + gap)
-  const MARGIN = 20; // легенда + margin.top + margin.bottom
+  const ROW_HEIGHT = 30;
+  const MARGIN = 30;
 
   const chartHeight = useMemo(() => {
     return monthlySalesProductReportData.length * ROW_HEIGHT + MARGIN;
@@ -293,6 +293,7 @@ export const IncomeReportcn: React.FC = () => {
               layout="vertical"
               margin={{ top: 15, right: 70, left: 10, bottom: 15 }}
               barCategoryGap={18}
+              barGap={3}
             >
               <XAxis type="number" hide />
 

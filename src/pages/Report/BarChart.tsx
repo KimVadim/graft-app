@@ -5,12 +5,13 @@ interface WeeklyBarChartProps {
   data: any[];
   title: string;
   accentColor: string;
+  label: string;
   height: number;
   bars: { dataKey: string; name: string; fill: string; size: number;}[];
   customTick?: (props: any) => JSX.Element;
 }
 
-export const WeeklyBarChart: React.FC<WeeklyBarChartProps> = ({ data, title, accentColor, height, bars, customTick }) => (
+export const WeeklyBarChart: React.FC<WeeklyBarChartProps> = ({ data, title, accentColor, label, height, bars, customTick }) => (
   <div style={{ marginTop: '30px' }}>
   <ResponsiveContainer width="100%" height={height}>
     <h3 style={{
@@ -23,7 +24,7 @@ export const WeeklyBarChart: React.FC<WeeklyBarChartProps> = ({ data, title, acc
     <BarChart data={data} margin={{ top: 10, right: 50, left: 25, bottom: 10 }} layout="vertical">
       <XAxis type="number" hide />
       <YAxis
-        type="category" dataKey="week_label"
+        type="category" dataKey={label}
         tickLine={false} axisLine={false}
         width={90} interval={0}
         tick={customTick ?? { fontSize: 12, fill: 'var(--text)' }}
@@ -36,7 +37,10 @@ export const WeeklyBarChart: React.FC<WeeklyBarChartProps> = ({ data, title, acc
         <Bar key={bar.dataKey} dataKey={bar.dataKey} name={bar.name} fill={bar.fill} barSize={bar.size} radius={[0, 6, 6, 0]}>
           <LabelList
             position="right" fill="#1f2937" fontSize={11}
-            formatter={(value) => Math.round(Number(value) / 1000).toLocaleString('ru-RU')}
+            formatter={(value) => {
+              const num = Number(value);
+              return num < 1000 ? num : Math.round(num / 1000).toLocaleString('ru-RU');
+            }}
           />
         </Bar>
       ))}

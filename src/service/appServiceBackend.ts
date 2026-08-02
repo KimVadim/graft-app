@@ -24,6 +24,7 @@ export const endpoints = {
   WEEKLY_REPORT: `${API_URL}/endpoints/fs/sb/weeklyreport`,
   MONTHLY_REPORT: `${API_URL}/endpoints/fs/sb/monthlyreport`,
   MONTHLY_SALES_PRODUCT_REPORT: `${API_URL}/endpoints/fs/sb/monthlyproductsales`,
+  MONTHLY_APART_REPORT: `${API_URL}/endpoints/pa/sb/monthlyreport`,
   EXPENSES: `${API_URL}/endpoints/fs/sb/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/sb/updateorder`,
   UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/sb/updateorderitem`,
@@ -417,6 +418,21 @@ export const addMenu = async (values: AddMenu) => {
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getMonthlyApartReportData = async () => {
+  try {
+    const { data } = await axios.get(endpoints.MONTHLY_APART_REPORT);
+    const monthlyReport = data.message?.payment_report || [];
+
+    return { monthlyReport };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
     } else {
       console.error('Непредвиденная ошибка:', error);
     }

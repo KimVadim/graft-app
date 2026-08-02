@@ -6,6 +6,7 @@ import { Expenses } from './pages/Expenses/Expenses';
 import Login from '../src/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
 import { Menu } from './pages/Menu/Menu';
+import { IncomeReportpa } from './pages/Report/Reportpa';
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
           <Route path='/menu' element={<Menu/>} />
         </Route>
         <Route element={<PrivateRoute allowedRoles={['vkim', 'anurmuhametov']} />}>
-          <Route path="/incomereportcn" element={<IncomeReportcn/>} />
+          <Route path="/reportcn" element={<IncomeReportcn/>} />
+          <Route path="/reportpa" element={<IncomeReportpa/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>
