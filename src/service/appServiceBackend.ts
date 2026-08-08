@@ -268,7 +268,6 @@ export const getOrderAllData = async () => {
   try {
     const { data } = await axios.get(endpoints.ORDER_ALL_DATA);
     const orders = data.message?.orders || [];
-    //const menu = data.message?.['menu_df'] || [];
 
     return { orders };
   } catch (error) {

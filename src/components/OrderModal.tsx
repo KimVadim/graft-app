@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AutoComplete, Button, DatePicker, Form, InputNumber, Spin, Table } from 'antd';
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, MenuType, OrderFieldData, OrderItemField, MenuFieldData, AddOrderItem, OrderItemType, OrderItemFieldData, OrderField, OrderStatus, OrderItemStatus } from '../constants/appConstant';
 import { formatPhoneNumber } from '../service/utils';
@@ -35,25 +35,21 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     state.order.order.find((o: any) => o[OrderFieldData.Id] === orderId)
   );
   const currentRecord = orderFromStore ? { ...record, ...orderFromStore } : record;
-  const loadOrders = useCallback(async (showToast = false) => {
-    if (!orderId) return;
-    try {
-      setLoading(true);
-      const response = await getOrderItemData(orderId);
-
-      response && dispatch(setOrderItem(response));
-
-      if (showToast) {
-        Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [dispatch, orderId]);
-
   useEffect(() => {
-    loadOrders();
-  }, [loadOrders]);
+    if (!isModalOpen || !orderId) return;
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        const response = await getOrderItemData(orderId);
+        if (response) dispatch(setOrderItem(response));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [isModalOpen, orderId, dispatch]);
 
   const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId && x[OrderItemFieldData.Status] === OrderItemStatus.Active) || [];
   const optyPayDate = new Date(currentRecord?.[OrderField.OrderDate]);
@@ -183,7 +179,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         const canDelete = record.status === 'Брн';
 
         if (!canDelete) {
-          return null; // Или <Button disabled...> если хотите оставить кнопку видимой
+          return null;
         }
 
         return (

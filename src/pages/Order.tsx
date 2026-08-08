@@ -25,16 +25,18 @@ export const Order: React.FC = () => {
   const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
   const [isAddOrder, setIsAddOrder] = useState(false);
   const [isAddExpense, setIsAddExpense] = useState(false)
+
+  const loadMenu = useCallback(async () => {
+    const response = await getMenuData();
+    dispatch(setMenu(response?.menu));
+  }, [dispatch]);
+
   const loadOrders = useCallback(async (showToast = false) => {
     try {
       setLoading(true);
+
       const response = await getOrderAllData();
-
       dispatch(setOrder(response?.orders));
-
-      const responseMenu = await getMenuData();
-
-      dispatch(setMenu(responseMenu?.menu));
 
       if (showToast) {
         Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
@@ -44,9 +46,15 @@ export const Order: React.FC = () => {
     }
   }, [dispatch]);
 
+  const menu = useSelector((state: RootState) => state.menu.menu);
+
   useEffect(() => {
     loadOrders();
-  }, [loadOrders]);
+
+    if (!menu?.length) {
+      loadMenu();
+    }
+  }, [loadOrders, loadMenu, menu]);
 
   const normalizePhone = (value?: string) => value?.replace(/\D/g, '') ?? '';
   const normalizeText = (str?: string) => str?.toLowerCase().replace(/\s+/g, " ").trim() ?? "";
@@ -114,7 +122,7 @@ export const Order: React.FC = () => {
           </Col>
           <Col>
             <Input
-              placeholder="Поиск по номеру квартиры..."
+              placeholder="Поиск по имени или телефону"
               value={searchText}
               onChange={actions.handleSearch}
               style={{ width: '100%', maxWidth: 140 }}
