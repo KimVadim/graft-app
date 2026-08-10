@@ -111,7 +111,7 @@ export const Expenses: React.FC = () => {
                     borderRadius: "4px",
                     backgroundColor: "#edf3f2",
                     color: "#949393",
-                    maxWidth: "375px",
+                    maxWidth: "355px",
                   }}
                 >
                   {record?.[ExpenseFieldData.Comment]}
