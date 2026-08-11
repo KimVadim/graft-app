@@ -5,8 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getMenuData, getOrderAllData } from "../service/appServiceBackend";
 import { OrderFieldData, OrderStatus, OrderType } from "../constants/appConstant";
-// @ts-ignore
-import '../index.css';
 import { Tabs, Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu";
 import { orderMeta } from "./AllApplicationMeta";
@@ -50,11 +48,13 @@ export const Order: React.FC = () => {
 
   useEffect(() => {
     loadOrders();
+  }, [loadOrders]);
 
-    if (!menu?.length) {
+  useEffect(() => {
+    if (!menu.length) {
       loadMenu();
     }
-  }, [loadOrders, loadMenu, menu]);
+  }, [menu.length, loadMenu]);
 
   const normalizePhone = (value?: string) => value?.replace(/\D/g, '') ?? '';
   const normalizeText = (str?: string) => str?.toLowerCase().replace(/\s+/g, " ").trim() ?? "";
@@ -154,7 +154,7 @@ export const Order: React.FC = () => {
               })}
             />
           </Tabs.Tab>
-          <Tabs.Tab title='Оплаченые' key='vegetables'>
+          <Tabs.Tab title='Оплаченные' key='vegetables'>
             <Table
               rowKey="uid"
               scroll={{ x: 385 }}
