@@ -1,4 +1,4 @@
-import { Col, Row, Spin, Table, Tag, Input, DatePicker } from "antd";
+import { Col, Row, Spin, Table, Input, DatePicker } from "antd";
 import React, { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -101,7 +101,20 @@ export const Expenses: React.FC = () => {
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
-                <Tag color="#767c7c">{record?.[ExpenseFieldData.ExpenseName]}</Tag>
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "0 7px",
+                    fontSize: "12px",
+                    lineHeight: "20px",
+                    borderRadius: "4px",
+                    backgroundColor: "#767c7c",
+                    color: "#949393",
+                    maxWidth: "355px",
+                  }}
+                >
+                  {record?.[ExpenseFieldData.ExpenseName]}
+                </div>
                 <div
                   style={{
                     display: "inline-block",
