@@ -108,7 +108,7 @@ export const Expenses: React.FC = () => {
                     fontSize: "12px",
                     lineHeight: "20px",
                     borderRadius: "4px",
-                    backgroundColor: "#767c7c",
+                    backgroundColor: "#e3e8e8",
                     color: "#949393",
                     maxWidth: "355px",
                   }}
