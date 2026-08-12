@@ -9,10 +9,10 @@ interface OrderItem {
   price: number;
   sales: number;
   created_by: string;
-  item_dt: string;
+  created_at: string;
   order_id: string;
   status: string;
-  type_name: string;
+  menu_type: string;
 }
 
 export type orderItemState = {

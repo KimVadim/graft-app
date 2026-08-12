@@ -98,7 +98,7 @@ export const addOrderItem = async (values: AddOrderItem, orderId: string) => {
 
     const response = await axios.post(endpoints.ORDER_ITEM, payload);
 
-    return response?.data?.message?.order_items?.['id'];
+    return response?.data?.message?.order_items;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);

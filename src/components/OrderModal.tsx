@@ -91,15 +91,14 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     },
     handleAddItem: (values: AddOrderItem) => {
       setLoading(true);
-      addOrderItem(values, orderId).then((orderItemId) => {
-        getOrderItemData(orderId).then((response) => {
-          response && dispatch(setOrderItem(response));
-        })
+      addOrderItem(values, orderId).then((response) => {
+        console.log('Add order item response:', response);
+        response && dispatch(setOrderItem(response));
         setIsPopupItemOpen(false)
         formItem.resetFields();
         setLoading(false);
         orderId
-          ? Toast.show({content: <div><b>Готово!</b><div>Позиция заказа № {orderItemId}</div></div>, icon: 'success', duration: 3000 })
+          ? Toast.show({content: <div><b>Готово!</b><div>Позиция заказа добавлена!</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     },
