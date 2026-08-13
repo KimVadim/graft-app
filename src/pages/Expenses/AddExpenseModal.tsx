@@ -1,13 +1,13 @@
 import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React from "react"
 import { useDispatch } from "react-redux";
-import { addExpense, getExpenseData } from "../../service/appServiceBackend";
+import { addExpense } from "../../service/appServiceBackend";
 import TextArea from "antd/es/input/TextArea";
 import { APP_NAME, AppNameValue, BUTTON_TEXT, EXPENSE_TYPE_MAP, PAYMENT_TYPE } from "../../constants/dictionaries.js";
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle } from "../../constants/appConstant.js";
 import { Popup, Selector, Toast } from "antd-mobile";
 import { AddExpense, ExpenseFieldData, ExpenseFieldLabel } from "./ExpensesMeta";
-import { setExpense } from "../../slices/expenseSlice";
+import { addExpense as addExpenseAction } from "../../slices/expenseSlice";
 import { AppDispatch } from "../../store";
 import dayjs from "dayjs";
 
@@ -23,20 +23,14 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const handleSubmit = (values: AddExpense) => {
       setLoading(true);
       addExpense(values)
-        .then((expenseId) => {
-          const currentDate = new Date();
-          const currentYear = currentDate.getFullYear();
-          const currentMonth = currentDate.getMonth() + 1;
-
-          getExpenseData(currentYear, currentMonth).then((response) => {
-              dispatch(setExpense(response?.expense));
-          });
+        .then((expense) => {
+          dispatch(addExpenseAction(expense));
 
           setLoading(false);
           setIsAddExpense(false);
           form.resetFields();
-          expenseId
-            ? Toast.show({content: <div><b>Готово!</b><div>Расход № {expenseId}</div></div>, icon: 'success', duration: 3000 })
+          expense?.id
+            ? Toast.show({content: <div><b>Готово!</b><div>Расход № {expense.id}</div></div>, icon: 'success', duration: 3000 })
             : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
         });
     };
