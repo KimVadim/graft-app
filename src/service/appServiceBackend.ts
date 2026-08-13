@@ -129,7 +129,7 @@ export const addExpense = async (values: AddExpense) => {
 
     const response = await axios.post(endpoints.EXPENSES, payload);
 
-    return response?.data?.message;
+    return response?.data?.message?.expense;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.data);
