@@ -7,7 +7,7 @@ export enum ExpenseFieldLabel {
   ExpenseTypeLabel = 'Тип',
   AppNameLabel = 'Назначение',
   ApartNumLabel = 'Номер квартиры',
-  SourceLabel = 'Счёт',
+  SourceLabel = 'Источник',
   CommentLabel = 'Комментарий',
   ExpenseLabel = 'Тип / Дата расхода',
   ExpenseNameLabel = 'Название',

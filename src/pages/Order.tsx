@@ -1,5 +1,5 @@
 import { Button, Spin, Table, Row, Col, Input } from "antd";
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { OpportunityModal } from "../components/OrderModal";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
@@ -16,20 +16,18 @@ import { AddOrderModal } from '../components/AddOrderModal';
 
 export const Order: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<OrderType | null>(null);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
-  const optyData = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
   const [isAddOrder, setIsAddOrder] = useState(false);
   const [isAddExpense, setIsAddExpense] = useState(false)
 
-  const loadMenu = useCallback(async () => {
-    const response = await getMenuData();
-    dispatch(setMenu(response?.menu));
-  }, [dispatch]);
+  const orders = useSelector((state: RootState) => state.order.order) as unknown as OrderType[];
+  const menu = useSelector((state: RootState) => state.menu.menu);
 
-  const loadOrders = useCallback(async (showToast = false) => {
+  const loadOrders = async (showToast = false) => {
     try {
       setLoading(true);
 
@@ -37,24 +35,27 @@ export const Order: React.FC = () => {
       dispatch(setOrder(response?.orders));
 
       if (showToast) {
-        Toast.show({ content: 'Заказы обновлены!', duration: 3000 });
+        Toast.show({ content: "Заказы обновлены!", duration: 3000 });
       }
     } finally {
       setLoading(false);
     }
-  }, [dispatch]);
-
-  const menu = useSelector((state: RootState) => state.menu.menu);
+  };
 
   useEffect(() => {
     loadOrders();
-  }, [loadOrders]);
+  }, []);
 
   useEffect(() => {
-    if (!menu.length) {
-      loadMenu();
-    }
-  }, [menu.length, loadMenu]);
+    if (menu.length) return;
+
+    const loadMenu = async () => {
+      const response = await getMenuData();
+      dispatch(setMenu(response?.menu));
+    };
+
+    loadMenu();
+  }, [menu.length, dispatch]);
 
   const normalizePhone = (value?: string) => value?.replace(/\D/g, '') ?? '';
   const normalizeText = (str?: string) => str?.toLowerCase().replace(/\s+/g, " ").trim() ?? "";
@@ -62,9 +63,9 @@ export const Order: React.FC = () => {
     const text = normalizeText(searchText);
     const phoneSearch = normalizePhone(searchText);
 
-    if (!text && !phoneSearch) return optyData;
+    if (!text && !phoneSearch) return orders;
 
-    return optyData.filter(item => {
+    return orders.filter(item => {
       const firstName = normalizeText(item[OrderFieldData.FirstName]);
       const phone = normalizePhone(item[OrderFieldData.Phone]);
 
@@ -73,7 +74,7 @@ export const Order: React.FC = () => {
 
       return false;
     });
-  }, [searchText, optyData]);
+  }, [searchText, orders]);
 
   const sortOrders = (a: OrderType, b: OrderType) => {
     const dateA = new Date(a[OrderFieldData.CreatedAt]).getTime();

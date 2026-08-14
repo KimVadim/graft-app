@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
+import { Button, DatePicker, Form, InputNumber, Spin } from "antd";
 import React from "react"
 import { useDispatch } from "react-redux";
 import { addExpense } from "../../service/appServiceBackend";
@@ -119,7 +119,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 rules={[FieldRules.Required]}
               >
                 <Selector
-                  options={PAYMENT_TYPE}
+                  options={APP_NAME}
                   onChange={(arr) => {
                     arr.length > 0 && form.setFieldsValue({[ExpenseFieldData.Source]: arr[0]});
                   }}
@@ -136,12 +136,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 label={ExpenseFieldLabel.ExpenseNameLabel}
               name={ExpenseFieldData.ExpenseName}
                 rules={[FieldRules.Required]}
-              >
-                <Input style={FieldStyle.InputStyle} />
-              </Form.Item>
-              <Form.Item
-                label={ExpenseFieldLabel.CommentLabel}
-                name={ExpenseFieldData.Comment}
               >
                 <TextArea
                   showCount
