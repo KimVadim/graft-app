@@ -3,7 +3,7 @@ import React from "react"
 import { useDispatch } from "react-redux";
 import { addExpense } from "../../service/appServiceBackend";
 import TextArea from "antd/es/input/TextArea";
-import { APP_NAME, AppNameValue, BUTTON_TEXT, EXPENSE_TYPE_MAP, PAYMENT_TYPE } from "../../constants/dictionaries.js";
+import { APP_NAME, AppNameValue, BUTTON_TEXT, EXPENSE_TYPE_MAP } from "../../constants/dictionaries.js";
 import { FieldFormat, FieldPlaceholder, FieldRules, FieldStyle } from "../../constants/appConstant.js";
 import { Popup, Selector, Toast } from "antd-mobile";
 import { AddExpense, ExpenseFieldData, ExpenseFieldLabel } from "./ExpensesMeta";
