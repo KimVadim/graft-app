@@ -46,6 +46,7 @@ export const EXPENSE_TYPE_MAP: Record<
   [AppNameValue.Grafit]: [
     { value: ExpenseType.Procurement, label: ExpenseType.Procurement },
     { value: ExpenseType.Expense, label: ExpenseType.Expense },
+    { value: ExpenseType.Rent, label: ExpenseType.Rent },
     { value: ExpenseType.Salary, label: ExpenseType.Salary },
     {
       value: ExpenseType.ServiceUtilities,

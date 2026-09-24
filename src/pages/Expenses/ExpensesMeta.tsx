@@ -53,7 +53,7 @@ export const expenseMeta = [{
     const date = new Date(record?.[ExpenseFieldData.ExpenseDate]);
 
     return <>
-      <Tag color={"#096bec"}>{record?.[ExpenseFieldData.AppName]}</Tag>
+      <Tag color={"#096bec"}>{`${record?.[ExpenseFieldData.AppName]} > ${record?.[ExpenseFieldData.Source]}`}</Tag>
       <Tag color={"#69930f"}>{value}</Tag>
       <Tag color="blue">
         {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
@@ -62,7 +62,7 @@ export const expenseMeta = [{
       </Tag>
     </>
   },
-  width: 265,
+  width: 285,
 }, {
     title: ExpenseFieldLabel.AmountLabel,
     dataIndex: ExpenseFieldData.Amount,
