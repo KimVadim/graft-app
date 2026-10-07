@@ -11,8 +11,30 @@ import {
 } from '../constants/appConstant';
 import { AddMenu, MenuFieldData } from '../pages/Menu/MenuMeta';
 import { AddExpense, ExpenseFieldData } from '../pages/Expenses/ExpensesMeta';
+import { supabase } from '../lib/supabase';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
+
+axios.interceptors.request.use(async (config) => {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      await supabase.auth.signOut();
+      localStorage.removeItem('login');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const endpoints = {
   ORDER: `${API_URL}/endpoints/fs/sb/orders`,
@@ -139,6 +161,7 @@ export const addExpense = async (values: AddExpense) => {
   }
 };
 
+/* Добавил авторизацию через Supabase 07-10-2024
 export const loginUser = async (login: string, password: string) => {
   try {
     const payload = {
@@ -160,7 +183,7 @@ export const loginUser = async (login: string, password: string) => {
       console.error('Непредвиденная ошибка:', error);
     }
   }
-};
+};*/
 
 export const closeOpty = async (optyId: String) => {
   try {
