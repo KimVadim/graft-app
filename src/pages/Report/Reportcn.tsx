@@ -100,6 +100,9 @@ export const IncomeReportcn: React.FC = () => {
     return monthlySalesProductReportData.length * ROW_HEIGHT + MARGIN;
   }, [monthlySalesProductReportData]);
 
+  const monthlyChartHeight = useMemo(() => {
+    return monthlyReportData.length * ROW_HEIGHT + MARGIN + 95;
+  }, [monthlyReportData]);
   return (
     <Spin spinning={loading} >
     <div style={{ paddingTop: '10px', paddingLeft: '0px', width: '390px', maxWidth: '100%', margin: '0 auto' }}>
@@ -197,7 +200,7 @@ export const IncomeReportcn: React.FC = () => {
           <ChartAreaInteractive/>
         </Tabs.Tab>
         <Tabs.Tab title='По месяцам' key='MonthlyReport'>
-          <ResponsiveContainer width="100%" height={300} style={{marginBottom: '40px'}}>
+          <ResponsiveContainer width="100%" height={monthlyChartHeight} style={{marginBottom: '40px'}}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,
@@ -223,7 +226,7 @@ export const IncomeReportcn: React.FC = () => {
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="sauna_profit" name="Приб. баня" fill="#cee0f9" barSize={7} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="sauna_profit" name="Приб. баня" fill="#c0d7f8" barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -239,7 +242,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="total_revenue" name="Доход" fill="#7d8fe2" barSize={8} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
