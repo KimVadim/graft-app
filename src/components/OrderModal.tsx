@@ -52,13 +52,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   }, [isModalOpen, orderId, dispatch]);
 
   const filteredData = optyItemData?.filter((x)=> x[OrderItemFieldData.OrderId] === orderId && x[OrderItemFieldData.Status] === OrderItemStatus.Active) || [];
-  const optyPayDate = new Date(currentRecord?.[OrderField.OrderDate]);
   const prepayAmount = Number(currentRecord?.[OrderFieldData.PrepayAmount]);
   const totalAmount = filteredData?.reduce((sum, item) => {
     return sum + (Number(item?.['amount']) || 0);
   }, 0);
   const parsedDate = currentRecord?.[OrderFieldData.CreatedAt]
-    ? dayjs(currentRecord[OrderFieldData.CreatedAt])
+    ? dayjs(currentRecord[OrderFieldData.CreatedAt]).format("dd DD.MM.YY")
     : null;
   const isActiveOrder = currentRecord?.[OrderFieldData.Status] === 'Опл'
 
@@ -216,7 +215,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           }}
         >
           <Card title={ModalTitle.OrderDetail}>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 8 }}>
               <span>
                 <strong>{`${OrderField.FullNameLabel}: `}</strong> {currentRecord?.[OrderFieldData.FirstName]}
               </span>
@@ -230,19 +229,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 {formatPhoneNumber(currentRecord?.[OrderFieldData.Phone])}
               </a>
             </p>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 8 }}>
               <span>
                 <strong>{`${OrderField.OrderDateLabel}: `}</strong>
-                <DatePicker
-                  format={FieldFormat.Date}
-                  inputReadOnly={true}
-                  placeholder={FieldPlaceholder.Date}
-                  disabledDate={(current) => current && current.isBefore(parsedDate, 'day')}
-                  value={optyPayDate ? parsedDate : undefined}
-                  allowClear={false}
-                  needConfirm={true}
-                  disabled={true}
-                />
+                {parsedDate}
               </span>
             </div>
             <p className="opty-card">

@@ -1,6 +1,5 @@
 import { Button, DatePicker, Form, Input, InputNumber, Spin } from "antd";
 import React, { useState } from "react"
-import dayjs from 'dayjs';
 import { addOrder, getOrder } from "../service/appServiceBackend";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
@@ -11,6 +10,9 @@ import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils";
 import { setOrder } from "../slices/orderSlice.js";
 import { PickerValue } from "antd-mobile/es/components/picker-view";
+import dayjs from "dayjs";
+import 'dayjs/locale/ru';
+dayjs.locale('ru');
 
 interface AddOrderModalProps {
   setIsAddOrder: (isOpen: boolean) => void;
@@ -97,6 +99,13 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOrder, isAd
       });
 
       setIsPopupStartOpen(false);
+    };
+
+    const sharedProps = {
+      mode: 'spinner' as const,
+      min: 1,
+      max: 10,
+      defaultValue: 3,
     };
 
     return (
@@ -218,8 +227,7 @@ export const AddOrderModal: React.FC<AddOrderModalProps> = ({setIsAddOrder, isAd
               initialValue={2}
             >
               <InputNumber
-                min={1}
-                max={20}
+                {...sharedProps}
                 style={FieldStyle.InputStyle}
               />
             </Form.Item>
