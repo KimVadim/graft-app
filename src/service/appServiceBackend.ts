@@ -12,6 +12,11 @@ import {
 import { AddMenu, MenuFieldData } from '../pages/Menu/MenuMeta';
 import { AddExpense, ExpenseFieldData } from '../pages/Expenses/ExpensesMeta';
 import { supabase } from '../lib/supabase';
+import {
+  AppNameValue,
+  ExpenseType,
+  InvoiceStatus,
+} from '../constants/dictionaries';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
 
@@ -132,6 +137,9 @@ export const addOrderItem = async (values: AddOrderItem, orderId: string) => {
 
 export const addExpense = async (values: AddExpense) => {
   try {
+    const appName = values?.[ExpenseFieldData.AppName];
+    const type = values?.[ExpenseFieldData.Type];
+
     const payload = {
       [ExpenseFieldData.ExpenseName]: values?.[ExpenseFieldData.ExpenseName],
       [ExpenseFieldData.Type]: values?.[ExpenseFieldData.Type],
@@ -147,6 +155,10 @@ export const addExpense = async (values: AddExpense) => {
         .millisecond(0)
         .toISOString(),
       [ExpenseFieldData.AppName]: values?.[ExpenseFieldData.AppName],
+      [ExpenseFieldData.Invoice]:
+        AppNameValue.Alatau === appName && ExpenseType.ServiceUtilities === type
+          ? InvoiceStatus
+          : undefined,
     };
 
     const response = await axios.post(endpoints.EXPENSES, payload);

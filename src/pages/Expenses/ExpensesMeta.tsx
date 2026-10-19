@@ -23,6 +23,7 @@ export enum ExpenseFieldData {
   Type = 'type',
   ExpenseName = 'expense_name',
   AppName = 'app_name',
+  Invoice = 'invoice',
 }
 
 export interface AddExpense {

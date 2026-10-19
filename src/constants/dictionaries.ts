@@ -33,6 +33,10 @@ export enum AppName {
   Alatau = 'Алатау',
 }
 
+export enum InvoiceStatus {
+  Exhibited = 'Выставлено',
+}
+
 export const APP_NAME = [
   { value: AppNameValue.Grafit, label: AppName.Grafit },
   { value: AppNameValue.Pavlenko, label: AppName.Pavlenko },
