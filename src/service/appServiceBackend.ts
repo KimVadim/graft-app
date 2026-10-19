@@ -157,7 +157,7 @@ export const addExpense = async (values: AddExpense) => {
       [ExpenseFieldData.AppName]: values?.[ExpenseFieldData.AppName],
       [ExpenseFieldData.Invoice]:
         AppNameValue.Alatau === appName && ExpenseType.ServiceUtilities === type
-          ? InvoiceStatus
+          ? InvoiceStatus.Exhibited
           : undefined,
     };
 
