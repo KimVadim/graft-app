@@ -1,3 +1,5 @@
+import { ChartColorsBar } from "../../constants/appConstant";
+
 export const CHART_CONFIGS = [
   {
     title: 'Детализация: Общий доход',
@@ -5,9 +7,9 @@ export const CHART_CONFIGS = [
     height: 490,
     label: 'week_label',
     bars: [
-      { dataKey: 'sauna_revenue', name: 'Баня дох.', fill: '#b4cff5', size: 7 },
-      { dataKey: 'total_profit', name: 'Прибыль', fill: '#80b2f8', size: 7 },
-      { dataKey: 'total_revenue', name: 'Доход', fill: '#4f46e5', size: 7 },
+      { dataKey: 'sauna_revenue', name: 'Баня дох.', fill: ChartColorsBar.Tertiary, size: 7 },
+      { dataKey: 'total_profit', name: 'Прибыль', fill: ChartColorsBar.Secondary, size: 7 },
+      { dataKey: 'total_revenue', name: 'Доход', fill: ChartColorsBar.Primary, size: 7 },
     ],
   },
   /*{

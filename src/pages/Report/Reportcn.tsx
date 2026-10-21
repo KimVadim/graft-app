@@ -24,6 +24,7 @@ import { setMonthlySalesProductReport } from '../../slices/monthlySalesProductRe
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/ru";
 import locale from "antd/es/date-picker/locale/ru_RU";
+import { ChartColorsBar } from '../../constants/appConstant';
 
 export const dailyCustomTick = ({ x, y, payload }: any) => {
   const date = new Date(payload.value);
@@ -124,7 +125,7 @@ export const IncomeReportcn: React.FC = () => {
       </Row>
       <Tabs>
         <Tabs.Tab title='Дневной' key='DailyReport'>
-          <ResponsiveContainer width="100%" height={500} style={{marginBottom: '40px'}}>
+          <ResponsiveContainer width="100%" height={570} style={{marginBottom: '40px'}}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,
@@ -176,7 +177,7 @@ export const IncomeReportcn: React.FC = () => {
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="total_profit" name="Прибыль" fill={ChartColorsBar.Secondary} barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -184,7 +185,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_revenue" name="Доход" fill="#4f46e5" barSize={5} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="total_revenue" name="Доход" fill={ChartColorsBar.Primary} barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -226,7 +227,7 @@ export const IncomeReportcn: React.FC = () => {
                   <span style={{ color: "#1f2937", fontSize: 16 }}>{value}</span>
                 )}
               />
-              <Bar dataKey="sauna_profit" name="Приб. баня" fill="#c0d7f8" barSize={7} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="sauna_profit" name="Приб. баня" fill={ChartColorsBar.Tertiary} barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -234,7 +235,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_profit" name="Прибыль" fill="#98bff6" barSize={7} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="total_profit" name="Прибыль" fill={ChartColorsBar.Secondary} barSize={7} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -242,7 +243,7 @@ export const IncomeReportcn: React.FC = () => {
                   formatter={(value) => Math.round(Number(value) / 1000).toLocaleString("ru-RU")}
                 />
               </Bar>
-              <Bar dataKey="total_revenue" name="Доход" fill="#7d8fe2" barSize={8} radius={[0, 6, 6, 0]}>
+              <Bar dataKey="total_revenue" name="Доход" fill={ChartColorsBar.Primary} barSize={8} radius={[0, 6, 6, 0]}>
                 <LabelList
                   position="right"
                   fill="#1f2937"
@@ -326,7 +327,7 @@ export const IncomeReportcn: React.FC = () => {
               <Bar
                 dataKey="total_quantity"
                 name="Количество"
-                fill="#4f46e5"
+                fill={ChartColorsBar.Primary}
                 barSize={8}
                 radius={[0, 6, 6, 0]}
               >
@@ -344,7 +345,7 @@ export const IncomeReportcn: React.FC = () => {
               <Bar
                 dataKey="profit_margin_pct"
                 name="Прибыль"
-                fill="#93c5fd"
+                fill={ChartColorsBar.Secondary}
                 barSize={5}
                 radius={[0, 6, 6, 0]}
               >

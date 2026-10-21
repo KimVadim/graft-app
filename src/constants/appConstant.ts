@@ -399,3 +399,9 @@ export enum AppConstants {
   AppName = 'Grafit',
   MenuStatusActive = 'Active',
 }
+
+export enum ChartColorsBar {
+  Primary = '#6b82e8',
+  Secondary = '#98bff6',
+  Tertiary = '#c0d7f8',
+}

@@ -34,7 +34,7 @@ export enum AppName {
 }
 
 export enum InvoiceStatus {
-  Exhibited = 'Выставлено',
+  Exhibited = 'Выставить',
 }
 
 export const APP_NAME = [
