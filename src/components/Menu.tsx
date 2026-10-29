@@ -29,7 +29,7 @@ export const MenuComp: React.FC = () => {
           children: [
             { label: 'Доходы Grafit', key: '/reportcn' },
             { label: 'Доходы Apart', key: '/reportpa' },
-            { label: 'Общие расходы', key: '/reportexpenses' },
+            { label: 'Расходы', key: '/reportexpenses' },
           ],
         },
       ],
