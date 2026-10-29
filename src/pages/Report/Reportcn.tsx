@@ -26,18 +26,6 @@ import "dayjs/locale/ru";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import { ChartColorsBar } from '../../constants/appConstant';
 
-export const dailyCustomTick = ({ x, y, payload }: any) => {
-  const date = new Date(payload.value);
-  const day = date.getDate();
-  const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3);
-  const weekday = date.toLocaleString("ru-RU", { weekday: "short" }).slice(0, 2);
-  return (
-    <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={13} fill="#1f2937">
-      {`${weekday} ${day} ${month}`}
-    </text>
-  );
-};
-
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalPayment, setIsModalPayment] = useState(false);

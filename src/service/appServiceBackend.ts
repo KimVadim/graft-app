@@ -52,6 +52,7 @@ export const endpoints = {
   MONTHLY_REPORT: `${API_URL}/endpoints/fs/sb/monthlyreport`,
   MONTHLY_SALES_PRODUCT_REPORT: `${API_URL}/endpoints/fs/sb/monthlyproductsales`,
   MONTHLY_APART_REPORT: `${API_URL}/endpoints/pa/sb/monthlyreport`,
+  MONTHLY_EXPENSES_REPORT: `${API_URL}/endpoints/fs/sb/monthlyexpenses`,
   EXPENSES: `${API_URL}/endpoints/fs/sb/expense`,
   UPDATE_ORDER: `${API_URL}/endpoints/fs/sb/updateorder`,
   UPDATE_ORDER_ITEM: `${API_URL}/endpoints/fs/sb/updateorderitem`,
@@ -464,6 +465,26 @@ export const getMonthlyApartReportData = async () => {
     const monthlyReport = data.message?.payment_report || [];
 
     return { monthlyReport };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getExpensesReportData = async (month: number, year: number) => {
+  try {
+    const { data } = await axios.get(endpoints.MONTHLY_EXPENSES_REPORT, {
+      params: {
+        month,
+        year,
+      },
+    });
+    const reportExpenses = data.message?.report_expenses || [];
+
+    return { reportExpenses };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);

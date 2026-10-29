@@ -7,6 +7,7 @@ import Login from '../src/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
 import { Menu } from './pages/Menu/Menu';
 import { IncomeReportpa } from './pages/Report/Reportpa';
+import { ExpensesReportpa } from './pages/Report/ReportExpenses';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route element={<PrivateRoute allowedRoles={['vkim', 'anurmuhametov']} />}>
           <Route path="/reportcn" element={<IncomeReportcn/>} />
           <Route path="/reportpa" element={<IncomeReportpa/>} />
+          <Route path="/reportexpenses" element={<ExpensesReportpa/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>

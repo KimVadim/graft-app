@@ -12,16 +12,6 @@ export const CHART_CONFIGS = [
       { dataKey: 'total_revenue', name: 'Доход', fill: ChartColorsBar.Primary, size: 7 },
     ],
   },
-  /*{
-    title: 'Детализация: Доход баня',
-    accentColor: '#15803d',
-    height: 300,
-    label: 'week_label',
-    bars: [
-      { dataKey: 'sauna_profit', name: 'Баня приб.', fill: '#4ade80', size: 7 },
-      { dataKey: 'sauna_revenue', name: 'Баня дох.', fill: '#15803d', size: 5 },
-    ],
-  },*/
   {
     title: 'Детализация: Доход бар',
     accentColor: '#8e9508',
@@ -61,8 +51,8 @@ export const CHART_APART_CONFIGS = [
     height: 370,
     label: 'month_label',
     bars: [
-      { dataKey: 'payment_amt', name: 'Аренда', fill: '#98bff6', size: 7 },
-      { dataKey: 'storage_amt', name: 'Склады', fill: '#4f46e5', size: 5 },
+      { dataKey: 'payment_amt', name: 'Аренда', fill: ChartColorsBar.Secondary, size: 7 },
+      { dataKey: 'storage_amt', name: 'Склады', fill: ChartColorsBar.Primary, size: 5 },
     ],
   },
   {

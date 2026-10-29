@@ -11,6 +11,7 @@ import expenseReducer from './slices/expenseSlice';
 import accessGroup from './slices/accessGroupSlice';
 import menuReducer from './slices/menuSlice';
 import monthlyApartReportReducer from './slices/monthlyApartReportSlice';
+import monthlyExpensesReportReducer from './slices/monthlyExpensesReportSlice';
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     weeklyReport: weeklyReportReducer,
     monthlyReport: monthlyReportReducer,
     monthlySalesProductReport: monthlyReportSalesProductReducer,
+    monthlyExpensesReport: monthlyExpensesReportReducer,
     expense: expenseReducer,
     menu: menuReducer,
     monthlyApartReport: monthlyApartReportReducer,

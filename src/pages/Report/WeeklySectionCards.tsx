@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import { CHART_CONFIGS } from "./ChartConfit";
+import { CHART_CONFIGS } from "./ChartConfig";
 import { WeeklyBarChart } from "./BarChart";
 dayjs.extend(weekOfYear);
 
