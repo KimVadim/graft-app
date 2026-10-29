@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '../../store';
 import { MenuComp } from '../../components/Menu';
 import { getExpensesReportData } from '../../service/appServiceBackend';
 import { setMonthlyExpensesReport } from '../../slices/monthlyExpensesReportSlice';
+import { ChartColorsBar } from '../../constants/appConstant';
 
 dayjs.locale('ru');
 
@@ -85,7 +86,7 @@ const TypeBlock: React.FC<{ group: TypeGroup; appTotal: number }> = ({ group, ap
         <span style={{ fontWeight: 600 }}>{group.type}</span>
         <span style={{ fontWeight: 600 }}>{fmt(group.total)}</span>
       </Row>
-      <Progress percent={Number(percent.toFixed(1))} showInfo={false} size="small" strokeColor="#1f6f5c" />
+      <Progress percent={Number(percent.toFixed(1))} showInfo={false} size="small" strokeColor={ChartColorsBar.Primary} />
       {group.sources.map(s => (
         <Row key={s.source} justify="space-between" style={{ fontSize: 12, color: '#6b6b6b' }}>
           <span>опл. / {s.source}</span>
@@ -138,6 +139,10 @@ export const ExpensesReportpa: React.FC = () => {
         </Row>
 
         <Row justify="space-between" align="bottom" style={{ padding: '14px 12px 10px' }}>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: 12, color: '#6b6b6b' }}>Всего за месяц</div>
+            <div style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.1 }}>{fmt(grandTotal)}</div>
+          </div>
           <DatePicker.MonthPicker
             value={selectedDate}
             onChange={date => date && setSelectedDate(date)}
@@ -146,21 +151,17 @@ export const ExpensesReportpa: React.FC = () => {
             style={{ width: 170 }}
             locale={locale}
           />
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 12, color: '#6b6b6b' }}>Всего за месяц</div>
-            <div style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.1 }}>{fmt(grandTotal)}</div>
-          </div>
         </Row>
 
         {groups.length > 1 && (
-          <div style={{ padding: '0 12px 12px' }}>
+          <div style={{ padding: '12px 12px' }}>
             <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Кто сколько потратил</div>
             {groups.map(g => (
               <Row key={g.appName} justify="space-between" style={{ fontSize: 13, padding: '2px 0' }}>
                 <span>{g.appName}</span>
                 <span>
                   {fmt(g.total)}
-                  <span style={{ color: '#6b6b6b', marginLeft: 8 }}>
+                  <span style={{ color: ChartColorsBar.Primary, marginLeft: 8 }}>
                     {grandTotal > 0 ? `${Math.round((g.total / grandTotal) * 100)}%` : ''}
                   </span>
                 </span>
@@ -170,7 +171,7 @@ export const ExpensesReportpa: React.FC = () => {
         )}
 
         {paidBySource.length > 0 && (
-          <div style={{ padding: '0 12px 12px' }}>
+          <div style={{ padding: '12px 12px' }}>
             <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Кто сколько оплатил</div>
             {paidBySource.map(p => (
               <Row key={p.source} justify="space-between" style={{ fontSize: 13, padding: '2px 0' }}>
