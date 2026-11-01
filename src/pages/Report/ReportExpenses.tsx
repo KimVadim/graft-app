@@ -15,22 +15,28 @@ dayjs.locale('ru');
 interface ExpenseRow {
   year: number;
   month: number;
-  app_name: string; // на что/на кого относится расход (Alatau, Apart, Grafit)
-  source: string;   // откуда оплачено
-  type: string;     // категория
+  app_name: string;
+  source: string;
+  type: string;
+  total: number;
+}
+
+interface SourceTotal {
+  source: string;
   total: number;
 }
 
 interface TypeGroup {
   type: string;
   total: number;
-  sources: { source: string; total: number }[];
+  sources: SourceTotal[];
 }
 
 interface AppGroup {
   appName: string;
   total: number;
   types: TypeGroup[];
+  paidBySource: SourceTotal[];
 }
 
 const fmt = (n: number) => `${Math.round(n).toLocaleString('ru-RU')} ₸`;
@@ -61,10 +67,19 @@ const groupRows = (rows: ExpenseRow[]): AppGroup[] => {
         })
         .sort((a, b) => b.total - a.total);
 
+      const paidMap = new Map<string, number>();
+      typeGroups.forEach(t =>
+        t.sources.forEach(s => paidMap.set(s.source, (paidMap.get(s.source) ?? 0) + s.total)),
+      );
+      const paidBySource = Array.from(paidMap.entries())
+        .map(([source, total]) => ({ source, total }))
+        .sort((a, b) => b.total - a.total);
+
       return {
         appName,
         total: typeGroups.reduce((s, x) => s + x.total, 0),
         types: typeGroups,
+        paidBySource,
       };
     })
     .sort((a, b) => b.total - a.total);
@@ -97,6 +112,27 @@ const TypeBlock: React.FC<{ group: TypeGroup; appTotal: number }> = ({ group, ap
   );
 };
 
+const PaidBlock: React.FC<{ items: SourceTotal[] }> = ({ items }) => {
+  if (items.length === 0) return null;
+  const sum = items.reduce((s, x) => s + x.total, 0);
+  return (
+    <div style={{ marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid #f0f0f0' }}>
+      <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Итого оплачено</div>
+      {items.map(p => (
+        <Row key={p.source} justify="space-between" style={{ fontSize: 13, padding: '2px 0' }}>
+          <span>{p.source}</span>
+          <span>
+            {fmt(p.total)}
+            <span style={{ color: ChartColorsBar.Primary, marginLeft: 8 }}>
+              {sum > 0 ? `${Math.round((p.total / sum) * 100)}%` : ''}
+            </span>
+          </span>
+        </Row>
+      ))}
+    </div>
+  );
+};
+
 export const ExpensesReportpa: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
@@ -112,7 +148,7 @@ export const ExpensesReportpa: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [dispatch, selectedDate]); // selectedDate в зависимостях — иначе смена месяца не перезагружает данные
+  }, [dispatch, selectedDate]);
 
   useEffect(() => {
     loadData();
@@ -125,6 +161,7 @@ export const ExpensesReportpa: React.FC = () => {
   const groups = useMemo(() => groupRows(rows), [rows]);
   const paidBySource = useMemo(() => sumBySource(rows), [rows]);
   const grandTotal = useMemo(() => groups.reduce((s, g) => s + g.total, 0), [groups]);
+  const paidBySourceTotal = useMemo(() => paidBySource.reduce((s, g) => s + g.total, 0), [paidBySource]);
 
   return (
     <Spin spinning={loading}>
@@ -155,7 +192,7 @@ export const ExpensesReportpa: React.FC = () => {
 
         {groups.length > 1 && (
           <div style={{ padding: '12px 12px' }}>
-            <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Кто сколько потратил</div>
+            <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Всего потрачено</div>
             {groups.map(g => (
               <Row key={g.appName} justify="space-between" style={{ fontSize: 13, padding: '2px 0' }}>
                 <span>{g.appName}</span>
@@ -172,11 +209,16 @@ export const ExpensesReportpa: React.FC = () => {
 
         {paidBySource.length > 0 && (
           <div style={{ padding: '12px 12px' }}>
-            <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Кто сколько оплатил</div>
+            <div style={{ fontSize: 12, color: '#6b6b6b', marginBottom: 2 }}>Всего оплачено</div>
             {paidBySource.map(p => (
               <Row key={p.source} justify="space-between" style={{ fontSize: 13, padding: '2px 0' }}>
                 <span>{p.source}</span>
-                <span>{fmt(p.total)}</span>
+                <span>
+                  {fmt(p.total)}
+                  <span style={{ color: ChartColorsBar.Primary, marginLeft: 8 }}>
+                    {paidBySourceTotal > 0 ? `${Math.round((p.total / paidBySourceTotal) * 100)}%` : ''}
+                  </span>
+                </span>
               </Row>
             ))}
           </div>
@@ -196,7 +238,12 @@ export const ExpensesReportpa: React.FC = () => {
                   <strong>{fmt(g.total)}</strong>
                 </Row>
               ),
-              children: g.types.map(t => <TypeBlock key={t.type} group={t} appTotal={g.total} />),
+              children: (
+                <>
+                  {g.types.map(t => <TypeBlock key={t.type} group={t} appTotal={g.total} />)}
+                  <PaidBlock items={g.paidBySource} />
+                </>
+              ),
             }))}
           />
         )}

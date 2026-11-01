@@ -27,9 +27,9 @@ export const MenuComp: React.FC = () => {
           type: 'group',
           label: 'Отчеты',
           children: [
-            { label: 'Доходы Grafit', key: '/reportcn' },
-            { label: 'Доходы Apart', key: '/reportpa' },
-            { label: 'Расходы', key: '/reportexpenses' },
+            { label: 'Дох. Grafit', key: '/reportcn' },
+            { label: 'Дох. Apart', key: '/reportpa' },
+            { label: 'Расх. Общие', key: '/reportexpenses' },
           ],
         },
       ],
